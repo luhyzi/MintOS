@@ -2,11 +2,11 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MintOS v1.0 - Desktop Experience</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MintOS v1.2 - Desktop Experience</title>
     
     <!-- Fontes e Estilos -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Bibliotecas Core -->
@@ -21,16 +21,25 @@
             margin: 0; padding: 0;
             overflow: hidden;
             font-family: 'Poppins', sans-serif;
-            background-color: #051d38;
+            background-color: #020617;
             user-select: none;
             -webkit-user-select: none;
             transition: background-color 0.7s ease;
         }
 
-        .dark-theme { background-color: #051d38; }
+        /* Otimização para Modo Computador no Mobile */
+        @media (max-width: 768px) {
+            .desktop-scale {
+                transform: scale(0.65);
+                transform-origin: top left;
+                width: 153.8%;
+                height: 153.8%;
+            }
+        }
+
+        .dark-theme { background-color: #020617; }
         .light-theme { background-color: #f1f5f9; }
 
-        /* Efeito de Vidro Apple-Style */
         .glass {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(30px) saturate(150%);
@@ -43,12 +52,10 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
-
+        
         input[type="range"] {
             -webkit-appearance: none;
             background: rgba(255, 255, 255, 0.1);
@@ -68,7 +75,7 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useRef, useMemo } = React;
+        const { useState, useEffect, useRef } = React;
         const { motion, AnimatePresence } = window.Motion;
 
         // --- Componente de Ícone ---
@@ -91,13 +98,12 @@
         // --- Logo MintOS ---
         const MintLogo = ({ size = 100, className = "" }) => (
             <svg width={size} height={size} viewBox="0 0 100 100" className={className}>
-                <path d="M 75 22 A 40 40 0 1 0 75 78" stroke="#C8B6E2" strokeWidth="12" strokeLinecap="round" fill="none" />
-                <rect x="25" y="44" width="45" height="12" rx="6" fill="#7B61FF" />
+                <path d="M 75 22 A 40 40 0 1 0 75 78" stroke="white" strokeWidth="12" strokeLinecap="round" fill="none" />
+                <rect x="25" y="44" width="45" height="12" rx="6" fill="white" />
             </svg>
         );
 
-        // --- Apps ---
-
+        // --- Aplicativos ---
         const CalculatorApp = () => {
             const [display, setDisplay] = useState('0');
             const [equation, setEquation] = useState('');
@@ -171,26 +177,48 @@
         );
 
         // --- Window System ---
-
         const Window = ({ windowData, onClose, onMinimize, onFocus, children }) => {
             const [pos, setPos] = useState({ x: windowData.x, y: windowData.y });
             const [isDragging, setIsDragging] = useState(false);
             const dragStart = useRef({ x: 0, y: 0 });
 
             useEffect(() => {
-                const move = (e) => { if(isDragging) setPos({ x: e.clientX - dragStart.current.x, y: e.clientY - dragStart.current.y }); };
+                const move = (e) => { 
+                    if(isDragging) {
+                        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                        setPos({ x: clientX - dragStart.current.x, y: clientY - dragStart.current.y }); 
+                    }
+                };
                 const up = () => setIsDragging(false);
-                if(isDragging) { document.addEventListener('mousemove', move); document.addEventListener('mouseup', up); }
-                return () => { document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); };
+                if(isDragging) { 
+                    document.addEventListener('mousemove', move); 
+                    document.addEventListener('mouseup', up);
+                    document.addEventListener('touchmove', move);
+                    document.addEventListener('touchend', up);
+                }
+                return () => { 
+                    document.removeEventListener('mousemove', move); 
+                    document.removeEventListener('mouseup', up);
+                    document.removeEventListener('touchmove', move);
+                    document.removeEventListener('touchend', up);
+                };
             }, [isDragging]);
 
             if (windowData.isMinimized) return null;
 
             return (
                 <motion.div initial={{ opacity: 0, scale: 0.9, filter: 'blur(20px)' }} animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }} style={{ left: pos.x, top: pos.y, zIndex: windowData.zIndex }} className="absolute w-[500px] h-[600px] glass rounded-[40px] shadow-2xl flex flex-col overflow-hidden pointer-events-auto" onMouseDown={onFocus}>
-                    <div className="h-14 bg-black/10 flex items-center justify-between px-6 cursor-grab active:cursor-grabbing" onMouseDown={e => { if(!e.target.closest('.win-btn')) { setIsDragging(true); dragStart.current = { x: e.clientX - pos.x, y: e.clientY - pos.y }; } }}>
-                        <div className="flex items-center gap-3 text-white text-sm font-medium"><Icon name={windowData.icon} size={16} /> {windowData.title}</div>
-                        <div className="flex gap-3 win-btn">
+                    <div className="h-14 bg-black/10 flex items-center justify-between px-6">
+                        <div 
+                            className="flex items-center gap-3 cursor-grab active:cursor-grabbing py-2 pr-10"
+                            onMouseDown={e => { setIsDragging(true); dragStart.current = { x: e.clientX - pos.x, y: e.clientY - pos.y }; }}
+                            onTouchStart={e => { setIsDragging(true); dragStart.current = { x: e.touches[0].clientX - pos.x, y: e.touches[0].clientY - pos.y }; }}
+                        >
+                            <div className="text-white/70 pointer-events-none"><Icon name={windowData.icon} size={16} /></div>
+                            <span className="text-white text-sm font-medium select-none pointer-events-none">{windowData.title}</span>
+                        </div>
+                        <div className="flex gap-3">
                             <button onClick={onMinimize} className="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center text-white/50"><Icon name="minus" size={14} /></button>
                             <button onClick={onClose} className="w-8 h-8 rounded-full hover:bg-red-500/50 flex items-center justify-center text-white/50 hover:text-white"><Icon name="x" size={14} /></button>
                         </div>
@@ -201,7 +229,6 @@
         };
 
         // --- App Principal ---
-
         const App = () => {
             const [booting, setBooting] = useState(true);
             const [bootProgress, setBootProgress] = useState(0);
@@ -213,10 +240,12 @@
             const [time, setTime] = useState(new Date());
             const [wallpaper, setWallpaper] = useState(null);
             const [contextMenu, setContextMenu] = useState(null);
-            const [showNotif, setShowNotif] = useState(false);
 
             useEffect(() => {
-                const boot = setInterval(() => setBootProgress(p => { if(p >= 100) { clearInterval(boot); setTimeout(() => { setBooting(false); setIsLocked(true); }, 500); return 100; } return p + 2; }), 50);
+                const boot = setInterval(() => setBootProgress(p => { 
+                    if(p >= 100) { clearInterval(boot); setTimeout(() => { setBooting(false); setIsLocked(true); }, 500); return 100; } 
+                    return p + 2; 
+                }), 40);
                 setInterval(() => setTime(new Date()), 1000);
             }, []);
 
@@ -231,125 +260,80 @@
             };
 
             if (booting) return (
-                <div className="h-screen w-screen bg-[#051d38] flex flex-col items-center justify-center gap-12">
+                <div className="h-screen w-screen bg-[#020617] flex flex-col items-center justify-center gap-12">
                     <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1 }}><MintLogo size={120} /></motion.div>
-                    <div className="w-48 h-1.5 bg-white/10 rounded-full overflow-hidden"><motion.div className="h-full bg-indigo-400" initial={{ width: 0 }} animate={{ width: `${bootProgress}%` }} /></div>
+                    <div className="w-48 h-1 bg-white/5 rounded-full overflow-hidden"><motion.div className="h-full bg-white" initial={{ width: 0 }} animate={{ width: `${bootProgress}%` }} /></div>
                 </div>
             );
 
             return (
-                <div className={`h-screen w-screen overflow-hidden relative ${isDarkMode ? 'dark-theme' : 'light-theme'}`} onContextMenu={e => { e.preventDefault(); setContextMenu({ x: e.clientX, y: e.clientY }); }} onClick={() => { setContextMenu(null); setIsPanelOpen(false); setIsStartOpen(false); setShowNotif(false); }}>
+                <div className={`h-screen w-screen overflow-hidden relative ${isDarkMode ? 'dark-theme' : 'light-theme'}`} onContextMenu={e => { e.preventDefault(); setContextMenu({ x: e.clientX, y: e.clientY }); }} onClick={() => { setContextMenu(null); setIsPanelOpen(false); setIsStartOpen(false); }}>
                     
-                    {/* Lock Screen */}
-                    <AnimatePresence>
-                        {isLocked && (
-                            <motion.div exit={{ opacity: 0, y: -100, filter: 'blur(40px)' }} className="fixed inset-0 z-[200] bg-black/40 backdrop-blur-3xl flex flex-col items-center justify-between py-24 text-white">
-                                <div className="text-center"><h1 className="text-9xl font-light tracking-tighter">{time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</h1><p className="text-2xl opacity-60 mt-4">{time.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p></div>
-                                <button onClick={() => setIsLocked(false)} className="px-12 py-5 bg-white/10 border border-white/20 rounded-full hover:bg-white/20 transition-all font-medium">Deslize para desbloquear</button>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-
-                    {/* Wallpaper */}
-                    <div className="absolute inset-0 z-0 bg-center bg-cover transition-all duration-1000" style={{ backgroundImage: wallpaper ? `url(${wallpaper})` : 'none' }}>
-                        {!wallpaper && <div className="flex justify-center items-center h-full opacity-20"><div className="w-[150vh] h-[150vh] border border-white/10 rounded-full flex items-center justify-center"><div className="w-[100vh] h-[100vh] border border-white/20 rounded-full flex items-center justify-center"><div className="w-[50vh] h-[50vh] bg-indigo-500 rounded-full blur-[120px]"></div></div></div></div>}
-                    </div>
-
-                    {/* Desktop Icons */}
-                    <div className="absolute inset-0 z-10 p-12 flex flex-col flex-wrap gap-12 content-start pointer-events-none">
-                        {[
-                            { l: 'Arquivos', i: 'folder', c: 'text-amber-400', t: 'folder' },
-                            { l: 'Galeria', i: 'image', c: 'text-purple-400', t: 'gallery' },
-                            { l: 'Música', i: 'music', c: 'text-pink-400', t: 'music' },
-                            { l: 'Calculadora', i: 'calculator', c: 'text-emerald-400', t: 'calculator' },
-                            { l: 'Ajustes', i: 'settings', c: 'text-slate-400', t: 'settings' }
-                        ].map(app => (
-                            <div key={app.t} onClick={() => openApp(app.t, app.l, app.i)} className="w-24 flex flex-col items-center gap-3 cursor-pointer pointer-events-auto group">
-                                <div className="w-20 h-20 bg-white/10 rounded-[32px] flex items-center justify-center group-hover:scale-110 transition-transform shadow-xl"><Icon name={app.i} size={36} className={app.c} /></div>
-                                <span className="text-white text-[11px] font-medium drop-shadow-lg">{app.l}</span>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Windows */}
-                    <div className="absolute inset-0 z-20 pointer-events-none">
+                    <div className="desktop-scale w-full h-full relative">
+                        {/* Lock Screen */}
                         <AnimatePresence>
-                            {windows.map(win => (
-                                <Window key={win.id} windowData={win} onClose={() => setWindows(windows.filter(w => w.id !== win.id))} onMinimize={() => setWindows(windows.map(w => w.id === win.id ? {...w, isMinimized: true} : w))} onFocus={() => setWindows(windows.map(w => w.id === win.id ? {...w, zIndex: Math.max(...windows.map(x => x.zIndex)) + 1} : w))}>
-                                    {win.type === 'calculator' && <CalculatorApp />}
-                                    {win.type === 'gallery' && <GalleryApp />}
-                                    {win.type === 'music' && <MusicApp />}
-                                    {win.type === 'folder' && <FilesApp />}
-                                    {win.type === 'settings' && <SettingsApp isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} setWallpaper={setWallpaper} />}
-                                </Window>
-                            ))}
+                            {isLocked && (
+                                <motion.div exit={{ opacity: 0, y: -100, filter: 'blur(40px)' }} className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-3xl flex flex-col items-center justify-between py-24 text-white">
+                                    <div className="text-center">
+                                        <h1 className="text-9xl font-[200] tracking-[-0.05em]">{time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</h1>
+                                        <p className="text-xl font-light opacity-60 mt-4 tracking-widest uppercase">{time.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+                                    </div>
+                                    <button onClick={() => setIsLocked(false)} className="px-12 py-5 bg-white/10 border border-white/20 rounded-full hover:bg-white/20 transition-all font-medium">Deslize para desbloquear</button>
+                                </motion.div>
+                            )}
                         </AnimatePresence>
-                    </div>
 
-                    {/* Context Menu */}
-                    <AnimatePresence>
-                        {contextMenu && (
-                            <motion.div initial={{ opacity: 0, scale: 0.9, filter: 'blur(10px)' }} animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }} style={{ left: contextMenu.x, top: contextMenu.y }} className="fixed z-[300] w-56 glass rounded-2xl p-2 shadow-2xl">
-                                {['Nova Pasta', 'Atualizar', 'Personalizar'].map(m => <button key={m} onClick={() => m === 'Personalizar' && openApp('settings', 'Ajustes', 'settings')} className="w-full text-left p-3 rounded-xl hover:bg-white/10 text-white text-sm transition-all">{m}</button>)}
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-
-                    {/* Start Menu */}
-                    <AnimatePresence>
-                        {isStartOpen && (
-                            <motion.div initial={{ opacity: 0, y: 50, scale: 0.9, filter: 'blur(20px)' }} animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }} exit={{ opacity: 0, y: 50, scale: 0.9, filter: 'blur(20px)' }} className="fixed bottom-28 left-1/2 -translate-x-1/2 w-[500px] glass rounded-[40px] p-10 z-[100] shadow-2xl text-white">
-                                <div className="flex flex-col items-center mb-12"><div className="w-20 h-20 rounded-3xl bg-indigo-500 flex items-center justify-center mb-4 shadow-xl"><Icon name="user" size={40} /></div><h2 className="text-xl font-bold">Olá, Usuário</h2><p className="opacity-40 text-sm">MintOS v1.0</p></div>
-                                <div className="grid grid-cols-4 gap-8">
-                                    {[{l:'Arquivos',i:'folder',t:'folder'},{l:'Galeria',i:'image',t:'gallery'},{l:'Música',i:'music',t:'music'},{l:'Ajustes',i:'settings',t:'settings'}].map(a => (
-                                        <button key={a.t} onClick={() => openApp(a.t, a.l, a.i)} className="flex flex-col items-center gap-2 group"><div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-all"><Icon name={a.i} size={24} /></div><span className="text-[10px] opacity-60">{a.l}</span></button>
-                                    ))}
-                                </div>
-                                <div className="mt-12 pt-6 border-t border-white/10 flex justify-between items-center"><button className="text-white/40 hover:text-white transition-all"><Icon name="settings" size={20} /></button><button onClick={() => window.location.reload()} className="px-6 py-2 bg-white/10 rounded-full text-sm">Desligar</button></div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-
-                    {/* Control Panel */}
-                    <AnimatePresence>
-                        {isPanelOpen && (
-                            <motion.div initial={{ opacity: 0, y: 50, x: 20, filter: 'blur(20px)' }} animate={{ opacity: 1, y: 0, x: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, y: 50, x: 20, filter: 'blur(20px)' }} className="fixed bottom-28 right-10 w-[360px] glass rounded-[40px] p-8 z-[100] shadow-2xl space-y-8">
-                                <div className="grid grid-cols-2 gap-4">
-                                    {[{l:'Wi-Fi',s:'Mint_Net',i:'wifi'},{l:'Bluetooth',s:'Ativado',i:'bluetooth'},{l:'Foco',s:'Ativado',i:'moon'},{l:'Avião',s:'Off',i:'plane'}].map(c => <div key={c.l} className={`p-4 rounded-3xl flex flex-col gap-3 ${c.l !== 'Avião' ? 'bg-emerald-500 text-white' : 'bg-white/5 text-white/40'}`}><div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center"><Icon name={c.i} size={18} /></div><div><p className="text-xs font-bold">{c.l}</p><p className="text-[10px] opacity-60">{c.s}</p></div></div>)}
-                                </div>
-                                <div className="space-y-6">
-                                    <div className="space-y-2"><div className="flex justify-between text-[10px] text-white/40 px-2"><span>Brilho</span><Icon name="sun" size={12} /></div><div className="h-10 bg-white/5 rounded-2xl flex items-center px-4 gap-4"><Icon name="sun" size={16} className="text-white/30" /><input type="range" className="flex-grow" defaultValue={80} /></div></div>
-                                    <div className="space-y-2"><div className="flex justify-between text-[10px] text-white/40 px-2"><span>Volume</span><Icon name="volume-2" size={12} /></div><div className="h-10 bg-white/5 rounded-2xl flex items-center px-4 gap-4"><Icon name="volume-2" size={16} className="text-white/30" /><input type="range" className="flex-grow" defaultValue={50} /></div></div>
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-
-                    {/* Notifications */}
-                    <AnimatePresence>
-                        {showNotif && (
-                            <motion.div initial={{ opacity: 0, x: 50, filter: 'blur(20px)' }} animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, x: 50, filter: 'blur(20px)' }} className="fixed top-20 right-10 w-[320px] glass rounded-[32px] p-6 z-[100] shadow-2xl space-y-4">
-                                <div className="flex justify-between items-center"><h3 className="text-white font-bold">Notificações</h3><button className="text-[10px] text-white/40">Limpar</button></div>
-                                <div className="bg-white/5 p-4 rounded-2xl border border-white/5 space-y-1"><div className="flex justify-between items-center text-emerald-400"><div className="flex items-center gap-2"><Icon name="bell" size={12} /><span className="text-[10px] font-bold uppercase">Sistema</span></div><span className="text-[10px] opacity-40">Agora</span></div><p className="text-xs text-white/70">MintOS está pronto para uso.</p></div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-
-                    {/* Taskbar */}
-                    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-[900px] h-20 glass rounded-full flex items-center justify-between px-3 z-[150] shadow-2xl">
-                        <div className="flex items-center gap-3">
-                            <button onClick={e => { e.stopPropagation(); setIsStartOpen(!isStartOpen); }} className="w-14 h-14 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-all"><MintLogo size={32} /></button>
-                            <div className="h-10 w-px bg-white/10 mx-2"></div>
-                            <div className="flex gap-2">
-                                {windows.map(win => <button key={win.id} onClick={() => setWindows(windows.map(w => w.id === win.id ? {...w, isMinimized: false, zIndex: Math.max(...windows.map(x => x.zIndex)) + 1} : w))} className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${!win.isMinimized ? 'bg-white/20 shadow-inner' : 'bg-white/5'}`}><Icon name={win.icon} size={20} className="text-white/80" /></button>)}
-                            </div>
+                        {/* Wallpaper */}
+                        <div className="absolute inset-0 z-0 bg-center bg-cover transition-all duration-1000" style={{ backgroundImage: wallpaper ? `url(${wallpaper})` : 'none' }}>
+                            {!wallpaper && <div className="flex justify-center items-center h-full opacity-20"><div className="w-[150vh] h-[150vh] border border-white/10 rounded-full flex items-center justify-center"><div className="w-[100vh] h-[100vh] border border-white/20 rounded-full flex items-center justify-center"><div className="w-[50vh] h-[50vh] bg-indigo-500 rounded-full blur-[120px]"></div></div></div></div>}
                         </div>
-                        <div className="flex items-center gap-2">
-                            <button onClick={e => { e.stopPropagation(); setShowNotif(!showNotif); }} className="w-12 h-12 rounded-full flex items-center justify-center text-white/50 hover:bg-white/10"><Icon name="bell" size={20} /></button>
-                            <button onClick={e => { e.stopPropagation(); setIsPanelOpen(!isPanelOpen); }} className="flex items-center gap-6 bg-black/20 px-6 py-3 rounded-full text-white transition-all hover:bg-black/30">
-                                <div className="flex gap-3 opacity-50"><Icon name="wifi" size={16} /><Icon name="battery" size={16} className="rotate-90" /></div>
-                                <span className="text-sm font-bold">{time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
-                            </button>
+
+                        {/* Ícones Desktop */}
+                        <div className="absolute inset-0 z-10 p-12 flex flex-col flex-wrap gap-12 content-start pointer-events-none">
+                            {[
+                                { l: 'Arquivos', i: 'folder', c: 'text-amber-400', t: 'folder' },
+                                { l: 'Galeria', i: 'image', c: 'text-purple-400', t: 'gallery' },
+                                { l: 'Música', i: 'music', c: 'text-pink-400', t: 'music' },
+                                { l: 'Calculadora', i: 'calculator', c: 'text-emerald-400', t: 'calculator' },
+                                { l: 'Ajustes', i: 'settings', c: 'text-slate-400', t: 'settings' }
+                            ].map(app => (
+                                <div key={app.t} onClick={() => openApp(app.t, app.l, app.i)} className="w-24 flex flex-col items-center gap-3 cursor-pointer pointer-events-auto group">
+                                    <div className="w-20 h-20 bg-white/10 rounded-[32px] flex items-center justify-center group-hover:scale-110 transition-transform shadow-xl"><Icon name={app.i} size={36} className={app.c} /></div>
+                                    <span className="text-white text-[11px] font-medium drop-shadow-lg">{app.l}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Janelas */}
+                        <div className="absolute inset-0 z-20 pointer-events-none">
+                            <AnimatePresence>
+                                {windows.map(win => (
+                                    <Window key={win.id} windowData={win} onClose={() => setWindows(windows.filter(w => w.id !== win.id))} onMinimize={() => setWindows(windows.map(w => w.id === win.id ? {...w, isMinimized: true} : w))} onFocus={() => setWindows(windows.map(w => w.id === win.id ? {...w, zIndex: Math.max(...windows.map(x => x.zIndex)) + 1} : w))}>
+                                        {win.type === 'calculator' && <CalculatorApp />}
+                                        {win.type === 'music' && <MusicApp />}
+                                        {win.type === 'gallery' && <GalleryApp />}
+                                        {win.type === 'folder' && <FilesApp />}
+                                        {win.type === 'settings' && <SettingsApp isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} setWallpaper={setWallpaper} />}
+                                    </Window>
+                                ))}
+                            </AnimatePresence>
+                        </div>
+
+                        {/* Taskbar Refinada */}
+                        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-[800px] h-16 glass rounded-full flex items-center justify-between px-2 z-[150] shadow-2xl">
+                            <div className="flex items-center gap-2">
+                                <button onClick={e => { e.stopPropagation(); setIsStartOpen(!isStartOpen); }} className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-all"><MintLogo size={28} /></button>
+                                <div className="h-8 w-px bg-white/10 mx-1"></div>
+                                <div className="flex gap-1.5">
+                                    {windows.map(win => <button key={win.id} onClick={() => setWindows(windows.map(w => w.id === win.id ? {...w, isMinimized: false, zIndex: Math.max(...windows.map(x => x.zIndex)) + 1} : w))} className={`w-11 h-11 rounded-2xl flex items-center justify-center transition-all ${!win.isMinimized ? 'bg-white/20 shadow-inner' : 'bg-white/5'}`}><Icon name={win.icon} size={18} className="text-white/80" /></button>)}
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <button onClick={e => { e.stopPropagation(); setIsPanelOpen(!isPanelOpen); }} className="flex items-center gap-4 bg-black/20 px-5 py-2.5 rounded-full text-white transition-all hover:bg-black/30">
+                                    <div className="flex gap-2.5 opacity-50"><Icon name="wifi" size={14} /><Icon name="battery" size={14} className="rotate-90" /></div>
+                                    <span className="text-xs font-bold">{time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
