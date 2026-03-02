@@ -6,399 +6,185 @@
     <title>MintOS</title>
     
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
         /* =========================================
            RESET E FUNDO GERAL
            ========================================= */
         body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%; 
-            width: 100%;
+            margin: 0; padding: 0;
+            height: 100%; width: 100%;
             overflow: hidden; 
             background-color: #051d38; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
             touch-action: none; 
+            -webkit-user-select: none; /* Evita selecionar texto ao segurar o dedo na tela */
+            user-select: none;
         }
 
         /* =========================================
-           WALLPAPER (CÍRCULOS EM CSS E FUNDO CUSTOMIZADO)
+           WALLPAPER 
            ========================================= */
         .wallpaper-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            position: fixed; 
-            top: 0;
-            left: 0;
-            z-index: 1; 
+            display: flex; justify-content: center; align-items: center;
+            width: 100%; height: 100%; position: fixed; top: 0; left: 0; z-index: 1; 
             transition: background-image 0.5s ease-in-out;
-            background-position: center center;
-            background-size: cover;
-            background-repeat: no-repeat;
+            background-position: center center; background-size: cover; background-repeat: no-repeat;
         }
 
         #rings-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            width: 100%; height: 100%;
         }
 
-        .ring {
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-shrink: 0; 
-        }
-
+        .ring { border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
         .outer-ring-4 { width: 250vh; height: 250vh; background-color: #0b2040; box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.7); }
         .outer-ring-3 { width: 180vh; height: 180vh; background-color: #0d3870; box-shadow: inset 0 0 45px rgba(0, 0, 0, 0.6); }
         .outer-ring-2 { width: 120vh; height: 120vh; background-color: #1255a0; box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.5); }
         .outer-ring-1 { width: 70vh; height: 70vh; background-color: #1e88e5; box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.4); }
-
-        .inner-circle {
-            width: 30vh; height: 30vh;
-            background-image: radial-gradient(circle at center, #7bb9f2 0%, #1e88e5 100%);
-            border-radius: 50%;
-            box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.3);
-        }
+        .inner-circle { width: 30vh; height: 30vh; background-image: radial-gradient(circle at center, #7bb9f2 0%, #1e88e5 100%); border-radius: 50%; box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.3); }
 
         /* =========================================
-           BARRA DE TAREFAS (MINTOS) E ANIMAÇÃO
+           MENU CLIQUE DIREITO (NOVO)
            ========================================= */
-        .taskbar {
-            position: fixed;
-            bottom: 20px; 
-            left: 50%;
-            width: 75%; 
-            max-width: 800px; 
-            height: 48px; 
-            z-index: 20; 
-            
+        .context-menu {
+            position: absolute;
+            display: none; /* Escondido por padrão */
+            width: 220px;
             background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(15px); 
-            -webkit-backdrop-filter: blur(15px);
-            
-            border-radius: 24px; 
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-            
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 6px;
-            
-            transform: translate(-50%, 0);
-            opacity: 1;
-            /* Transição ajustada para subir direitinho */
-            transition: background 0.3s, border 0.3s, transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
-        }
-
-        /* AQUI FOI A CORREÇÃO: A barra agora se esconde 150px PARA BAIXO */
-        .taskbar.taskbar-hidden {
-            transform: translate(-50%, 150px); 
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .taskbar-left {
-            display: flex;
-            align-items: center;
-            gap: 12px; 
-        }
-
-        .start-btn {
-            width: 36px; 
-            height: 36px; 
-            background: rgba(255, 255, 255, 0.2); 
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-left: 4px;
-            cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
-        }
-
-        .start-btn:hover {
-            transform: scale(1.05);
-            background: rgba(255, 255, 255, 0.35); 
-        }
-
-        .app-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white; 
-            cursor: pointer;
-            transition: background 0.2s, transform 0.2s;
-        }
-
-        .app-icon:hover {
-            background: rgba(255, 255, 255, 0.2); 
-            transform: translateY(-2px); 
-        }
-
-        .system-tray {
-            background: rgba(0, 0, 0, 0.4);
-            height: 36px; 
-            border-radius: 18px; 
-            display: flex;
-            align-items: center;
-            padding: 0 12px;
-            gap: 10px; 
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            padding: 6px;
+            z-index: 1000; /* Acima de tudo */
+            flex-direction: column;
+            gap: 2px;
             color: white;
+            font-size: 14px;
+        }
+
+        .context-menu-item {
+            padding: 10px 12px;
+            border-radius: 8px; /* Mantendo os cantos arredondados que você gosta */
+            display: flex;
+            align-items: center;
+            gap: 12px;
             cursor: pointer;
             transition: background 0.2s;
         }
 
-        .system-tray:hover {
-            background: rgba(0, 0, 0, 0.6);
+        .context-menu-item:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
 
-        .system-tray .material-symbols-outlined {
-            font-size: 16px; 
+        .context-menu-item .material-symbols-outlined {
+            font-size: 18px;
         }
 
-        .battery-icon {
-            transform: rotate(90deg);
-            margin-top: 2px;
+        .context-menu-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 4px 0;
         }
 
-        #clock {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            font-size: 13px; 
-            letter-spacing: 0.5px;
-            margin-top: 1px;
+        /* =========================================
+           SISTEMA DE JANELAS
+           ========================================= */
+        .window {
+            position: absolute; top: 20%; left: 5%; width: 90%; max-width: 350px;
+            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            display: flex; flex-direction: column; z-index: 50;
+            opacity: 0; transform: scale(0.95); pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease;
         }
+        .window.active { opacity: 1; transform: scale(1); pointer-events: all; }
+        .window-header { height: 40px; background: rgba(0, 0, 0, 0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; padding: 0 15px; cursor: grab; border-radius: 16px 16px 0 0; }
+        .window-header:active { cursor: grabbing; }
+        .window-controls { display: flex; gap: 8px; margin-right: 15px; }
+        .win-btn { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; transition: opacity 0.2s; }
+        .win-btn:hover { opacity: 0.7; }
+        .win-close { background-color: #ff5f56; } .win-min { background-color: #ffbd2e; } .win-max { background-color: #27c93f; }
+        .window-title { color: white; font-size: 13px; font-weight: 500; flex-grow: 1; text-align: center; padding-right: 50px; }
+        .window-content { padding: 20px; color: white; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .mint-button { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); color: white; padding: 10px 20px; border-radius: 20px; font-family: 'Poppins', sans-serif; font-size: 14px; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 8px; }
+        .mint-button:hover { background: rgba(255, 255, 255, 0.3); }
+
+        /* =========================================
+           BARRA DE TAREFAS 
+           ========================================= */
+        .taskbar {
+            position: fixed; bottom: 20px; left: 50%; width: 75%; max-width: 800px; height: 48px; z-index: 20; 
+            background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 6px;
+            transform: translate(-50%, 0); opacity: 1; transition: background 0.3s, border 0.3s, transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
+        }
+        .taskbar.taskbar-hidden { transform: translate(-50%, 150px); opacity: 0; pointer-events: none; }
+        .taskbar-left { display: flex; align-items: center; gap: 12px; }
+        .start-btn { width: 36px; height: 36px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-left: 4px; cursor: pointer; transition: transform 0.2s, background 0.2s; }
+        .start-btn:hover { transform: scale(1.05); background: rgba(255, 255, 255, 0.35); }
+        .app-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; cursor: pointer; transition: background 0.2s, transform 0.2s; }
+        .app-icon:hover { background: rgba(255, 255, 255, 0.2); transform: translateY(-2px); }
+        .system-tray { background: rgba(0, 0, 0, 0.4); height: 36px; border-radius: 18px; display: flex; align-items: center; padding: 0 12px; gap: 10px; color: white; cursor: pointer; transition: background 0.2s; }
+        .system-tray:hover { background: rgba(0, 0, 0, 0.6); }
+        .system-tray .material-symbols-outlined { font-size: 16px; }
+        .battery-icon { transform: rotate(90deg); margin-top: 2px; }
+        #clock { font-weight: 600; font-size: 13px; letter-spacing: 0.5px; margin-top: 1px; }
 
         /* =========================================
            PAINEL DE CONTROLE FLUTUANTE
            ========================================= */
         .control-panel {
-            position: fixed;
-            right: max(12.5%, calc((100% - 800px) / 2)); 
-            bottom: 80px; 
-            width: 300px;
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            z-index: 15;
-            
-            opacity: 0;
-            transform: translateY(20px);
-            pointer-events: none;
-            transition: opacity 0.3s ease, transform 0.3s ease, background 0.3s;
+            position: fixed; right: max(12.5%, calc((100% - 800px) / 2)); bottom: 80px; width: 300px;
+            background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 20px; display: flex; flex-direction: column; gap: 20px; z-index: 15;
+            opacity: 0; transform: translateY(20px); pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease, background 0.3s;
         }
-
-        .control-panel.show {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: all;
-        }
-
-        .quick-settings {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            justify-items: center;
-        }
-
-        .qs-btn {
-            width: 46px;
-            height: 46px;
-            border-radius: 50%; 
-            background: rgba(0, 0, 0, 0.3);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-        }
-
-        .qs-btn:active {
-            transform: scale(0.95);
-        }
-
-        .qs-btn.active {
-            background: #2fb58f; 
-            color: #051d38;
-        }
-
-        .slider-row {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 10px 15px;
-            border-radius: 20px; 
-        }
-
-        .slider-row .material-symbols-outlined {
-            color: white;
-            font-size: 20px;
-        }
-
-        .slider-input {
-            flex-grow: 1;
-            -webkit-appearance: none;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 3px;
-            outline: none;
-        }
-
-        .slider-input::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%; 
-            background: white;
-            cursor: pointer;
-        }
+        .control-panel.show { opacity: 1; transform: translateY(0); pointer-events: all; }
+        .quick-settings { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; justify-items: center; }
+        .qs-btn { width: 46px; height: 46px; border-radius: 50%; background: rgba(0, 0, 0, 0.3); color: white; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: background 0.2s, transform 0.1s; }
+        .qs-btn:active { transform: scale(0.95); }
+        .qs-btn.active { background: #2fb58f; color: #051d38; }
+        .slider-row { display: flex; align-items: center; gap: 15px; background: rgba(0, 0, 0, 0.2); padding: 10px 15px; border-radius: 20px; }
+        .slider-row .material-symbols-outlined { color: white; font-size: 20px; }
+        .slider-input { flex-grow: 1; -webkit-appearance: none; height: 6px; background: rgba(255, 255, 255, 0.3); border-radius: 3px; outline: none; }
+        .slider-input::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: white; cursor: pointer; }
 
         /* =========================================
-           TELA DE BLOQUEIO (LOCK SCREEN)
+           TELA DE BLOQUEIO
            ========================================= */
         .lock-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 25%, rgba(0,0,0,0) 75%, rgba(0,0,0,0.6) 100%); 
-            z-index: 100; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: opacity 0.5s ease;
+            z-index: 100; display: flex; flex-direction: column; align-items: center; transition: opacity 0.5s ease;
         }
-
-        .lock-screen.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .lock-time-container {
-            margin-top: 12vh; 
-            text-align: center;
-            color: white;
-            font-family: 'Poppins', sans-serif; 
-        }
-
-        .lock-clock {
-            font-size: 85px;
-            font-weight: 300; 
-            letter-spacing: 1px;
-            margin: 0;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            line-height: 1;
-        }
-
-        .lock-date {
-            font-size: 18px;
-            font-weight: 400;
-            color: rgba(255, 255, 255, 0.95);
-            margin-top: 5px;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.4);
-        }
-
+        .lock-screen.hidden { opacity: 0; pointer-events: none; }
+        .lock-time-container { margin-top: 12vh; text-align: center; color: white; }
+        .lock-clock { font-size: 85px; font-weight: 300; letter-spacing: 1px; margin: 0; text-shadow: 0 4px 15px rgba(0,0,0,0.4); line-height: 1; }
+        .lock-date { font-size: 18px; font-weight: 400; color: rgba(255, 255, 255, 0.95); margin-top: 5px; text-shadow: 0 2px 8px rgba(0,0,0,0.4); }
         .slide-to-unlock-container {
-            margin-top: auto;
-            margin-bottom: 80px; 
-            width: 85%;
-            max-width: 350px;
-            height: 60px;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 30px;
-            position: relative;
-            display: flex;
-            align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            overflow: hidden;
-            font-family: 'Poppins', sans-serif; 
+            margin-top: auto; margin-bottom: 80px; width: 85%; max-width: 350px; height: 60px;
+            background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-radius: 30px; position: relative; display: flex; align-items: center; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 10px 25px rgba(0,0,0,0.2); overflow: hidden;
         }
-
-        .slide-text {
-            width: 100%;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 15px;
-            font-weight: 400;
-            position: absolute;
-            pointer-events: none; 
-            animation: shimmer 2.5s infinite linear;
-        }
-
-        @keyframes shimmer {
-            0% { opacity: 0.3; }
-            50% { opacity: 1; }
-            100% { opacity: 0.3; }
-        }
-
-        .slide-thumb {
-            width: 50px;
-            height: 50px;
-            background: white;
-            border-radius: 50%;
-            position: absolute;
-            left: 5px; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: grab;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease; 
-        }
-
-        .slide-thumb:active {
-            cursor: grabbing;
-        }
-
-        .slide-thumb .material-symbols-outlined {
-            color: #051d38; 
-            font-size: 24px;
-            margin-left: 2px;
-        }
+        .slide-text { width: 100%; text-align: center; color: rgba(255, 255, 255, 0.7); font-size: 15px; font-weight: 400; position: absolute; pointer-events: none; animation: shimmer 2.5s infinite linear; }
+        @keyframes shimmer { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+        .slide-thumb { width: 50px; height: 50px; background: white; border-radius: 50%; position: absolute; left: 5px; display: flex; justify-content: center; align-items: center; cursor: grab; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); transition: transform 0.3s ease; }
+        .slide-thumb:active { cursor: grabbing; }
+        .slide-thumb .material-symbols-outlined { color: #051d38; font-size: 24px; margin-left: 2px; }
 
         /* =========================================
-           MODO ESCURO SUAVE 
+           MODO ESCURO 
            ========================================= */
-        .dark-theme .taskbar {
-            background: rgba(35, 45, 60, 0.65);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-        
-        .dark-theme .system-tray {
-            background: rgba(20, 25, 35, 0.5);
-        }
-
-        .dark-theme .control-panel {
-            background: rgba(35, 45, 60, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
+        .dark-theme .taskbar { background: rgba(35, 45, 60, 0.65); border: 1px solid rgba(255, 255, 255, 0.15); }
+        .dark-theme .system-tray { background: rgba(20, 25, 35, 0.5); }
+        .dark-theme .control-panel { background: rgba(35, 45, 60, 0.75); border: 1px solid rgba(255, 255, 255, 0.15); }
+        .dark-theme .window { background: rgba(35, 45, 60, 0.65); border: 1px solid rgba(255, 255, 255, 0.15); }
+        .dark-theme .context-menu { background: rgba(35, 45, 60, 0.75); border: 1px solid rgba(255, 255, 255, 0.15); }
     </style>
 </head>
 <body>
@@ -408,7 +194,6 @@
             <h1 class="lock-clock" id="lockClockText">00:00</h1>
             <p class="lock-date" id="lockDateText">Data carregando...</p>
         </div>
-
         <div class="slide-to-unlock-container" id="slideContainer">
             <div class="slide-text" id="slideText">Deslize para desbloquear</div>
             <div class="slide-thumb" id="slideThumb">
@@ -419,15 +204,55 @@
 
     <div class="wallpaper-container" id="desktop-wallpaper">
         <div id="rings-container">
-            <div class="ring outer-ring-4">
-                <div class="ring outer-ring-3">
-                    <div class="ring outer-ring-2">
-                        <div class="ring outer-ring-1">
-                            <div class="inner-circle"></div>
-                        </div>
-                    </div>
-                </div>
+            <div class="ring outer-ring-4"><div class="ring outer-ring-3"><div class="ring outer-ring-2"><div class="ring outer-ring-1"><div class="inner-circle"></div></div></div></div></div>
+        </div>
+    </div>
+
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-item" onclick="alert('Função de criar pasta em breve!')">
+            <span class="material-symbols-outlined">create_new_folder</span>
+            Nova Pasta
+        </div>
+        <div class="context-menu-item" onclick="alert('Função de criar documento em breve!')">
+            <span class="material-symbols-outlined">description</span>
+            Novo Documento
+        </div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item" onclick="location.reload()">
+            <span class="material-symbols-outlined">refresh</span>
+            Atualizar
+        </div>
+        <div class="context-menu-item" onclick="alert('Nada copiado para colar.')">
+            <span class="material-symbols-outlined">content_paste</span>
+            Colar
+        </div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item" onclick="openWindow('personalizationWindow')">
+            <span class="material-symbols-outlined">palette</span>
+            Personalizar
+        </div>
+        <div class="context-menu-item" onclick="alert('Configurações do sistema em breve!')">
+            <span class="material-symbols-outlined">settings</span>
+            Configurações
+        </div>
+    </div>
+
+    <div class="window" id="personalizationWindow">
+        <div class="window-header" id="personalizationHeader">
+            <div class="window-controls">
+                <div class="win-btn win-close" onclick="closeWindow('personalizationWindow')"></div>
+                <div class="win-btn win-min"></div>
+                <div class="win-btn win-max"></div>
             </div>
+            <span class="window-title">Aparência</span>
+        </div>
+        <div class="window-content">
+            <span class="material-symbols-outlined" style="font-size: 40px; color: #2fb58f;">wallpaper</span>
+            <p style="margin: 0; text-align: center; font-size: 14px;">Personalize a sua área de trabalho do MintOS.</p>
+            <button class="mint-button" onclick="document.getElementById('wallpaper-picker').click()">
+                <span class="material-symbols-outlined" style="font-size: 18px;">image</span>
+                Procurar Imagem
+            </button>
         </div>
     </div>
 
@@ -435,29 +260,13 @@
 
     <div class="control-panel" id="controlPanel">
         <div class="quick-settings">
-            <div class="qs-btn active" onclick="toggleBtn(this)" title="Wi-Fi">
-                <span class="material-symbols-outlined">wifi</span>
-            </div>
-            <div class="qs-btn active" onclick="toggleBtn(this)" title="Bluetooth">
-                <span class="material-symbols-outlined">bluetooth</span>
-            </div>
-            <div class="qs-btn" onclick="toggleBtn(this)" title="Modo Avião">
-                <span class="material-symbols-outlined">flight</span>
-            </div>
-            <div class="qs-btn" id="darkModeBtn" title="Modo Escuro">
-                <span class="material-symbols-outlined">dark_mode</span>
-            </div>
+            <div class="qs-btn active" onclick="toggleBtn(this)" title="Wi-Fi"><span class="material-symbols-outlined">wifi</span></div>
+            <div class="qs-btn active" onclick="toggleBtn(this)" title="Bluetooth"><span class="material-symbols-outlined">bluetooth</span></div>
+            <div class="qs-btn" onclick="toggleBtn(this)" title="Modo Avião"><span class="material-symbols-outlined">flight</span></div>
+            <div class="qs-btn" id="darkModeBtn" title="Modo Escuro"><span class="material-symbols-outlined">dark_mode</span></div>
         </div>
-
-        <div class="slider-row">
-            <span class="material-symbols-outlined">light_mode</span>
-            <input type="range" min="0" max="100" value="80" class="slider-input">
-        </div>
-
-        <div class="slider-row">
-            <span class="material-symbols-outlined">volume_up</span>
-            <input type="range" min="0" max="100" value="50" class="slider-input">
-        </div>
+        <div class="slider-row"><span class="material-symbols-outlined">light_mode</span><input type="range" min="0" max="100" value="80" class="slider-input"></div>
+        <div class="slider-row"><span class="material-symbols-outlined">volume_up</span><input type="range" min="0" max="100" value="50" class="slider-input"></div>
     </div>
 
     <div class="taskbar taskbar-hidden" id="taskbar">
@@ -468,12 +277,10 @@
                     <rect x="25" y="44" width="38" height="12" rx="6" fill="white"/>
                 </svg>
             </div>
-
-            <div class="app-icon" id="wallpaper-app" title="Mudar Fundo de Tela">
+            <div class="app-icon" title="Aparência" onclick="openWindow('personalizationWindow')">
                 <span class="material-symbols-outlined">wallpaper</span>
             </div>
         </div>
-
         <div class="system-tray" id="systemTrayBtn" title="Painel de Controle">
             <span class="material-symbols-outlined">wifi</span>
             <span class="material-symbols-outlined battery-icon">battery_5_bar</span>
@@ -482,34 +289,83 @@
     </div>
 
     <script>
-        // ================== RELÓGIO E DATA ==================
+        // ================== RELÓGIO ==================
         function updateClock() {
             const now = new Date();
-            
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
-            const timeString = `${hours}:${minutes}`;
-            
-            document.getElementById('clock').textContent = timeString;
-            document.getElementById('lockClockText').textContent = timeString;
-
-            const options = { weekday: 'long', day: 'numeric', month: 'long' };
-            let dateString = now.toLocaleDateString('pt-BR', options);
-            dateString = dateString.charAt(0).toUpperCase() + dateString.slice(1);
-            document.getElementById('lockDateText').textContent = dateString;
+            document.getElementById('clock').textContent = `${hours}:${minutes}`;
+            document.getElementById('lockClockText').textContent = `${hours}:${minutes}`;
+            let dateString = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+            document.getElementById('lockDateText').textContent = dateString.charAt(0).toUpperCase() + dateString.slice(1);
         }
-        setInterval(updateClock, 1000);
-        updateClock();
+        setInterval(updateClock, 1000); updateClock();
+
+        // ================== MENU CLIQUE DIREITO (NOVO) ==================
+        const contextMenu = document.getElementById('contextMenu');
+        const desktopArea = document.getElementById('desktop-wallpaper');
+
+        // Impede o menu padrão do navegador e mostra o do MintOS
+        desktopArea.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            
+            // Calcula onde o menu vai aparecer
+            let x = e.clientX;
+            let y = e.clientY;
+
+            // Se o menu for sair da tela, ajusta a posição
+            if (x + 220 > window.innerWidth) { x = window.innerWidth - 220; }
+            if (y + 250 > window.innerHeight) { y = window.innerHeight - 250; }
+
+            contextMenu.style.left = `${x}px`;
+            contextMenu.style.top = `${y}px`;
+            contextMenu.style.display = 'flex';
+        });
+
+        // Esconde o menu se clicar em qualquer outro lugar
+        document.addEventListener('click', (e) => {
+            if (e.button !== 2) { // 2 é o clique direito
+                contextMenu.style.display = 'none';
+            }
+        });
+
+        // ================== GERENCIADOR DE JANELAS ==================
+        function openWindow(id) {
+            document.getElementById(id).classList.add('active');
+            contextMenu.style.display = 'none'; // Fecha o menu direito ao abrir a janela
+        }
+
+        function closeWindow(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function makeDraggable(windowElement, headerElement) {
+            let isDragging = false, currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
+            function dragStart(e) {
+                if (e.type === "touchstart") { initialX = e.touches[0].clientX - xOffset; initialY = e.touches[0].clientY - yOffset; } 
+                else { initialX = e.clientX - xOffset; initialY = e.clientY - yOffset; }
+                if (e.target.closest('.window-controls')) return;
+                isDragging = true;
+            }
+            function dragEnd(e) { initialX = currentX; initialY = currentY; isDragging = false; }
+            function drag(e) {
+                if (isDragging) {
+                    e.preventDefault();
+                    if (e.type === "touchmove") { currentX = e.touches[0].clientX - initialX; currentY = e.touches[0].clientY - initialY; } 
+                    else { currentX = e.clientX - initialX; currentY = e.clientY - initialY; }
+                    xOffset = currentX; yOffset = currentY;
+                    windowElement.style.transform = `translate(${currentX}px, ${currentY}px) scale(1)`;
+                }
+            }
+            headerElement.addEventListener("mousedown", dragStart, false); document.addEventListener("mouseup", dragEnd, false); document.addEventListener("mousemove", drag, false);
+            headerElement.addEventListener("touchstart", dragStart, {passive: false}); document.addEventListener("touchend", dragEnd, false); document.addEventListener("touchmove", drag, {passive: false});
+        }
+        makeDraggable(document.getElementById('personalizationWindow'), document.getElementById('personalizationHeader'));
 
         // ================== APLICATIVO DE WALLPAPER ==================
-        const wallpaperApp = document.getElementById('wallpaper-app');
         const wallpaperPicker = document.getElementById('wallpaper-picker');
         const desktopWallpaper = document.getElementById('desktop-wallpaper');
         const ringsContainer = document.getElementById('rings-container');
-
-        wallpaperApp.addEventListener('click', () => {
-            wallpaperPicker.click();
-        });
 
         wallpaperPicker.addEventListener('change', (event) => {
             const file = event.target.files[0]; 
@@ -525,96 +381,41 @@
         const controlPanel = document.getElementById('controlPanel');
         const darkModeBtn = document.getElementById('darkModeBtn');
 
-        systemTrayBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); 
-            controlPanel.classList.toggle('show');
-        });
+        systemTrayBtn.addEventListener('click', (e) => { e.stopPropagation(); controlPanel.classList.toggle('show'); });
+        document.addEventListener('click', (e) => { if (!controlPanel.contains(e.target) && e.target !== systemTrayBtn) controlPanel.classList.remove('show'); });
+        function toggleBtn(element) { element.classList.toggle('active'); }
+        darkModeBtn.addEventListener('click', () => { darkModeBtn.classList.toggle('active'); document.body.classList.toggle('dark-theme'); });
 
-        document.addEventListener('click', (e) => {
-            if (!controlPanel.contains(e.target) && e.target !== systemTrayBtn) {
-                controlPanel.classList.remove('show');
-            }
-        });
-
-        function toggleBtn(element) {
-            element.classList.toggle('active');
-        }
-
-        darkModeBtn.addEventListener('click', () => {
-            darkModeBtn.classList.toggle('active');
-            document.body.classList.toggle('dark-theme');
-        });
-
-        // ================== SLIDE TO UNLOCK E ANIMAÇÃO DA BARRA ==================
+        // ================== SLIDE TO UNLOCK ==================
         const lockScreen = document.getElementById('lockScreen');
         const slideContainer = document.getElementById('slideContainer');
         const slideThumb = document.getElementById('slideThumb');
         const slideText = document.getElementById('slideText');
         const taskbar = document.getElementById('taskbar'); 
         
-        let isDragging = false;
-        let startX = 0;
-        let maxTranslate = 0;
-
-        function calculateMaxTranslate() {
-            maxTranslate = slideContainer.clientWidth - slideThumb.clientWidth - 10;
-        }
-
-        function startDrag(clientX) {
-            isDragging = true;
-            startX = clientX;
-            calculateMaxTranslate();
-            slideThumb.style.transition = 'none'; 
-            slideText.style.opacity = '0.1'; 
-        }
-
-        function drag(clientX) {
-            if (!isDragging) return;
-            let currentX = clientX;
-            let moveX = currentX - startX;
-
-            if (moveX < 0) moveX = 0;
-            if (moveX > maxTranslate) moveX = maxTranslate;
-
+        let isSliding = false, startSlideX = 0, maxTranslateX = 0;
+        function calcMax() { maxTranslateX = slideContainer.clientWidth - slideThumb.clientWidth - 10; }
+        function sDragStart(clientX) { isSliding = true; startSlideX = clientX; calcMax(); slideThumb.style.transition = 'none'; slideText.style.opacity = '0.1'; }
+        function sDrag(clientX) {
+            if (!isSliding) return; let moveX = clientX - startSlideX;
+            if (moveX < 0) moveX = 0; if (moveX > maxTranslateX) moveX = maxTranslateX;
             slideThumb.style.transform = `translateX(${moveX}px)`;
         }
-
-        function endDrag() {
-            if (!isDragging) return;
-            isDragging = false;
-            
-            slideThumb.style.transition = 'transform 0.3s ease';
-            slideText.style.opacity = '1';
-
+        function sDragEnd() {
+            if (!isSliding) return; isSliding = false; slideThumb.style.transition = 'transform 0.3s ease'; slideText.style.opacity = '1';
             let matrix = new WebKitCSSMatrix(window.getComputedStyle(slideThumb).transform);
-            let currentTranslateX = matrix.m41;
-
-            if (currentTranslateX > maxTranslate * 0.8) {
-                slideThumb.style.transform = `translateX(${maxTranslate}px)`; 
-                
-                setTimeout(() => {
-                    lockScreen.classList.add('hidden'); 
-                    
-                    setTimeout(() => {
-                        taskbar.classList.remove('taskbar-hidden');
-                    }, 150);
-                    
-                }, 200);
-
-            } else {
-                slideThumb.style.transform = `translateX(0px)`;
-            }
+            if (matrix.m41 > maxTranslateX * 0.8) {
+                slideThumb.style.transform = `translateX(${maxTranslateX}px)`; 
+                setTimeout(() => { lockScreen.classList.add('hidden'); setTimeout(() => { taskbar.classList.remove('taskbar-hidden'); }, 150); }, 200);
+            } else { slideThumb.style.transform = `translateX(0px)`; }
         }
-
-        slideThumb.addEventListener('touchstart', (e) => startDrag(e.touches[0].clientX));
-        document.addEventListener('touchmove', (e) => drag(e.touches[0].clientX));
-        document.addEventListener('touchend', endDrag);
-
-        slideThumb.addEventListener('mousedown', (e) => startDrag(e.clientX));
-        document.addEventListener('mousemove', (e) => drag(e.clientX));
-        document.addEventListener('mouseup', endDrag);
+        slideThumb.addEventListener('touchstart', (e) => sDragStart(e.touches[0].clientX), {passive: true});
+        document.addEventListener('touchmove', (e) => { if(isSliding) sDrag(e.touches[0].clientX) }, {passive: false});
+        document.addEventListener('touchend', sDragEnd);
+        slideThumb.addEventListener('mousedown', (e) => sDragStart(e.clientX));
+        document.addEventListener('mousemove', (e) => { if(isSliding) sDrag(e.clientX) });
+        document.addEventListener('mouseup', sDragEnd);
 
     </script>
-
 </body>
 </html>
