@@ -2,420 +2,362 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MintOS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MintOS v1.0 - Desktop Experience</title>
     
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <!-- Fontes e Estilos -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Bibliotecas Core -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <style>
-        /* =========================================
-           RESET E FUNDO GERAL
-           ========================================= */
-        body, html {
+        body {
             margin: 0; padding: 0;
-            height: 100%; width: 100%;
-            overflow: hidden; 
-            background-color: #051d38; 
+            overflow: hidden;
             font-family: 'Poppins', sans-serif;
-            touch-action: none; 
-            -webkit-user-select: none; /* Evita selecionar texto ao segurar o dedo na tela */
+            background-color: #051d38;
             user-select: none;
+            -webkit-user-select: none;
+            transition: background-color 0.7s ease;
         }
 
-        /* =========================================
-           WALLPAPER 
-           ========================================= */
-        .wallpaper-container {
-            display: flex; justify-content: center; align-items: center;
-            width: 100%; height: 100%; position: fixed; top: 0; left: 0; z-index: 1; 
-            transition: background-image 0.5s ease-in-out;
-            background-position: center center; background-size: cover; background-repeat: no-repeat;
+        .dark-theme { background-color: #051d38; }
+        .light-theme { background-color: #f1f5f9; }
+
+        /* Efeito de Vidro Apple-Style */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(30px) saturate(150%);
+            -webkit-backdrop-filter: blur(30px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        #rings-container {
-            display: flex; justify-content: center; align-items: center;
-            width: 100%; height: 100%;
+        .dark-theme .glass {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .ring { border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
-        .outer-ring-4 { width: 250vh; height: 250vh; background-color: #0b2040; box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.7); }
-        .outer-ring-3 { width: 180vh; height: 180vh; background-color: #0d3870; box-shadow: inset 0 0 45px rgba(0, 0, 0, 0.6); }
-        .outer-ring-2 { width: 120vh; height: 120vh; background-color: #1255a0; box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.5); }
-        .outer-ring-1 { width: 70vh; height: 70vh; background-color: #1e88e5; box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.4); }
-        .inner-circle { width: 30vh; height: 30vh; background-image: radial-gradient(circle at center, #7bb9f2 0%, #1e88e5 100%); border-radius: 50%; box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.3); }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
 
-        /* =========================================
-           MENU CLIQUE DIREITO (NOVO)
-           ========================================= */
-        .context-menu {
-            position: absolute;
-            display: none; /* Escondido por padrão */
-            width: 220px;
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            padding: 6px;
-            z-index: 1000; /* Acima de tudo */
-            flex-direction: column;
-            gap: 2px;
-            color: white;
-            font-size: 14px;
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            height: 4px;
+            border-radius: 2px;
         }
-
-        .context-menu-item {
-            padding: 10px 12px;
-            border-radius: 8px; /* Mantendo os cantos arredondados que você gosta */
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px; height: 12px;
+            background: white;
+            border-radius: 50%;
             cursor: pointer;
-            transition: background 0.2s;
         }
-
-        .context-menu-item:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .context-menu-item .material-symbols-outlined {
-            font-size: 18px;
-        }
-
-        .context-menu-divider {
-            height: 1px;
-            background: rgba(255, 255, 255, 0.2);
-            margin: 4px 0;
-        }
-
-        /* =========================================
-           SISTEMA DE JANELAS
-           ========================================= */
-        .window {
-            position: absolute; top: 20%; left: 5%; width: 90%; max-width: 350px;
-            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            display: flex; flex-direction: column; z-index: 50;
-            opacity: 0; transform: scale(0.95); pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease;
-        }
-        .window.active { opacity: 1; transform: scale(1); pointer-events: all; }
-        .window-header { height: 40px; background: rgba(0, 0, 0, 0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; padding: 0 15px; cursor: grab; border-radius: 16px 16px 0 0; }
-        .window-header:active { cursor: grabbing; }
-        .window-controls { display: flex; gap: 8px; margin-right: 15px; }
-        .win-btn { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; transition: opacity 0.2s; }
-        .win-btn:hover { opacity: 0.7; }
-        .win-close { background-color: #ff5f56; } .win-min { background-color: #ffbd2e; } .win-max { background-color: #27c93f; }
-        .window-title { color: white; font-size: 13px; font-weight: 500; flex-grow: 1; text-align: center; padding-right: 50px; }
-        .window-content { padding: 20px; color: white; display: flex; flex-direction: column; align-items: center; gap: 15px; }
-        .mint-button { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); color: white; padding: 10px 20px; border-radius: 20px; font-family: 'Poppins', sans-serif; font-size: 14px; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 8px; }
-        .mint-button:hover { background: rgba(255, 255, 255, 0.3); }
-
-        /* =========================================
-           BARRA DE TAREFAS 
-           ========================================= */
-        .taskbar {
-            position: fixed; bottom: 20px; left: 50%; width: 75%; max-width: 800px; height: 48px; z-index: 20; 
-            background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-            display: flex; align-items: center; justify-content: space-between; padding: 0 6px;
-            transform: translate(-50%, 0); opacity: 1; transition: background 0.3s, border 0.3s, transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
-        }
-        .taskbar.taskbar-hidden { transform: translate(-50%, 150px); opacity: 0; pointer-events: none; }
-        .taskbar-left { display: flex; align-items: center; gap: 12px; }
-        .start-btn { width: 36px; height: 36px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-left: 4px; cursor: pointer; transition: transform 0.2s, background 0.2s; }
-        .start-btn:hover { transform: scale(1.05); background: rgba(255, 255, 255, 0.35); }
-        .app-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; cursor: pointer; transition: background 0.2s, transform 0.2s; }
-        .app-icon:hover { background: rgba(255, 255, 255, 0.2); transform: translateY(-2px); }
-        .system-tray { background: rgba(0, 0, 0, 0.4); height: 36px; border-radius: 18px; display: flex; align-items: center; padding: 0 12px; gap: 10px; color: white; cursor: pointer; transition: background 0.2s; }
-        .system-tray:hover { background: rgba(0, 0, 0, 0.6); }
-        .system-tray .material-symbols-outlined { font-size: 16px; }
-        .battery-icon { transform: rotate(90deg); margin-top: 2px; }
-        #clock { font-weight: 600; font-size: 13px; letter-spacing: 0.5px; margin-top: 1px; }
-
-        /* =========================================
-           PAINEL DE CONTROLE FLUTUANTE
-           ========================================= */
-        .control-panel {
-            position: fixed; right: max(12.5%, calc((100% - 800px) / 2)); bottom: 80px; width: 300px;
-            background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            padding: 20px; display: flex; flex-direction: column; gap: 20px; z-index: 15;
-            opacity: 0; transform: translateY(20px); pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease, background 0.3s;
-        }
-        .control-panel.show { opacity: 1; transform: translateY(0); pointer-events: all; }
-        .quick-settings { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; justify-items: center; }
-        .qs-btn { width: 46px; height: 46px; border-radius: 50%; background: rgba(0, 0, 0, 0.3); color: white; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: background 0.2s, transform 0.1s; }
-        .qs-btn:active { transform: scale(0.95); }
-        .qs-btn.active { background: #2fb58f; color: #051d38; }
-        .slider-row { display: flex; align-items: center; gap: 15px; background: rgba(0, 0, 0, 0.2); padding: 10px 15px; border-radius: 20px; }
-        .slider-row .material-symbols-outlined { color: white; font-size: 20px; }
-        .slider-input { flex-grow: 1; -webkit-appearance: none; height: 6px; background: rgba(255, 255, 255, 0.3); border-radius: 3px; outline: none; }
-        .slider-input::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: white; cursor: pointer; }
-
-        /* =========================================
-           TELA DE BLOQUEIO
-           ========================================= */
-        .lock-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 25%, rgba(0,0,0,0) 75%, rgba(0,0,0,0.6) 100%); 
-            z-index: 100; display: flex; flex-direction: column; align-items: center; transition: opacity 0.5s ease;
-        }
-        .lock-screen.hidden { opacity: 0; pointer-events: none; }
-        .lock-time-container { margin-top: 12vh; text-align: center; color: white; }
-        .lock-clock { font-size: 85px; font-weight: 300; letter-spacing: 1px; margin: 0; text-shadow: 0 4px 15px rgba(0,0,0,0.4); line-height: 1; }
-        .lock-date { font-size: 18px; font-weight: 400; color: rgba(255, 255, 255, 0.95); margin-top: 5px; text-shadow: 0 2px 8px rgba(0,0,0,0.4); }
-        .slide-to-unlock-container {
-            margin-top: auto; margin-bottom: 80px; width: 85%; max-width: 350px; height: 60px;
-            background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border-radius: 30px; position: relative; display: flex; align-items: center; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 10px 25px rgba(0,0,0,0.2); overflow: hidden;
-        }
-        .slide-text { width: 100%; text-align: center; color: rgba(255, 255, 255, 0.7); font-size: 15px; font-weight: 400; position: absolute; pointer-events: none; animation: shimmer 2.5s infinite linear; }
-        @keyframes shimmer { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
-        .slide-thumb { width: 50px; height: 50px; background: white; border-radius: 50%; position: absolute; left: 5px; display: flex; justify-content: center; align-items: center; cursor: grab; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); transition: transform 0.3s ease; }
-        .slide-thumb:active { cursor: grabbing; }
-        .slide-thumb .material-symbols-outlined { color: #051d38; font-size: 24px; margin-left: 2px; }
-
-        /* =========================================
-           MODO ESCURO 
-           ========================================= */
-        .dark-theme .taskbar { background: rgba(35, 45, 60, 0.65); border: 1px solid rgba(255, 255, 255, 0.15); }
-        .dark-theme .system-tray { background: rgba(20, 25, 35, 0.5); }
-        .dark-theme .control-panel { background: rgba(35, 45, 60, 0.75); border: 1px solid rgba(255, 255, 255, 0.15); }
-        .dark-theme .window { background: rgba(35, 45, 60, 0.65); border: 1px solid rgba(255, 255, 255, 0.15); }
-        .dark-theme .context-menu { background: rgba(35, 45, 60, 0.75); border: 1px solid rgba(255, 255, 255, 0.15); }
     </style>
 </head>
 <body>
+    <div id="root"></div>
 
-    <div class="lock-screen" id="lockScreen">
-        <div class="lock-time-container">
-            <h1 class="lock-clock" id="lockClockText">00:00</h1>
-            <p class="lock-date" id="lockDateText">Data carregando...</p>
-        </div>
-        <div class="slide-to-unlock-container" id="slideContainer">
-            <div class="slide-text" id="slideText">Deslize para desbloquear</div>
-            <div class="slide-thumb" id="slideThumb">
-                <span class="material-symbols-outlined">arrow_forward_ios</span>
-            </div>
-        </div>
-    </div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useMemo } = React;
+        const { motion, AnimatePresence } = window.Motion;
 
-    <div class="wallpaper-container" id="desktop-wallpaper">
-        <div id="rings-container">
-            <div class="ring outer-ring-4"><div class="ring outer-ring-3"><div class="ring outer-ring-2"><div class="ring outer-ring-1"><div class="inner-circle"></div></div></div></div></div>
-        </div>
-    </div>
-
-    <div class="context-menu" id="contextMenu">
-        <div class="context-menu-item" onclick="alert('Função de criar pasta em breve!')">
-            <span class="material-symbols-outlined">create_new_folder</span>
-            Nova Pasta
-        </div>
-        <div class="context-menu-item" onclick="alert('Função de criar documento em breve!')">
-            <span class="material-symbols-outlined">description</span>
-            Novo Documento
-        </div>
-        <div class="context-menu-divider"></div>
-        <div class="context-menu-item" onclick="location.reload()">
-            <span class="material-symbols-outlined">refresh</span>
-            Atualizar
-        </div>
-        <div class="context-menu-item" onclick="alert('Nada copiado para colar.')">
-            <span class="material-symbols-outlined">content_paste</span>
-            Colar
-        </div>
-        <div class="context-menu-divider"></div>
-        <div class="context-menu-item" onclick="openWindow('personalizationWindow')">
-            <span class="material-symbols-outlined">palette</span>
-            Personalizar
-        </div>
-        <div class="context-menu-item" onclick="alert('Configurações do sistema em breve!')">
-            <span class="material-symbols-outlined">settings</span>
-            Configurações
-        </div>
-    </div>
-
-    <div class="window" id="personalizationWindow">
-        <div class="window-header" id="personalizationHeader">
-            <div class="window-controls">
-                <div class="win-btn win-close" onclick="closeWindow('personalizationWindow')"></div>
-                <div class="win-btn win-min"></div>
-                <div class="win-btn win-max"></div>
-            </div>
-            <span class="window-title">Aparência</span>
-        </div>
-        <div class="window-content">
-            <span class="material-symbols-outlined" style="font-size: 40px; color: #2fb58f;">wallpaper</span>
-            <p style="margin: 0; text-align: center; font-size: 14px;">Personalize a sua área de trabalho do MintOS.</p>
-            <button class="mint-button" onclick="document.getElementById('wallpaper-picker').click()">
-                <span class="material-symbols-outlined" style="font-size: 18px;">image</span>
-                Procurar Imagem
-            </button>
-        </div>
-    </div>
-
-    <input type="file" id="wallpaper-picker" accept="image/*" style="display: none;">
-
-    <div class="control-panel" id="controlPanel">
-        <div class="quick-settings">
-            <div class="qs-btn active" onclick="toggleBtn(this)" title="Wi-Fi"><span class="material-symbols-outlined">wifi</span></div>
-            <div class="qs-btn active" onclick="toggleBtn(this)" title="Bluetooth"><span class="material-symbols-outlined">bluetooth</span></div>
-            <div class="qs-btn" onclick="toggleBtn(this)" title="Modo Avião"><span class="material-symbols-outlined">flight</span></div>
-            <div class="qs-btn" id="darkModeBtn" title="Modo Escuro"><span class="material-symbols-outlined">dark_mode</span></div>
-        </div>
-        <div class="slider-row"><span class="material-symbols-outlined">light_mode</span><input type="range" min="0" max="100" value="80" class="slider-input"></div>
-        <div class="slider-row"><span class="material-symbols-outlined">volume_up</span><input type="range" min="0" max="100" value="50" class="slider-input"></div>
-    </div>
-
-    <div class="taskbar taskbar-hidden" id="taskbar">
-        <div class="taskbar-left">
-            <div class="start-btn" title="Menu MintOS">
-                <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M 75 22 A 40 40 0 1 0 75 78" stroke="white" stroke-width="12" stroke-linecap="round"/>
-                    <rect x="25" y="44" width="38" height="12" rx="6" fill="white"/>
-                </svg>
-            </div>
-            <div class="app-icon" title="Aparência" onclick="openWindow('personalizationWindow')">
-                <span class="material-symbols-outlined">wallpaper</span>
-            </div>
-        </div>
-        <div class="system-tray" id="systemTrayBtn" title="Painel de Controle">
-            <span class="material-symbols-outlined">wifi</span>
-            <span class="material-symbols-outlined battery-icon">battery_5_bar</span>
-            <span id="clock">00:00</span>
-        </div>
-    </div>
-
-    <script>
-        // ================== RELÓGIO ==================
-        function updateClock() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('clock').textContent = `${hours}:${minutes}`;
-            document.getElementById('lockClockText').textContent = `${hours}:${minutes}`;
-            let dateString = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
-            document.getElementById('lockDateText').textContent = dateString.charAt(0).toUpperCase() + dateString.slice(1);
-        }
-        setInterval(updateClock, 1000); updateClock();
-
-        // ================== MENU CLIQUE DIREITO (NOVO) ==================
-        const contextMenu = document.getElementById('contextMenu');
-        const desktopArea = document.getElementById('desktop-wallpaper');
-
-        // Impede o menu padrão do navegador e mostra o do MintOS
-        desktopArea.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            
-            // Calcula onde o menu vai aparecer
-            let x = e.clientX;
-            let y = e.clientY;
-
-            // Se o menu for sair da tela, ajusta a posição
-            if (x + 220 > window.innerWidth) { x = window.innerWidth - 220; }
-            if (y + 250 > window.innerHeight) { y = window.innerHeight - 250; }
-
-            contextMenu.style.left = `${x}px`;
-            contextMenu.style.top = `${y}px`;
-            contextMenu.style.display = 'flex';
-        });
-
-        // Esconde o menu se clicar em qualquer outro lugar
-        document.addEventListener('click', (e) => {
-            if (e.button !== 2) { // 2 é o clique direito
-                contextMenu.style.display = 'none';
-            }
-        });
-
-        // ================== GERENCIADOR DE JANELAS ==================
-        function openWindow(id) {
-            document.getElementById(id).classList.add('active');
-            contextMenu.style.display = 'none'; // Fecha o menu direito ao abrir a janela
-        }
-
-        function closeWindow(id) {
-            document.getElementById(id).classList.remove('active');
-        }
-
-        function makeDraggable(windowElement, headerElement) {
-            let isDragging = false, currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
-            function dragStart(e) {
-                if (e.type === "touchstart") { initialX = e.touches[0].clientX - xOffset; initialY = e.touches[0].clientY - yOffset; } 
-                else { initialX = e.clientX - xOffset; initialY = e.clientY - yOffset; }
-                if (e.target.closest('.window-controls')) return;
-                isDragging = true;
-            }
-            function dragEnd(e) { initialX = currentX; initialY = currentY; isDragging = false; }
-            function drag(e) {
-                if (isDragging) {
-                    e.preventDefault();
-                    if (e.type === "touchmove") { currentX = e.touches[0].clientX - initialX; currentY = e.touches[0].clientY - initialY; } 
-                    else { currentX = e.clientX - initialX; currentY = e.clientY - initialY; }
-                    xOffset = currentX; yOffset = currentY;
-                    windowElement.style.transform = `translate(${currentX}px, ${currentY}px) scale(1)`;
+        // --- Componente de Ícone ---
+        const Icon = ({ name, size = 24, className = "" }) => {
+            const iconRef = useRef(null);
+            useEffect(() => {
+                if (iconRef.current) {
+                    const icon = lucide.icons[name.toLowerCase().replace(/ /g, '-')];
+                    if (icon) {
+                        lucide.createIcons({
+                            icons: { [name]: icon },
+                            attrs: { strokeWidth: 2, width: size, height: size }
+                        });
+                    }
                 }
-            }
-            headerElement.addEventListener("mousedown", dragStart, false); document.addEventListener("mouseup", dragEnd, false); document.addEventListener("mousemove", drag, false);
-            headerElement.addEventListener("touchstart", dragStart, {passive: false}); document.addEventListener("touchend", dragEnd, false); document.addEventListener("touchmove", drag, {passive: false});
-        }
-        makeDraggable(document.getElementById('personalizationWindow'), document.getElementById('personalizationHeader'));
+            }, [name, size]);
+            return <i ref={iconRef} data-lucide={name} className={className}></i>;
+        };
 
-        // ================== APLICATIVO DE WALLPAPER ==================
-        const wallpaperPicker = document.getElementById('wallpaper-picker');
-        const desktopWallpaper = document.getElementById('desktop-wallpaper');
-        const ringsContainer = document.getElementById('rings-container');
+        // --- Logo MintOS ---
+        const MintLogo = ({ size = 100, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 100 100" className={className}>
+                <path d="M 75 22 A 40 40 0 1 0 75 78" stroke="#C8B6E2" strokeWidth="12" strokeLinecap="round" fill="none" />
+                <rect x="25" y="44" width="45" height="12" rx="6" fill="#7B61FF" />
+            </svg>
+        );
 
-        wallpaperPicker.addEventListener('change', (event) => {
-            const file = event.target.files[0]; 
-            if (file) {
-                const imageUrl = URL.createObjectURL(file);
-                ringsContainer.style.display = 'none';
-                desktopWallpaper.style.backgroundImage = `url('${imageUrl}')`;
-            }
-        });
+        // --- Apps ---
 
-        // ================== PAINEL DE CONTROLE ==================
-        const systemTrayBtn = document.getElementById('systemTrayBtn');
-        const controlPanel = document.getElementById('controlPanel');
-        const darkModeBtn = document.getElementById('darkModeBtn');
+        const CalculatorApp = () => {
+            const [display, setDisplay] = useState('0');
+            const [equation, setEquation] = useState('');
+            const handleNumber = (n) => setDisplay(p => p === '0' ? n : p + n);
+            const calculate = () => { try { setDisplay(String(eval(equation + display))); setEquation(''); } catch { setDisplay('Erro'); } };
+            return (
+                <div className="h-full p-6 flex flex-col gap-4 bg-black/20">
+                    <div className="bg-black/40 p-6 rounded-3xl text-right">
+                        <p className="text-white/30 text-sm h-6">{equation}</p>
+                        <p className="text-white text-4xl font-light truncate">{display}</p>
+                    </div>
+                    <div className="grid grid-cols-4 gap-2 flex-grow">
+                        {['7','8','9','/','4','5','6','*','1','2','3','-','C','0','=','+'].map(b => (
+                            <button key={b} onClick={() => b === 'C' ? setDisplay('0') : b === '=' ? calculate() : isNaN(b) ? (setEquation(display + b), setDisplay('0')) : handleNumber(b)} className="bg-white/10 hover:bg-white/20 rounded-2xl text-white text-xl transition-all">{b}</button>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
 
-        systemTrayBtn.addEventListener('click', (e) => { e.stopPropagation(); controlPanel.classList.toggle('show'); });
-        document.addEventListener('click', (e) => { if (!controlPanel.contains(e.target) && e.target !== systemTrayBtn) controlPanel.classList.remove('show'); });
-        function toggleBtn(element) { element.classList.toggle('active'); }
-        darkModeBtn.addEventListener('click', () => { darkModeBtn.classList.toggle('active'); document.body.classList.toggle('dark-theme'); });
+        const MusicApp = () => (
+            <div className="h-full bg-gradient-to-b from-pink-500/20 to-purple-900/40 p-8 flex flex-col items-center justify-center gap-8">
+                <div className="w-48 h-48 rounded-[40px] bg-white/10 shadow-2xl flex items-center justify-center border border-white/20"><Icon name="music" size={80} className="text-white/20" /></div>
+                <div className="text-center text-white"><h3 className="text-2xl font-bold">Mint Melodies</h3><p className="opacity-50">Artista Desconhecido</p></div>
+                <div className="flex items-center gap-8 text-white">
+                    <Icon name="skip-back" size={24} /><div className="w-16 h-16 rounded-full bg-white text-purple-900 flex items-center justify-center shadow-xl"><Icon name="play" size={32} /></div><Icon name="skip-forward" size={24} />
+                </div>
+            </div>
+        );
 
-        // ================== SLIDE TO UNLOCK ==================
-        const lockScreen = document.getElementById('lockScreen');
-        const slideContainer = document.getElementById('slideContainer');
-        const slideThumb = document.getElementById('slideThumb');
-        const slideText = document.getElementById('slideText');
-        const taskbar = document.getElementById('taskbar'); 
-        
-        let isSliding = false, startSlideX = 0, maxTranslateX = 0;
-        function calcMax() { maxTranslateX = slideContainer.clientWidth - slideThumb.clientWidth - 10; }
-        function sDragStart(clientX) { isSliding = true; startSlideX = clientX; calcMax(); slideThumb.style.transition = 'none'; slideText.style.opacity = '0.1'; }
-        function sDrag(clientX) {
-            if (!isSliding) return; let moveX = clientX - startSlideX;
-            if (moveX < 0) moveX = 0; if (moveX > maxTranslateX) moveX = maxTranslateX;
-            slideThumb.style.transform = `translateX(${moveX}px)`;
-        }
-        function sDragEnd() {
-            if (!isSliding) return; isSliding = false; slideThumb.style.transition = 'transform 0.3s ease'; slideText.style.opacity = '1';
-            let matrix = new WebKitCSSMatrix(window.getComputedStyle(slideThumb).transform);
-            if (matrix.m41 > maxTranslateX * 0.8) {
-                slideThumb.style.transform = `translateX(${maxTranslateX}px)`; 
-                setTimeout(() => { lockScreen.classList.add('hidden'); setTimeout(() => { taskbar.classList.remove('taskbar-hidden'); }, 150); }, 200);
-            } else { slideThumb.style.transform = `translateX(0px)`; }
-        }
-        slideThumb.addEventListener('touchstart', (e) => sDragStart(e.touches[0].clientX), {passive: true});
-        document.addEventListener('touchmove', (e) => { if(isSliding) sDrag(e.touches[0].clientX) }, {passive: false});
-        document.addEventListener('touchend', sDragEnd);
-        slideThumb.addEventListener('mousedown', (e) => sDragStart(e.clientX));
-        document.addEventListener('mousemove', (e) => { if(isSliding) sDrag(e.clientX) });
-        document.addEventListener('mouseup', sDragEnd);
+        const GalleryApp = () => (
+            <div className="p-6 grid grid-cols-2 gap-4 bg-black/20 h-full overflow-auto">
+                {[1,2,3,4,5,6].map(i => <div key={i} className="aspect-square rounded-3xl overflow-hidden border border-white/10 shadow-lg"><img src={`https://picsum.photos/seed/mint${i}/400/400`} className="w-full h-full object-cover" /></div>)}
+            </div>
+        );
 
+        const FilesApp = () => (
+            <div className="flex h-full text-white bg-black/20">
+                <div className="w-32 border-r border-white/10 p-4 space-y-4"><p className="text-[10px] font-bold opacity-30 uppercase tracking-widest">Favoritos</p><div className="space-y-2 text-xs opacity-60"><div className="flex items-center gap-2 text-emerald-400 opacity-100"><Icon name="home" size={14} /> Início</div><div className="flex items-center gap-2"><Icon name="folder" size={14} /> Downloads</div></div></div>
+                <div className="flex-grow p-8 grid grid-cols-3 gap-8">
+                    {['Documentos', 'Imagens', 'Música'].map(f => (
+                        <div key={f} className="flex flex-col items-center gap-2 group cursor-pointer">
+                            <div className="w-20 h-20 bg-blue-500/20 rounded-3xl flex items-center justify-center text-blue-400 group-hover:bg-blue-500/30 transition-all"><Icon name="folder" size={40} /></div>
+                            <span className="text-xs font-medium opacity-80">{f}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+
+        const SettingsApp = ({ isDarkMode, setIsDarkMode, setWallpaper }) => (
+            <div className="flex h-full text-white bg-black/20">
+                <div className="w-40 border-r border-white/10 p-4 space-y-2">
+                    {['Geral', 'Aparência', 'Sobre'].map(t => <button key={t} className={`w-full text-left p-2 rounded-xl text-sm ${t === 'Aparência' ? 'bg-white/10' : 'opacity-40'}`}>{t}</button>)}
+                </div>
+                <div className="flex-grow p-8 space-y-8 overflow-auto">
+                    <h3 className="text-xl font-bold">Personalização</h3>
+                    <div className="space-y-4">
+                        <div className="p-4 bg-white/5 rounded-3xl border border-white/5 flex justify-between items-center">
+                            <span>Modo Escuro</span>
+                            <button onClick={() => setIsDarkMode(!isDarkMode)} className={`w-12 h-6 rounded-full relative transition-all ${isDarkMode ? 'bg-emerald-500' : 'bg-white/10'}`}><div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all ${isDarkMode ? 'right-1' : 'left-1'}`} /></button>
+                        </div>
+                        <div className="p-4 bg-white/5 rounded-3xl border border-white/5 space-y-4">
+                            <p>Wallpaper</p>
+                            <button onClick={() => document.getElementById('wall-in').click()} className="w-full py-3 bg-white/10 rounded-2xl text-sm">Escolher Imagem...</button>
+                            <input id="wall-in" type="file" className="hidden" onChange={e => { const f = e.target.files[0]; if(f) setWallpaper(URL.createObjectURL(f)); }} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+
+        // --- Window System ---
+
+        const Window = ({ windowData, onClose, onMinimize, onFocus, children }) => {
+            const [pos, setPos] = useState({ x: windowData.x, y: windowData.y });
+            const [isDragging, setIsDragging] = useState(false);
+            const dragStart = useRef({ x: 0, y: 0 });
+
+            useEffect(() => {
+                const move = (e) => { if(isDragging) setPos({ x: e.clientX - dragStart.current.x, y: e.clientY - dragStart.current.y }); };
+                const up = () => setIsDragging(false);
+                if(isDragging) { document.addEventListener('mousemove', move); document.addEventListener('mouseup', up); }
+                return () => { document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); };
+            }, [isDragging]);
+
+            if (windowData.isMinimized) return null;
+
+            return (
+                <motion.div initial={{ opacity: 0, scale: 0.9, filter: 'blur(20px)' }} animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }} style={{ left: pos.x, top: pos.y, zIndex: windowData.zIndex }} className="absolute w-[500px] h-[600px] glass rounded-[40px] shadow-2xl flex flex-col overflow-hidden pointer-events-auto" onMouseDown={onFocus}>
+                    <div className="h-14 bg-black/10 flex items-center justify-between px-6 cursor-grab active:cursor-grabbing" onMouseDown={e => { if(!e.target.closest('.win-btn')) { setIsDragging(true); dragStart.current = { x: e.clientX - pos.x, y: e.clientY - pos.y }; } }}>
+                        <div className="flex items-center gap-3 text-white text-sm font-medium"><Icon name={windowData.icon} size={16} /> {windowData.title}</div>
+                        <div className="flex gap-3 win-btn">
+                            <button onClick={onMinimize} className="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center text-white/50"><Icon name="minus" size={14} /></button>
+                            <button onClick={onClose} className="w-8 h-8 rounded-full hover:bg-red-500/50 flex items-center justify-center text-white/50 hover:text-white"><Icon name="x" size={14} /></button>
+                        </div>
+                    </div>
+                    <div className="flex-grow overflow-hidden">{children}</div>
+                </motion.div>
+            );
+        };
+
+        // --- App Principal ---
+
+        const App = () => {
+            const [booting, setBooting] = useState(true);
+            const [bootProgress, setBootProgress] = useState(0);
+            const [isLocked, setIsLocked] = useState(false);
+            const [isStartOpen, setIsStartOpen] = useState(false);
+            const [isPanelOpen, setIsPanelOpen] = useState(false);
+            const [isDarkMode, setIsDarkMode] = useState(true);
+            const [windows, setWindows] = useState([]);
+            const [time, setTime] = useState(new Date());
+            const [wallpaper, setWallpaper] = useState(null);
+            const [contextMenu, setContextMenu] = useState(null);
+            const [showNotif, setShowNotif] = useState(false);
+
+            useEffect(() => {
+                const boot = setInterval(() => setBootProgress(p => { if(p >= 100) { clearInterval(boot); setTimeout(() => { setBooting(false); setIsLocked(true); }, 500); return 100; } return p + 2; }), 50);
+                setInterval(() => setTime(new Date()), 1000);
+            }, []);
+
+            const openApp = (type, title, icon) => {
+                const existing = windows.find(w => w.type === type);
+                if (existing) {
+                    setWindows(prev => prev.map(w => w.id === existing.id ? { ...w, isMinimized: false, zIndex: Math.max(...prev.map(x => x.zIndex)) + 1 } : w));
+                } else {
+                    setWindows([...windows, { id: Date.now(), type, title, icon, isMinimized: false, zIndex: windows.length + 10, x: 100 + windows.length * 30, y: 100 + windows.length * 30 }]);
+                }
+                setIsStartOpen(false);
+            };
+
+            if (booting) return (
+                <div className="h-screen w-screen bg-[#051d38] flex flex-col items-center justify-center gap-12">
+                    <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1 }}><MintLogo size={120} /></motion.div>
+                    <div className="w-48 h-1.5 bg-white/10 rounded-full overflow-hidden"><motion.div className="h-full bg-indigo-400" initial={{ width: 0 }} animate={{ width: `${bootProgress}%` }} /></div>
+                </div>
+            );
+
+            return (
+                <div className={`h-screen w-screen overflow-hidden relative ${isDarkMode ? 'dark-theme' : 'light-theme'}`} onContextMenu={e => { e.preventDefault(); setContextMenu({ x: e.clientX, y: e.clientY }); }} onClick={() => { setContextMenu(null); setIsPanelOpen(false); setIsStartOpen(false); setShowNotif(false); }}>
+                    
+                    {/* Lock Screen */}
+                    <AnimatePresence>
+                        {isLocked && (
+                            <motion.div exit={{ opacity: 0, y: -100, filter: 'blur(40px)' }} className="fixed inset-0 z-[200] bg-black/40 backdrop-blur-3xl flex flex-col items-center justify-between py-24 text-white">
+                                <div className="text-center"><h1 className="text-9xl font-light tracking-tighter">{time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</h1><p className="text-2xl opacity-60 mt-4">{time.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p></div>
+                                <button onClick={() => setIsLocked(false)} className="px-12 py-5 bg-white/10 border border-white/20 rounded-full hover:bg-white/20 transition-all font-medium">Deslize para desbloquear</button>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Wallpaper */}
+                    <div className="absolute inset-0 z-0 bg-center bg-cover transition-all duration-1000" style={{ backgroundImage: wallpaper ? `url(${wallpaper})` : 'none' }}>
+                        {!wallpaper && <div className="flex justify-center items-center h-full opacity-20"><div className="w-[150vh] h-[150vh] border border-white/10 rounded-full flex items-center justify-center"><div className="w-[100vh] h-[100vh] border border-white/20 rounded-full flex items-center justify-center"><div className="w-[50vh] h-[50vh] bg-indigo-500 rounded-full blur-[120px]"></div></div></div></div>}
+                    </div>
+
+                    {/* Desktop Icons */}
+                    <div className="absolute inset-0 z-10 p-12 flex flex-col flex-wrap gap-12 content-start pointer-events-none">
+                        {[
+                            { l: 'Arquivos', i: 'folder', c: 'text-amber-400', t: 'folder' },
+                            { l: 'Galeria', i: 'image', c: 'text-purple-400', t: 'gallery' },
+                            { l: 'Música', i: 'music', c: 'text-pink-400', t: 'music' },
+                            { l: 'Calculadora', i: 'calculator', c: 'text-emerald-400', t: 'calculator' },
+                            { l: 'Ajustes', i: 'settings', c: 'text-slate-400', t: 'settings' }
+                        ].map(app => (
+                            <div key={app.t} onClick={() => openApp(app.t, app.l, app.i)} className="w-24 flex flex-col items-center gap-3 cursor-pointer pointer-events-auto group">
+                                <div className="w-20 h-20 bg-white/10 rounded-[32px] flex items-center justify-center group-hover:scale-110 transition-transform shadow-xl"><Icon name={app.i} size={36} className={app.c} /></div>
+                                <span className="text-white text-[11px] font-medium drop-shadow-lg">{app.l}</span>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Windows */}
+                    <div className="absolute inset-0 z-20 pointer-events-none">
+                        <AnimatePresence>
+                            {windows.map(win => (
+                                <Window key={win.id} windowData={win} onClose={() => setWindows(windows.filter(w => w.id !== win.id))} onMinimize={() => setWindows(windows.map(w => w.id === win.id ? {...w, isMinimized: true} : w))} onFocus={() => setWindows(windows.map(w => w.id === win.id ? {...w, zIndex: Math.max(...windows.map(x => x.zIndex)) + 1} : w))}>
+                                    {win.type === 'calculator' && <CalculatorApp />}
+                                    {win.type === 'gallery' && <GalleryApp />}
+                                    {win.type === 'music' && <MusicApp />}
+                                    {win.type === 'folder' && <FilesApp />}
+                                    {win.type === 'settings' && <SettingsApp isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} setWallpaper={setWallpaper} />}
+                                </Window>
+                            ))}
+                        </AnimatePresence>
+                    </div>
+
+                    {/* Context Menu */}
+                    <AnimatePresence>
+                        {contextMenu && (
+                            <motion.div initial={{ opacity: 0, scale: 0.9, filter: 'blur(10px)' }} animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }} style={{ left: contextMenu.x, top: contextMenu.y }} className="fixed z-[300] w-56 glass rounded-2xl p-2 shadow-2xl">
+                                {['Nova Pasta', 'Atualizar', 'Personalizar'].map(m => <button key={m} onClick={() => m === 'Personalizar' && openApp('settings', 'Ajustes', 'settings')} className="w-full text-left p-3 rounded-xl hover:bg-white/10 text-white text-sm transition-all">{m}</button>)}
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Start Menu */}
+                    <AnimatePresence>
+                        {isStartOpen && (
+                            <motion.div initial={{ opacity: 0, y: 50, scale: 0.9, filter: 'blur(20px)' }} animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }} exit={{ opacity: 0, y: 50, scale: 0.9, filter: 'blur(20px)' }} className="fixed bottom-28 left-1/2 -translate-x-1/2 w-[500px] glass rounded-[40px] p-10 z-[100] shadow-2xl text-white">
+                                <div className="flex flex-col items-center mb-12"><div className="w-20 h-20 rounded-3xl bg-indigo-500 flex items-center justify-center mb-4 shadow-xl"><Icon name="user" size={40} /></div><h2 className="text-xl font-bold">Olá, Usuário</h2><p className="opacity-40 text-sm">MintOS v1.0</p></div>
+                                <div className="grid grid-cols-4 gap-8">
+                                    {[{l:'Arquivos',i:'folder',t:'folder'},{l:'Galeria',i:'image',t:'gallery'},{l:'Música',i:'music',t:'music'},{l:'Ajustes',i:'settings',t:'settings'}].map(a => (
+                                        <button key={a.t} onClick={() => openApp(a.t, a.l, a.i)} className="flex flex-col items-center gap-2 group"><div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-all"><Icon name={a.i} size={24} /></div><span className="text-[10px] opacity-60">{a.l}</span></button>
+                                    ))}
+                                </div>
+                                <div className="mt-12 pt-6 border-t border-white/10 flex justify-between items-center"><button className="text-white/40 hover:text-white transition-all"><Icon name="settings" size={20} /></button><button onClick={() => window.location.reload()} className="px-6 py-2 bg-white/10 rounded-full text-sm">Desligar</button></div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Control Panel */}
+                    <AnimatePresence>
+                        {isPanelOpen && (
+                            <motion.div initial={{ opacity: 0, y: 50, x: 20, filter: 'blur(20px)' }} animate={{ opacity: 1, y: 0, x: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, y: 50, x: 20, filter: 'blur(20px)' }} className="fixed bottom-28 right-10 w-[360px] glass rounded-[40px] p-8 z-[100] shadow-2xl space-y-8">
+                                <div className="grid grid-cols-2 gap-4">
+                                    {[{l:'Wi-Fi',s:'Mint_Net',i:'wifi'},{l:'Bluetooth',s:'Ativado',i:'bluetooth'},{l:'Foco',s:'Ativado',i:'moon'},{l:'Avião',s:'Off',i:'plane'}].map(c => <div key={c.l} className={`p-4 rounded-3xl flex flex-col gap-3 ${c.l !== 'Avião' ? 'bg-emerald-500 text-white' : 'bg-white/5 text-white/40'}`}><div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center"><Icon name={c.i} size={18} /></div><div><p className="text-xs font-bold">{c.l}</p><p className="text-[10px] opacity-60">{c.s}</p></div></div>)}
+                                </div>
+                                <div className="space-y-6">
+                                    <div className="space-y-2"><div className="flex justify-between text-[10px] text-white/40 px-2"><span>Brilho</span><Icon name="sun" size={12} /></div><div className="h-10 bg-white/5 rounded-2xl flex items-center px-4 gap-4"><Icon name="sun" size={16} className="text-white/30" /><input type="range" className="flex-grow" defaultValue={80} /></div></div>
+                                    <div className="space-y-2"><div className="flex justify-between text-[10px] text-white/40 px-2"><span>Volume</span><Icon name="volume-2" size={12} /></div><div className="h-10 bg-white/5 rounded-2xl flex items-center px-4 gap-4"><Icon name="volume-2" size={16} className="text-white/30" /><input type="range" className="flex-grow" defaultValue={50} /></div></div>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Notifications */}
+                    <AnimatePresence>
+                        {showNotif && (
+                            <motion.div initial={{ opacity: 0, x: 50, filter: 'blur(20px)' }} animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, x: 50, filter: 'blur(20px)' }} className="fixed top-20 right-10 w-[320px] glass rounded-[32px] p-6 z-[100] shadow-2xl space-y-4">
+                                <div className="flex justify-between items-center"><h3 className="text-white font-bold">Notificações</h3><button className="text-[10px] text-white/40">Limpar</button></div>
+                                <div className="bg-white/5 p-4 rounded-2xl border border-white/5 space-y-1"><div className="flex justify-between items-center text-emerald-400"><div className="flex items-center gap-2"><Icon name="bell" size={12} /><span className="text-[10px] font-bold uppercase">Sistema</span></div><span className="text-[10px] opacity-40">Agora</span></div><p className="text-xs text-white/70">MintOS está pronto para uso.</p></div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Taskbar */}
+                    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-[900px] h-20 glass rounded-full flex items-center justify-between px-3 z-[150] shadow-2xl">
+                        <div className="flex items-center gap-3">
+                            <button onClick={e => { e.stopPropagation(); setIsStartOpen(!isStartOpen); }} className="w-14 h-14 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-all"><MintLogo size={32} /></button>
+                            <div className="h-10 w-px bg-white/10 mx-2"></div>
+                            <div className="flex gap-2">
+                                {windows.map(win => <button key={win.id} onClick={() => setWindows(windows.map(w => w.id === win.id ? {...w, isMinimized: false, zIndex: Math.max(...windows.map(x => x.zIndex)) + 1} : w))} className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${!win.isMinimized ? 'bg-white/20 shadow-inner' : 'bg-white/5'}`}><Icon name={win.icon} size={20} className="text-white/80" /></button>)}
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <button onClick={e => { e.stopPropagation(); setShowNotif(!showNotif); }} className="w-12 h-12 rounded-full flex items-center justify-center text-white/50 hover:bg-white/10"><Icon name="bell" size={20} /></button>
+                            <button onClick={e => { e.stopPropagation(); setIsPanelOpen(!isPanelOpen); }} className="flex items-center gap-6 bg-black/20 px-6 py-3 rounded-full text-white transition-all hover:bg-black/30">
+                                <div className="flex gap-3 opacity-50"><Icon name="wifi" size={16} /><Icon name="battery" size={16} className="rotate-90" /></div>
+                                <span className="text-sm font-bold">{time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
 </body>
 </html>
