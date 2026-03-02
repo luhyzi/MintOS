@@ -37,7 +37,6 @@
             z-index: 1; 
             transition: background-image 0.5s ease-in-out;
             background-position: center center;
-            /* MUDANÇA AQUI: Alterado para cover */
             background-size: cover;
             background-repeat: no-repeat;
         }
@@ -81,7 +80,7 @@
             width: 75%; 
             max-width: 800px; 
             height: 48px; 
-            z-index: 10; 
+            z-index: 20; 
             
             background: rgba(255, 255, 255, 0.25);
             backdrop-filter: blur(15px); 
@@ -95,6 +94,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 6px;
+            transition: background 0.3s, border 0.3s;
         }
 
         .taskbar-left {
@@ -138,10 +138,6 @@
             transform: translateY(-2px); 
         }
 
-        .app-icon .material-symbols-outlined {
-            font-size: 20px;
-        }
-
         .system-tray {
             background: rgba(0, 0, 0, 0.4);
             height: 36px; 
@@ -163,14 +159,249 @@
             font-size: 16px; 
         }
 
+        .battery-icon {
+            transform: rotate(90deg);
+            margin-top: 2px;
+        }
+
         #clock {
             font-weight: 600;
             font-size: 12px; 
             letter-spacing: 0.4px;
         }
+
+        /* =========================================
+           PAINEL DE CONTROLE FLUTUANTE
+           ========================================= */
+        .control-panel {
+            position: fixed;
+            right: max(12.5%, calc((100% - 800px) / 2)); 
+            bottom: 80px; 
+            width: 300px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 15;
+            
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .control-panel.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .quick-settings {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            justify-items: center;
+        }
+
+        .qs-btn {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%; 
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .qs-btn:active {
+            transform: scale(0.95);
+        }
+
+        .qs-btn.active {
+            background: #2fb58f; 
+            color: #051d38;
+        }
+
+        .slider-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 15px;
+            border-radius: 20px; 
+        }
+
+        .slider-row .material-symbols-outlined {
+            color: white;
+            font-size: 20px;
+        }
+
+        .slider-input {
+            flex-grow: 1;
+            -webkit-appearance: none;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%; 
+            background: white;
+            cursor: pointer;
+        }
+
+        /* =========================================
+           TELA DE BLOQUEIO (LOCK SCREEN)
+           ========================================= */
+        .lock-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 29, 56, 0.5); /* Fundo um pouco escuro */
+            backdrop-filter: blur(15px); /* Embaça o papel de parede atrás */
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 100; /* Fica acima de TUDO na tela */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Classe para esconder a tela de bloqueio quando desbloquear */
+        .lock-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Relógio e Data da tela de bloqueio */
+        .lock-time-container {
+            margin-top: 15vh; /* Distância do topo */
+            text-align: center;
+            color: white;
+        }
+
+        .lock-clock {
+            font-size: 80px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin: 0;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .lock-date {
+            font-size: 18px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: -10px;
+        }
+
+        /* Container da barra de deslizar */
+        .slide-to-unlock-container {
+            margin-top: auto;
+            margin-bottom: 80px; /* Distância do fundo */
+            width: 85%;
+            max-width: 350px;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 30px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        /* Texto piscando "Deslize para desbloquear" */
+        .slide-text {
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 16px;
+            position: absolute;
+            pointer-events: none; /* Para não atrapalhar o toque no botão */
+            animation: shimmer 2.5s infinite linear;
+        }
+
+        @keyframes shimmer {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+
+        /* Botão redondo que você arrasta */
+        .slide-thumb {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            left: 5px; /* Posição inicial */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: grab;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            /* A transição fica ativa apenas quando o usuário SOLTA o botão, para ele voltar suave */
+            transition: transform 0.3s ease; 
+        }
+
+        .slide-thumb:active {
+            cursor: grabbing;
+        }
+
+        .slide-thumb .material-symbols-outlined {
+            color: #051d38; /* Cor escura para a setinha do botão */
+            font-size: 24px;
+            margin-left: 2px;
+        }
+
+        /* =========================================
+           MODO ESCURO (DARK MODE)
+           ========================================= */
+        .dark-theme .taskbar {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .dark-theme .control-panel {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
     </style>
 </head>
 <body>
+
+    <div class="lock-screen" id="lockScreen">
+        
+        <div class="lock-time-container">
+            <h1 class="lock-clock" id="lockClockText">00:00</h1>
+            <p class="lock-date" id="lockDateText">Data carregando...</p>
+        </div>
+
+        <div class="slide-to-unlock-container" id="slideContainer">
+            <div class="slide-text" id="slideText">Deslize para desbloquear</div>
+            
+            <div class="slide-thumb" id="slideThumb">
+                <span class="material-symbols-outlined">arrow_forward_ios</span>
+            </div>
+        </div>
+
+    </div>
 
     <div class="wallpaper-container" id="desktop-wallpaper">
         <div id="rings-container">
@@ -188,8 +419,34 @@
 
     <input type="file" id="wallpaper-picker" accept="image/*" style="display: none;">
 
+    <div class="control-panel" id="controlPanel">
+        <div class="quick-settings">
+            <div class="qs-btn active" onclick="toggleBtn(this)" title="Wi-Fi">
+                <span class="material-symbols-outlined">wifi</span>
+            </div>
+            <div class="qs-btn active" onclick="toggleBtn(this)" title="Bluetooth">
+                <span class="material-symbols-outlined">bluetooth</span>
+            </div>
+            <div class="qs-btn" onclick="toggleBtn(this)" title="Modo Avião">
+                <span class="material-symbols-outlined">flight</span>
+            </div>
+            <div class="qs-btn" id="darkModeBtn" title="Modo Escuro">
+                <span class="material-symbols-outlined">dark_mode</span>
+            </div>
+        </div>
+
+        <div class="slider-row">
+            <span class="material-symbols-outlined">light_mode</span>
+            <input type="range" min="0" max="100" value="80" class="slider-input">
+        </div>
+
+        <div class="slider-row">
+            <span class="material-symbols-outlined">volume_up</span>
+            <input type="range" min="0" max="100" value="50" class="slider-input">
+        </div>
+    </div>
+
     <div class="taskbar">
-        
         <div class="taskbar-left">
             <div class="start-btn" title="Menu MintOS">
                 <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -203,23 +460,38 @@
             </div>
         </div>
 
-        <div class="system-tray" title="Painel de Controle">
+        <div class="system-tray" id="systemTrayBtn" title="Painel de Controle">
             <span class="material-symbols-outlined">wifi</span>
-            <span class="material-symbols-outlined">battery_5_bar</span>
+            <span class="material-symbols-outlined battery-icon">battery_5_bar</span>
             <span id="clock">00:00</span>
         </div>
     </div>
 
     <script>
+        // ================== RELÓGIO E DATA ==================
         function updateClock() {
             const now = new Date();
+            
+            // Hora formato HH:MM
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('clock').textContent = `${hours}:${minutes}`;
+            const timeString = `${hours}:${minutes}`;
+            
+            // Atualiza barra de tarefas e tela de bloqueio
+            document.getElementById('clock').textContent = timeString;
+            document.getElementById('lockClockText').textContent = timeString;
+
+            // Formata a data (Ex: Segunda-feira, 1 de Janeiro)
+            const options = { weekday: 'long', day: 'numeric', month: 'long' };
+            let dateString = now.toLocaleDateString('pt-BR', options);
+            // Deixa a primeira letra maiúscula
+            dateString = dateString.charAt(0).toUpperCase() + dateString.slice(1);
+            document.getElementById('lockDateText').textContent = dateString;
         }
         setInterval(updateClock, 1000);
         updateClock();
 
+        // ================== APLICATIVO DE WALLPAPER ==================
         const wallpaperApp = document.getElementById('wallpaper-app');
         const wallpaperPicker = document.getElementById('wallpaper-picker');
         const desktopWallpaper = document.getElementById('desktop-wallpaper');
@@ -231,15 +503,117 @@
 
         wallpaperPicker.addEventListener('change', (event) => {
             const file = event.target.files[0]; 
-            
             if (file) {
                 const imageUrl = URL.createObjectURL(file);
                 ringsContainer.style.display = 'none';
                 desktopWallpaper.style.backgroundImage = `url('${imageUrl}')`;
             }
         });
+
+        // ================== PAINEL DE CONTROLE ==================
+        const systemTrayBtn = document.getElementById('systemTrayBtn');
+        const controlPanel = document.getElementById('controlPanel');
+        const darkModeBtn = document.getElementById('darkModeBtn');
+
+        systemTrayBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            controlPanel.classList.toggle('show');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!controlPanel.contains(e.target) && e.target !== systemTrayBtn) {
+                controlPanel.classList.remove('show');
+            }
+        });
+
+        function toggleBtn(element) {
+            element.classList.toggle('active');
+        }
+
+        darkModeBtn.addEventListener('click', () => {
+            darkModeBtn.classList.toggle('active');
+            document.body.classList.toggle('dark-theme');
+        });
+
+        // ================== SLIDE TO UNLOCK ==================
+        const lockScreen = document.getElementById('lockScreen');
+        const slideContainer = document.getElementById('slideContainer');
+        const slideThumb = document.getElementById('slideThumb');
+        const slideText = document.getElementById('slideText');
+        
+        let isDragging = false;
+        let startX = 0;
+        let maxTranslate = 0;
+
+        // Função para calcular o limite máximo que o botão pode andar
+        function calculateMaxTranslate() {
+            // Largura do container menos a largura do botão menos as margens de segurança
+            maxTranslate = slideContainer.clientWidth - slideThumb.clientWidth - 10;
+        }
+
+        // Lógica para quando Tocar/Clicar no botão
+        function startDrag(clientX) {
+            isDragging = true;
+            startX = clientX;
+            calculateMaxTranslate();
+            slideThumb.style.transition = 'none'; // Tira animação para seguir o dedo perfeito
+            slideText.style.opacity = '0.1'; // Esconde o texto
+        }
+
+        // Lógica para Arrastar o botão
+        function drag(clientX) {
+            if (!isDragging) return;
+            let currentX = clientX;
+            let moveX = currentX - startX;
+
+            // Bloqueia para não ir pra esquerda do zero, nem passar do máximo
+            if (moveX < 0) moveX = 0;
+            if (moveX > maxTranslate) moveX = maxTranslate;
+
+            // Move o botão
+            slideThumb.style.transform = `translateX(${moveX}px)`;
+        }
+
+        // Lógica para Soltar o botão
+        function endDrag() {
+            if (!isDragging) return;
+            isDragging = false;
+            
+            // Devolve a animação suave
+            slideThumb.style.transition = 'transform 0.3s ease';
+            slideText.style.opacity = '1';
+
+            // Verifica se o usuário arrastou mais de 80% da barra
+            // Pegando o valor atual de transform do CSS
+            let matrix = new WebKitCSSMatrix(window.getComputedStyle(slideThumb).transform);
+            let currentTranslateX = matrix.m41;
+
+            if (currentTranslateX > maxTranslate * 0.8) {
+                // Desbloqueado com sucesso!
+                slideThumb.style.transform = `translateX(${maxTranslate}px)`; // Fixa no final
+                
+                // Aguarda um pouquinho e esconde a tela inteira
+                setTimeout(() => {
+                    lockScreen.classList.add('hidden');
+                }, 200);
+
+            } else {
+                // Não chegou no fim, volta pro começo
+                slideThumb.style.transform = `translateX(0px)`;
+            }
+        }
+
+        // Eventos para TOUCH (Celular)
+        slideThumb.addEventListener('touchstart', (e) => startDrag(e.touches[0].clientX));
+        document.addEventListener('touchmove', (e) => drag(e.touches[0].clientX));
+        document.addEventListener('touchend', endDrag);
+
+        // Eventos para MOUSE (Computador)
+        slideThumb.addEventListener('mousedown', (e) => startDrag(e.clientX));
+        document.addEventListener('mousemove', (e) => drag(e.clientX));
+        document.addEventListener('mouseup', endDrag);
+
     </script>
 
 </body>
 </html>
-
