@@ -3,345 +3,505 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MintOS v1.2 - Desktop Experience</title>
+    <title>MintOS</title>
     
-    <!-- Fontes e Estilos -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Bibliotecas Core -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-
     <style>
-        body {
+        /* =========================================
+           RESET E FUNDO GERAL
+           ========================================= */
+        body, html {
             margin: 0; padding: 0;
-            overflow: hidden;
+            height: 100%; width: 100%;
+            overflow: hidden; 
+            background-color: #051d38; 
             font-family: 'Poppins', sans-serif;
-            background-color: #020617;
+            touch-action: none; 
+            -webkit-user-select: none; 
             user-select: none;
-            -webkit-user-select: none;
-            transition: background-color 0.7s ease;
         }
 
-        /* Otimização para Modo Computador no Mobile */
-        @media (max-width: 768px) {
-            .desktop-scale {
-                transform: scale(0.65);
-                transform-origin: top left;
-                width: 153.8%;
-                height: 153.8%;
-            }
+        /* =========================================
+           WALLPAPER E ÁREA DE TRABALHO
+           ========================================= */
+        .wallpaper-container {
+            display: flex; justify-content: center; align-items: center;
+            width: 100%; height: 100%; position: fixed; top: 0; left: 0; z-index: 1; 
+            transition: background-image 0.5s ease-in-out;
+            background-position: center center; background-size: cover; background-repeat: no-repeat;
         }
 
-        .dark-theme { background-color: #020617; }
-        .light-theme { background-color: #f1f5f9; }
-
-        .glass {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(30px) saturate(150%);
-            -webkit-backdrop-filter: blur(30px) saturate(150%);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        #rings-container {
+            display: flex; justify-content: center; align-items: center;
+            width: 100%; height: 100%;
         }
 
-        .dark-theme .glass {
-            background: rgba(15, 23, 42, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        .ring { border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
+        .outer-ring-4 { width: 250vh; height: 250vh; background-color: #0b2040; box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.7); }
+        .outer-ring-3 { width: 180vh; height: 180vh; background-color: #0d3870; box-shadow: inset 0 0 45px rgba(0, 0, 0, 0.6); }
+        .outer-ring-2 { width: 120vh; height: 120vh; background-color: #1255a0; box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.5); }
+        .outer-ring-1 { width: 70vh; height: 70vh; background-color: #1e88e5; box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.4); }
+        .inner-circle { width: 30vh; height: 30vh; background-image: radial-gradient(circle at center, #7bb9f2 0%, #1e88e5 100%); border-radius: 50%; box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.3); }
 
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        /* =========================================
+           ÍCONES DA ÁREA DE TRABALHO
+           ========================================= */
+        .desktop-area {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            padding: 20px; display: flex; flex-direction: column; 
+            align-content: flex-start; flex-wrap: wrap; gap: 15px; z-index: 10;
+            /* BUG CORRIGIDO: Inicia invisível para não aparecer na tela de bloqueio */
+            opacity: 0; pointer-events: none; transition: opacity 0.8s ease; 
+        }
         
-        input[type="range"] {
-            -webkit-appearance: none;
-            background: rgba(255, 255, 255, 0.1);
-            height: 4px;
-            border-radius: 2px;
+        .desktop-area.show { opacity: 1; pointer-events: none; /* Apenas os ícones recebem clique */ }
+
+        .desktop-icon {
+            width: 75px; display: flex; flex-direction: column; align-items: center; gap: 5px;
+            padding: 10px 5px; border-radius: 8px; cursor: pointer; pointer-events: all; transition: background 0.2s, transform 0.1s;
         }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 12px; height: 12px;
-            background: white;
-            border-radius: 50%;
-            cursor: pointer;
+
+        .desktop-icon:hover { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .desktop-icon:active { transform: scale(0.95); background: rgba(255, 255, 255, 0.25); }
+        .desktop-icon .material-symbols-outlined { font-size: 38px; color: white; text-shadow: 0 2px 5px rgba(0,0,0,0.6); }
+        .icon-label { color: white; font-size: 12px; text-align: center; text-shadow: 0 1px 4px rgba(0,0,0,0.9); font-weight: 400; line-height: 1.2; }
+
+        /* =========================================
+           MENU CLIQUE DIREITO
+           ========================================= */
+        .context-menu {
+            position: absolute; display: none; width: 220px;
+            background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            padding: 6px; z-index: 1000; flex-direction: column; gap: 2px; color: white; font-size: 14px;
         }
+        .context-menu-item { padding: 10px 12px; border-radius: 8px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.2s; }
+        .context-menu-item:hover { background: rgba(255, 255, 255, 0.2); }
+        .context-menu-item .material-symbols-outlined { font-size: 18px; }
+        .context-menu-divider { height: 1px; background: rgba(255, 255, 255, 0.2); margin: 4px 0; }
+
+        /* =========================================
+           MENU INICIAR (NOVO)
+           ========================================= */
+        .start-menu {
+            position: fixed; 
+            /* Alinhado com a borda esquerda da barra de tarefas */
+            left: max(12.5%, calc((100% - 800px) / 2)); 
+            bottom: 80px; width: 320px;
+            background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            padding: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 15;
+            opacity: 0; transform: translateY(20px); pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease, background 0.3s;
+        }
+
+        .start-menu.show { opacity: 1; transform: translateY(0); pointer-events: all; }
+
+        .sm-header { display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 15px; }
+        .sm-user-icon { width: 46px; height: 46px; border-radius: 50%; background: #2fb58f; display: flex; justify-content: center; align-items: center; font-size: 24px; color: #051d38; font-weight: 600; }
+        
+        .sm-apps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; justify-items: center; }
+        .sm-app { display: flex; flex-direction: column; align-items: center; gap: 5px; color: white; cursor: pointer; transition: transform 0.2s; }
+        .sm-app:hover { transform: scale(1.05); }
+        .sm-app .icon-box { width: 50px; height: 50px; border-radius: 16px; background: rgba(255, 255, 255, 0.1); display: flex; justify-content: center; align-items: center; border: 1px solid rgba(255,255,255,0.1); }
+        .sm-app span { font-size: 11px; font-weight: 500; }
+
+        .sm-footer { display: flex; justify-content: flex-end; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 15px; }
+        .sm-power { width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 95, 86, 0.8); display: flex; justify-content: center; align-items: center; color: white; cursor: pointer; transition: background 0.2s, transform 0.2s; }
+        .sm-power:hover { background: rgba(255, 95, 86, 1); transform: scale(1.1); }
+
+        /* =========================================
+           SISTEMA DE JANELAS
+           ========================================= */
+        .window {
+            position: absolute; top: 20%; left: 5%; width: 90%; max-width: 350px;
+            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            display: flex; flex-direction: column; z-index: 50;
+            opacity: 0; transform: scale(0.95); pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        .window.active { opacity: 1; transform: scale(1); pointer-events: all; }
+        .window-header { height: 40px; background: rgba(0, 0, 0, 0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; padding: 0 15px; cursor: grab; border-radius: 16px 16px 0 0; }
+        .window-header:active { cursor: grabbing; }
+        .window-controls { display: flex; gap: 8px; margin-right: 15px; }
+        .win-btn { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; transition: opacity 0.2s; }
+        .win-btn:hover { opacity: 0.7; }
+        .win-close { background-color: #ff5f56; } .win-min { background-color: #ffbd2e; } .win-max { background-color: #27c93f; }
+        .window-title { color: white; font-size: 13px; font-weight: 500; flex-grow: 1; text-align: center; padding-right: 50px; }
+        .window-content { padding: 20px; color: white; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .mint-button { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); color: white; padding: 10px 20px; border-radius: 20px; font-family: 'Poppins', sans-serif; font-size: 14px; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 8px; }
+        .mint-button:hover { background: rgba(255, 255, 255, 0.3); }
+
+        /* =========================================
+           BARRA DE TAREFAS 
+           ========================================= */
+        .taskbar {
+            position: fixed; bottom: 20px; left: 50%; width: 75%; max-width: 800px; height: 48px; z-index: 20; 
+            background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 6px;
+            transform: translate(-50%, 0); opacity: 1; transition: background 0.3s, border 0.3s, transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
+        }
+        .taskbar.taskbar-hidden { transform: translate(-50%, 150px); opacity: 0; pointer-events: none; }
+        .taskbar-left { display: flex; align-items: center; gap: 12px; }
+        .start-btn { width: 36px; height: 36px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-left: 4px; cursor: pointer; transition: transform 0.2s, background 0.2s; }
+        .start-btn:hover { transform: scale(1.05); background: rgba(255, 255, 255, 0.35); }
+        .system-tray { background: rgba(0, 0, 0, 0.4); height: 36px; border-radius: 18px; display: flex; align-items: center; padding: 0 12px; gap: 10px; color: white; cursor: pointer; transition: background 0.2s; }
+        .system-tray:hover { background: rgba(0, 0, 0, 0.6); }
+        .system-tray .material-symbols-outlined { font-size: 16px; }
+        .battery-icon { transform: rotate(90deg); margin-top: 2px; }
+        #clock { font-weight: 600; font-size: 13px; letter-spacing: 0.5px; margin-top: 1px; }
+
+        /* =========================================
+           PAINEL DE CONTROLE FLUTUANTE
+           ========================================= */
+        .control-panel {
+            position: fixed; right: max(12.5%, calc((100% - 800px) / 2)); bottom: 80px; width: 300px;
+            background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 20px; display: flex; flex-direction: column; gap: 20px; z-index: 15;
+            opacity: 0; transform: translateY(20px); pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease, background 0.3s;
+        }
+        .control-panel.show { opacity: 1; transform: translateY(0); pointer-events: all; }
+        .quick-settings { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; justify-items: center; }
+        .qs-btn { width: 46px; height: 46px; border-radius: 50%; background: rgba(0, 0, 0, 0.3); color: white; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: background 0.2s, transform 0.1s; }
+        .qs-btn:active { transform: scale(0.95); }
+        .qs-btn.active { background: #2fb58f; color: #051d38; }
+        .slider-row { display: flex; align-items: center; gap: 15px; background: rgba(0, 0, 0, 0.2); padding: 10px 15px; border-radius: 20px; }
+        .slider-row .material-symbols-outlined { color: white; font-size: 20px; }
+        .slider-input { flex-grow: 1; -webkit-appearance: none; height: 6px; background: rgba(255, 255, 255, 0.3); border-radius: 3px; outline: none; }
+        .slider-input::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: white; cursor: pointer; }
+
+        /* =========================================
+           TELA DE BLOQUEIO
+           ========================================= */
+        .lock-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 25%, rgba(0,0,0,0) 75%, rgba(0,0,0,0.6) 100%); 
+            /* BUG CORRIGIDO: Adicionado blur pesado para esconder os ícones perfeitos por baixo */
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 100; display: flex; flex-direction: column; align-items: center; transition: opacity 0.5s ease;
+        }
+        .lock-screen.hidden { opacity: 0; pointer-events: none; }
+        .lock-time-container { margin-top: 12vh; text-align: center; color: white; }
+        .lock-clock { font-size: 85px; font-weight: 300; letter-spacing: 1px; margin: 0; text-shadow: 0 4px 15px rgba(0,0,0,0.4); line-height: 1; }
+        .lock-date { font-size: 18px; font-weight: 400; color: rgba(255, 255, 255, 0.95); margin-top: 5px; text-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+        .slide-to-unlock-container {
+            margin-top: auto; margin-bottom: 80px; width: 85%; max-width: 350px; height: 60px;
+            background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-radius: 30px; position: relative; display: flex; align-items: center; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 10px 25px rgba(0,0,0,0.2); overflow: hidden;
+        }
+        .slide-text { width: 100%; text-align: center; color: rgba(255, 255, 255, 0.7); font-size: 15px; font-weight: 400; position: absolute; pointer-events: none; animation: shimmer 2.5s infinite linear; }
+        @keyframes shimmer { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+        .slide-thumb { width: 50px; height: 50px; background: white; border-radius: 50%; position: absolute; left: 5px; display: flex; justify-content: center; align-items: center; cursor: grab; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); transition: transform 0.3s ease; }
+        .slide-thumb:active { cursor: grabbing; }
+        .slide-thumb .material-symbols-outlined { color: #051d38; font-size: 24px; margin-left: 2px; }
+
+        /* =========================================
+           MODO ESCURO 
+           ========================================= */
+        .dark-theme .taskbar { background: rgba(35, 45, 60, 0.65); border: 1px solid rgba(255, 255, 255, 0.15); }
+        .dark-theme .system-tray { background: rgba(20, 25, 35, 0.5); }
+        .dark-theme .control-panel { background: rgba(35, 45, 60, 0.75); border: 1px solid rgba(255, 255, 255, 0.15); }
+        .dark-theme .start-menu { background: rgba(35, 45, 60, 0.75); border: 1px solid rgba(255, 255, 255, 0.15); }
+        .dark-theme .window { background: rgba(35, 45, 60, 0.65); border: 1px solid rgba(255, 255, 255, 0.15); }
+        .dark-theme .context-menu { background: rgba(35, 45, 60, 0.75); border: 1px solid rgba(255, 255, 255, 0.15); }
     </style>
 </head>
 <body>
-    <div id="root"></div>
 
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
-        const { motion, AnimatePresence } = window.Motion;
+    <div class="lock-screen" id="lockScreen">
+        <div class="lock-time-container">
+            <h1 class="lock-clock" id="lockClockText">00:00</h1>
+            <p class="lock-date" id="lockDateText">Data carregando...</p>
+        </div>
+        <div class="slide-to-unlock-container" id="slideContainer">
+            <div class="slide-text" id="slideText">Deslize para desbloquear</div>
+            <div class="slide-thumb" id="slideThumb">
+                <span class="material-symbols-outlined">arrow_forward_ios</span>
+            </div>
+        </div>
+    </div>
 
-        // --- Componente de Ícone ---
-        const Icon = ({ name, size = 24, className = "" }) => {
-            const iconRef = useRef(null);
-            useEffect(() => {
-                if (iconRef.current) {
-                    const icon = lucide.icons[name.toLowerCase().replace(/ /g, '-')];
-                    if (icon) {
-                        lucide.createIcons({
-                            icons: { [name]: icon },
-                            attrs: { strokeWidth: 2, width: size, height: size }
-                        });
-                    }
+    <div class="wallpaper-container" id="desktop-wallpaper">
+        <div id="rings-container">
+            <div class="ring outer-ring-4"><div class="ring outer-ring-3"><div class="ring outer-ring-2"><div class="ring outer-ring-1"><div class="inner-circle"></div></div></div></div></div>
+        </div>
+
+        <div class="desktop-area" id="desktopArea">
+            <div class="desktop-icon" onclick="alert('Em breve: Gerenciador de Arquivos do MintOS!')" oncontextmenu="event.stopPropagation();">
+                <span class="material-symbols-outlined" style="color: #ffbd2e;">folder</span>
+                <span class="icon-label">Arquivos</span>
+            </div>
+            <div class="desktop-icon" onclick="alert('Em breve: Mint Paint!')" oncontextmenu="event.stopPropagation();">
+                <span class="material-symbols-outlined" style="color: #ff5f56;">palette</span>
+                <span class="icon-label">Paint</span>
+            </div>
+            <div class="desktop-icon" onclick="alert('Em breve: Calculadora do MintOS!')" oncontextmenu="event.stopPropagation();">
+                <span class="material-symbols-outlined" style="color: #27c93f;">calculate</span>
+                <span class="icon-label">Calculadora</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-item" onclick="alert('Função de criar pasta em breve!')">
+            <span class="material-symbols-outlined">create_new_folder</span>
+            Nova Pasta
+        </div>
+        <div class="context-menu-item" onclick="alert('Função de criar documento em breve!')">
+            <span class="material-symbols-outlined">description</span>
+            Novo Documento
+        </div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item" onclick="location.reload()">
+            <span class="material-symbols-outlined">refresh</span>
+            Atualizar
+        </div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item" onclick="openWindow('personalizationWindow')">
+            <span class="material-symbols-outlined">palette</span>
+            Personalizar
+        </div>
+        <div class="context-menu-item" onclick="alert('Configurações do sistema já estão no Menu Iniciar!')">
+            <span class="material-symbols-outlined">settings</span>
+            Configurações
+        </div>
+    </div>
+
+    <div class="window" id="personalizationWindow">
+        <div class="window-header" id="personalizationHeader">
+            <div class="window-controls">
+                <div class="win-btn win-close" onclick="closeWindow('personalizationWindow')"></div>
+                <div class="win-btn win-min"></div>
+                <div class="win-btn win-max"></div>
+            </div>
+            <span class="window-title">Aparência</span>
+        </div>
+        <div class="window-content">
+            <span class="material-symbols-outlined" style="font-size: 40px; color: #2fb58f;">wallpaper</span>
+            <p style="margin: 0; text-align: center; font-size: 14px;">Personalize a sua área de trabalho do MintOS.</p>
+            <button class="mint-button" onclick="document.getElementById('wallpaper-picker').click()">
+                <span class="material-symbols-outlined" style="font-size: 18px;">image</span>
+                Procurar Imagem
+            </button>
+        </div>
+    </div>
+
+    <input type="file" id="wallpaper-picker" accept="image/*" style="display: none;">
+
+    <div class="start-menu" id="startMenu">
+        <div class="sm-header">
+            <div class="sm-user-icon">L</div>
+            <div>
+                <h3 style="margin: 0; font-size: 16px; color: white;">Luiz</h3>
+                <p style="margin: 0; font-size: 12px; color: rgba(255,255,255,0.6);">Administrador MintOS</p>
+            </div>
+        </div>
+        
+        <p style="color: white; font-size: 12px; margin: 0; opacity: 0.7; font-weight: 500;">Fixados</p>
+        <div class="sm-apps">
+            <div class="sm-app" onclick="alert('Configurações do sistema em breve!')">
+                <div class="icon-box"><span class="material-symbols-outlined" style="color: #a0aec0; font-size: 28px;">settings</span></div>
+                <span>Configurações</span>
+            </div>
+            <div class="sm-app" onclick="openWindow('personalizationWindow')">
+                <div class="icon-box"><span class="material-symbols-outlined" style="color: #2fb58f; font-size: 28px;">palette</span></div>
+                <span>Aparência</span>
+            </div>
+            <div class="sm-app" onclick="alert('Mint Store em breve!')">
+                <div class="icon-box"><span class="material-symbols-outlined" style="color: #ffbd2e; font-size: 28px;">shopping_bag</span></div>
+                <span>Loja</span>
+            </div>
+        </div>
+        
+        <div class="sm-footer">
+            <div class="sm-power" onclick="window.location.reload()" title="Reiniciar/Desligar">
+                <span class="material-symbols-outlined">power_settings_new</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="control-panel" id="controlPanel">
+        <div class="quick-settings">
+            <div class="qs-btn active" onclick="toggleBtn(this)" title="Wi-Fi"><span class="material-symbols-outlined">wifi</span></div>
+            <div class="qs-btn active" onclick="toggleBtn(this)" title="Bluetooth"><span class="material-symbols-outlined">bluetooth</span></div>
+            <div class="qs-btn" onclick="toggleBtn(this)" title="Modo Avião"><span class="material-symbols-outlined">flight</span></div>
+            <div class="qs-btn" id="darkModeBtn" title="Modo Escuro"><span class="material-symbols-outlined">dark_mode</span></div>
+        </div>
+        <div class="slider-row"><span class="material-symbols-outlined">light_mode</span><input type="range" min="0" max="100" value="80" class="slider-input"></div>
+        <div class="slider-row"><span class="material-symbols-outlined">volume_up</span><input type="range" min="0" max="100" value="50" class="slider-input"></div>
+    </div>
+
+    <div class="taskbar taskbar-hidden" id="taskbar">
+        <div class="taskbar-left">
+            <div class="start-btn" id="startBtn" title="Menu MintOS">
+                <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M 75 22 A 40 40 0 1 0 75 78" stroke="white" stroke-width="12" stroke-linecap="round"/>
+                    <rect x="25" y="44" width="38" height="12" rx="6" fill="white"/>
+                </svg>
+            </div>
+        </div>
+        <div class="system-tray" id="systemTrayBtn" title="Painel de Controle">
+            <span class="material-symbols-outlined">wifi</span>
+            <span class="material-symbols-outlined battery-icon">battery_5_bar</span>
+            <span id="clock">00:00</span>
+        </div>
+    </div>
+
+    <script>
+        // ================== RELÓGIO ==================
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}`;
+            document.getElementById('lockClockText').textContent = `${hours}:${minutes}`;
+            let dateString = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+            document.getElementById('lockDateText').textContent = dateString.charAt(0).toUpperCase() + dateString.slice(1);
+        }
+        setInterval(updateClock, 1000); updateClock();
+
+        // ================== MENU CLIQUE DIREITO ==================
+        const contextMenu = document.getElementById('contextMenu');
+        const desktopArea = document.getElementById('desktop-wallpaper');
+
+        desktopArea.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            let x = e.clientX;
+            let y = e.clientY;
+
+            if (x + 220 > window.innerWidth) { x = window.innerWidth - 220; }
+            if (y + 250 > window.innerHeight) { y = window.innerHeight - 250; }
+
+            contextMenu.style.left = `${x}px`;
+            contextMenu.style.top = `${y}px`;
+            contextMenu.style.display = 'flex';
+        });
+
+        document.addEventListener('click', (e) => {
+            if (e.button !== 2) { 
+                contextMenu.style.display = 'none';
+            }
+        });
+
+        // ================== GERENCIADOR DE JANELAS ==================
+        function openWindow(id) {
+            document.getElementById(id).classList.add('active');
+            contextMenu.style.display = 'none'; 
+            startMenu.classList.remove('show');
+        }
+
+        function closeWindow(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function makeDraggable(windowElement, headerElement) {
+            let isDragging = false, currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
+            function dragStart(e) {
+                if (e.type === "touchstart") { initialX = e.touches[0].clientX - xOffset; initialY = e.touches[0].clientY - yOffset; } 
+                else { initialX = e.clientX - xOffset; initialY = e.clientY - yOffset; }
+                if (e.target.closest('.window-controls')) return;
+                isDragging = true;
+            }
+            function dragEnd(e) { initialX = currentX; initialY = currentY; isDragging = false; }
+            function drag(e) {
+                if (isDragging) {
+                    e.preventDefault();
+                    if (e.type === "touchmove") { currentX = e.touches[0].clientX - initialX; currentY = e.touches[0].clientY - initialY; } 
+                    else { currentX = e.clientX - initialX; currentY = e.clientY - initialY; }
+                    xOffset = currentX; yOffset = currentY;
+                    windowElement.style.transform = `translate(${currentX}px, ${currentY}px) scale(1)`;
                 }
-            }, [name, size]);
-            return <i ref={iconRef} data-lucide={name} className={className}></i>;
-        };
+            }
+            headerElement.addEventListener("mousedown", dragStart, false); document.addEventListener("mouseup", dragEnd, false); document.addEventListener("mousemove", drag, false);
+            headerElement.addEventListener("touchstart", dragStart, {passive: false}); document.addEventListener("touchend", dragEnd, false); document.addEventListener("touchmove", drag, {passive: false});
+        }
+        makeDraggable(document.getElementById('personalizationWindow'), document.getElementById('personalizationHeader'));
 
-        // --- Logo MintOS ---
-        const MintLogo = ({ size = 100, className = "" }) => (
-            <svg width={size} height={size} viewBox="0 0 100 100" className={className}>
-                <path d="M 75 22 A 40 40 0 1 0 75 78" stroke="white" strokeWidth="12" strokeLinecap="round" fill="none" />
-                <rect x="25" y="44" width="45" height="12" rx="6" fill="white" />
-            </svg>
-        );
+        // ================== APLICATIVO DE WALLPAPER ==================
+        const wallpaperPicker = document.getElementById('wallpaper-picker');
+        const desktopWallpaper = document.getElementById('desktop-wallpaper');
+        const ringsContainer = document.getElementById('rings-container');
 
-        // --- Aplicativos ---
-        const CalculatorApp = () => {
-            const [display, setDisplay] = useState('0');
-            const [equation, setEquation] = useState('');
-            const handleNumber = (n) => setDisplay(p => p === '0' ? n : p + n);
-            const calculate = () => { try { setDisplay(String(eval(equation + display))); setEquation(''); } catch { setDisplay('Erro'); } };
-            return (
-                <div className="h-full p-6 flex flex-col gap-4 bg-black/20">
-                    <div className="bg-black/40 p-6 rounded-3xl text-right">
-                        <p className="text-white/30 text-sm h-6">{equation}</p>
-                        <p className="text-white text-4xl font-light truncate">{display}</p>
-                    </div>
-                    <div className="grid grid-cols-4 gap-2 flex-grow">
-                        {['7','8','9','/','4','5','6','*','1','2','3','-','C','0','=','+'].map(b => (
-                            <button key={b} onClick={() => b === 'C' ? setDisplay('0') : b === '=' ? calculate() : isNaN(b) ? (setEquation(display + b), setDisplay('0')) : handleNumber(b)} className="bg-white/10 hover:bg-white/20 rounded-2xl text-white text-xl transition-all">{b}</button>
-                        ))}
-                    </div>
-                </div>
-            );
-        };
+        wallpaperPicker.addEventListener('change', (event) => {
+            const file = event.target.files[0]; 
+            if (file) {
+                const imageUrl = URL.createObjectURL(file);
+                ringsContainer.style.display = 'none';
+                desktopWallpaper.style.backgroundImage = `url('${imageUrl}')`;
+            }
+        });
 
-        const MusicApp = () => (
-            <div className="h-full bg-gradient-to-b from-pink-500/20 to-purple-900/40 p-8 flex flex-col items-center justify-center gap-8">
-                <div className="w-48 h-48 rounded-[40px] bg-white/10 shadow-2xl flex items-center justify-center border border-white/20"><Icon name="music" size={80} className="text-white/20" /></div>
-                <div className="text-center text-white"><h3 className="text-2xl font-bold">Mint Melodies</h3><p className="opacity-50">Artista Desconhecido</p></div>
-                <div className="flex items-center gap-8 text-white">
-                    <Icon name="skip-back" size={24} /><div className="w-16 h-16 rounded-full bg-white text-purple-900 flex items-center justify-center shadow-xl"><Icon name="play" size={32} /></div><Icon name="skip-forward" size={24} />
-                </div>
-            </div>
-        );
+        // ================== MENU INICIAR & PAINEL DE CONTROLE ==================
+        const systemTrayBtn = document.getElementById('systemTrayBtn');
+        const controlPanel = document.getElementById('controlPanel');
+        const darkModeBtn = document.getElementById('darkModeBtn');
+        const startBtn = document.getElementById('startBtn');
+        const startMenu = document.getElementById('startMenu');
 
-        const GalleryApp = () => (
-            <div className="p-6 grid grid-cols-2 gap-4 bg-black/20 h-full overflow-auto">
-                {[1,2,3,4,5,6].map(i => <div key={i} className="aspect-square rounded-3xl overflow-hidden border border-white/10 shadow-lg"><img src={`https://picsum.photos/seed/mint${i}/400/400`} className="w-full h-full object-cover" /></div>)}
-            </div>
-        );
+        systemTrayBtn.addEventListener('click', (e) => { 
+            e.stopPropagation(); 
+            controlPanel.classList.toggle('show'); 
+            startMenu.classList.remove('show');
+        });
 
-        const FilesApp = () => (
-            <div className="flex h-full text-white bg-black/20">
-                <div className="w-32 border-r border-white/10 p-4 space-y-4"><p className="text-[10px] font-bold opacity-30 uppercase tracking-widest">Favoritos</p><div className="space-y-2 text-xs opacity-60"><div className="flex items-center gap-2 text-emerald-400 opacity-100"><Icon name="home" size={14} /> Início</div><div className="flex items-center gap-2"><Icon name="folder" size={14} /> Downloads</div></div></div>
-                <div className="flex-grow p-8 grid grid-cols-3 gap-8">
-                    {['Documentos', 'Imagens', 'Música'].map(f => (
-                        <div key={f} className="flex flex-col items-center gap-2 group cursor-pointer">
-                            <div className="w-20 h-20 bg-blue-500/20 rounded-3xl flex items-center justify-center text-blue-400 group-hover:bg-blue-500/30 transition-all"><Icon name="folder" size={40} /></div>
-                            <span className="text-xs font-medium opacity-80">{f}</span>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        );
+        startBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            startMenu.classList.toggle('show');
+            controlPanel.classList.remove('show');
+        });
 
-        const SettingsApp = ({ isDarkMode, setIsDarkMode, setWallpaper }) => (
-            <div className="flex h-full text-white bg-black/20">
-                <div className="w-40 border-r border-white/10 p-4 space-y-2">
-                    {['Geral', 'Aparência', 'Sobre'].map(t => <button key={t} className={`w-full text-left p-2 rounded-xl text-sm ${t === 'Aparência' ? 'bg-white/10' : 'opacity-40'}`}>{t}</button>)}
-                </div>
-                <div className="flex-grow p-8 space-y-8 overflow-auto">
-                    <h3 className="text-xl font-bold">Personalização</h3>
-                    <div className="space-y-4">
-                        <div className="p-4 bg-white/5 rounded-3xl border border-white/5 flex justify-between items-center">
-                            <span>Modo Escuro</span>
-                            <button onClick={() => setIsDarkMode(!isDarkMode)} className={`w-12 h-6 rounded-full relative transition-all ${isDarkMode ? 'bg-emerald-500' : 'bg-white/10'}`}><div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all ${isDarkMode ? 'right-1' : 'left-1'}`} /></button>
-                        </div>
-                        <div className="p-4 bg-white/5 rounded-3xl border border-white/5 space-y-4">
-                            <p>Wallpaper</p>
-                            <button onClick={() => document.getElementById('wall-in').click()} className="w-full py-3 bg-white/10 rounded-2xl text-sm">Escolher Imagem...</button>
-                            <input id="wall-in" type="file" className="hidden" onChange={e => { const f = e.target.files[0]; if(f) setWallpaper(URL.createObjectURL(f)); }} />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
+        document.addEventListener('click', (e) => { 
+            if (!controlPanel.contains(e.target) && e.target !== systemTrayBtn) {
+                controlPanel.classList.remove('show'); 
+            }
+            if (!startMenu.contains(e.target) && e.target !== startBtn) {
+                startMenu.classList.remove('show');
+            }
+        });
 
-        // --- Window System ---
-        const Window = ({ windowData, onClose, onMinimize, onFocus, children }) => {
-            const [pos, setPos] = useState({ x: windowData.x, y: windowData.y });
-            const [isDragging, setIsDragging] = useState(false);
-            const dragStart = useRef({ x: 0, y: 0 });
+        function toggleBtn(element) { element.classList.toggle('active'); }
+        darkModeBtn.addEventListener('click', () => { darkModeBtn.classList.toggle('active'); document.body.classList.toggle('dark-theme'); });
 
-            useEffect(() => {
-                const move = (e) => { 
-                    if(isDragging) {
-                        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-                        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-                        setPos({ x: clientX - dragStart.current.x, y: clientY - dragStart.current.y }); 
-                    }
-                };
-                const up = () => setIsDragging(false);
-                if(isDragging) { 
-                    document.addEventListener('mousemove', move); 
-                    document.addEventListener('mouseup', up);
-                    document.addEventListener('touchmove', move);
-                    document.addEventListener('touchend', up);
-                }
-                return () => { 
-                    document.removeEventListener('mousemove', move); 
-                    document.removeEventListener('mouseup', up);
-                    document.removeEventListener('touchmove', move);
-                    document.removeEventListener('touchend', up);
-                };
-            }, [isDragging]);
-
-            if (windowData.isMinimized) return null;
-
-            return (
-                <motion.div initial={{ opacity: 0, scale: 0.9, filter: 'blur(20px)' }} animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }} style={{ left: pos.x, top: pos.y, zIndex: windowData.zIndex }} className="absolute w-[500px] h-[600px] glass rounded-[40px] shadow-2xl flex flex-col overflow-hidden pointer-events-auto" onMouseDown={onFocus}>
-                    <div className="h-14 bg-black/10 flex items-center justify-between px-6">
-                        <div 
-                            className="flex items-center gap-3 cursor-grab active:cursor-grabbing py-2 pr-10"
-                            onMouseDown={e => { setIsDragging(true); dragStart.current = { x: e.clientX - pos.x, y: e.clientY - pos.y }; }}
-                            onTouchStart={e => { setIsDragging(true); dragStart.current = { x: e.touches[0].clientX - pos.x, y: e.touches[0].clientY - pos.y }; }}
-                        >
-                            <div className="text-white/70 pointer-events-none"><Icon name={windowData.icon} size={16} /></div>
-                            <span className="text-white text-sm font-medium select-none pointer-events-none">{windowData.title}</span>
-                        </div>
-                        <div className="flex gap-3">
-                            <button onClick={onMinimize} className="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center text-white/50"><Icon name="minus" size={14} /></button>
-                            <button onClick={onClose} className="w-8 h-8 rounded-full hover:bg-red-500/50 flex items-center justify-center text-white/50 hover:text-white"><Icon name="x" size={14} /></button>
-                        </div>
-                    </div>
-                    <div className="flex-grow overflow-hidden">{children}</div>
-                </motion.div>
-            );
-        };
-
-        // --- App Principal ---
-        const App = () => {
-            const [booting, setBooting] = useState(true);
-            const [bootProgress, setBootProgress] = useState(0);
-            const [isLocked, setIsLocked] = useState(false);
-            const [isStartOpen, setIsStartOpen] = useState(false);
-            const [isPanelOpen, setIsPanelOpen] = useState(false);
-            const [isDarkMode, setIsDarkMode] = useState(true);
-            const [windows, setWindows] = useState([]);
-            const [time, setTime] = useState(new Date());
-            const [wallpaper, setWallpaper] = useState(null);
-            const [contextMenu, setContextMenu] = useState(null);
-
-            useEffect(() => {
-                const boot = setInterval(() => setBootProgress(p => { 
-                    if(p >= 100) { clearInterval(boot); setTimeout(() => { setBooting(false); setIsLocked(true); }, 500); return 100; } 
-                    return p + 2; 
-                }), 40);
-                setInterval(() => setTime(new Date()), 1000);
-            }, []);
-
-            const openApp = (type, title, icon) => {
-                const existing = windows.find(w => w.type === type);
-                if (existing) {
-                    setWindows(prev => prev.map(w => w.id === existing.id ? { ...w, isMinimized: false, zIndex: Math.max(...prev.map(x => x.zIndex)) + 1 } : w));
-                } else {
-                    setWindows([...windows, { id: Date.now(), type, title, icon, isMinimized: false, zIndex: windows.length + 10, x: 100 + windows.length * 30, y: 100 + windows.length * 30 }]);
-                }
-                setIsStartOpen(false);
-            };
-
-            if (booting) return (
-                <div className="h-screen w-screen bg-[#020617] flex flex-col items-center justify-center gap-12">
-                    <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1 }}><MintLogo size={120} /></motion.div>
-                    <div className="w-48 h-1 bg-white/5 rounded-full overflow-hidden"><motion.div className="h-full bg-white" initial={{ width: 0 }} animate={{ width: `${bootProgress}%` }} /></div>
-                </div>
-            );
-
-            return (
-                <div className={`h-screen w-screen overflow-hidden relative ${isDarkMode ? 'dark-theme' : 'light-theme'}`} onContextMenu={e => { e.preventDefault(); setContextMenu({ x: e.clientX, y: e.clientY }); }} onClick={() => { setContextMenu(null); setIsPanelOpen(false); setIsStartOpen(false); }}>
+        // ================== SLIDE TO UNLOCK ==================
+        const lockScreen = document.getElementById('lockScreen');
+        const slideContainer = document.getElementById('slideContainer');
+        const slideThumb = document.getElementById('slideThumb');
+        const slideText = document.getElementById('slideText');
+        const taskbar = document.getElementById('taskbar'); 
+        const desktopAreaIcons = document.getElementById('desktopArea');
+        
+        let isSliding = false, startSlideX = 0, maxTranslateX = 0;
+        function calcMax() { maxTranslateX = slideContainer.clientWidth - slideThumb.clientWidth - 10; }
+        function sDragStart(clientX) { isSliding = true; startSlideX = clientX; calcMax(); slideThumb.style.transition = 'none'; slideText.style.opacity = '0.1'; }
+        function sDrag(clientX) {
+            if (!isSliding) return; let moveX = clientX - startSlideX;
+            if (moveX < 0) moveX = 0; if (moveX > maxTranslateX) moveX = maxTranslateX;
+            slideThumb.style.transform = `translateX(${moveX}px)`;
+        }
+        function sDragEnd() {
+            if (!isSliding) return; isSliding = false; slideThumb.style.transition = 'transform 0.3s ease'; slideText.style.opacity = '1';
+            let matrix = new WebKitCSSMatrix(window.getComputedStyle(slideThumb).transform);
+            if (matrix.m41 > maxTranslateX * 0.8) {
+                slideThumb.style.transform = `translateX(${maxTranslateX}px)`; 
+                setTimeout(() => { 
+                    lockScreen.classList.add('hidden'); 
+                    // Mostra os ícones da área de trabalho de forma suave
+                    desktopAreaIcons.classList.add('show');
                     
-                    <div className="desktop-scale w-full h-full relative">
-                        {/* Lock Screen */}
-                        <AnimatePresence>
-                            {isLocked && (
-                                <motion.div exit={{ opacity: 0, y: -100, filter: 'blur(40px)' }} className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-3xl flex flex-col items-center justify-between py-24 text-white">
-                                    <div className="text-center">
-                                        <h1 className="text-9xl font-[200] tracking-[-0.05em]">{time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</h1>
-                                        <p className="text-xl font-light opacity-60 mt-4 tracking-widest uppercase">{time.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
-                                    </div>
-                                    <button onClick={() => setIsLocked(false)} className="px-12 py-5 bg-white/10 border border-white/20 rounded-full hover:bg-white/20 transition-all font-medium">Deslize para desbloquear</button>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+                    setTimeout(() => { taskbar.classList.remove('taskbar-hidden'); }, 150); 
+                }, 200);
+            } else { slideThumb.style.transform = `translateX(0px)`; }
+        }
+        slideThumb.addEventListener('touchstart', (e) => sDragStart(e.touches[0].clientX), {passive: true});
+        document.addEventListener('touchmove', (e) => { if(isSliding) sDrag(e.touches[0].clientX) }, {passive: false});
+        document.addEventListener('touchend', sDragEnd);
+        slideThumb.addEventListener('mousedown', (e) => sDragStart(e.clientX));
+        document.addEventListener('mousemove', (e) => { if(isSliding) sDrag(e.clientX) });
+        document.addEventListener('mouseup', sDragEnd);
 
-                        {/* Wallpaper */}
-                        <div className="absolute inset-0 z-0 bg-center bg-cover transition-all duration-1000" style={{ backgroundImage: wallpaper ? `url(${wallpaper})` : 'none' }}>
-                            {!wallpaper && <div className="flex justify-center items-center h-full opacity-20"><div className="w-[150vh] h-[150vh] border border-white/10 rounded-full flex items-center justify-center"><div className="w-[100vh] h-[100vh] border border-white/20 rounded-full flex items-center justify-center"><div className="w-[50vh] h-[50vh] bg-indigo-500 rounded-full blur-[120px]"></div></div></div></div>}
-                        </div>
-
-                        {/* Ícones Desktop */}
-                        <div className="absolute inset-0 z-10 p-12 flex flex-col flex-wrap gap-12 content-start pointer-events-none">
-                            {[
-                                { l: 'Arquivos', i: 'folder', c: 'text-amber-400', t: 'folder' },
-                                { l: 'Galeria', i: 'image', c: 'text-purple-400', t: 'gallery' },
-                                { l: 'Música', i: 'music', c: 'text-pink-400', t: 'music' },
-                                { l: 'Calculadora', i: 'calculator', c: 'text-emerald-400', t: 'calculator' },
-                                { l: 'Ajustes', i: 'settings', c: 'text-slate-400', t: 'settings' }
-                            ].map(app => (
-                                <div key={app.t} onClick={() => openApp(app.t, app.l, app.i)} className="w-24 flex flex-col items-center gap-3 cursor-pointer pointer-events-auto group">
-                                    <div className="w-20 h-20 bg-white/10 rounded-[32px] flex items-center justify-center group-hover:scale-110 transition-transform shadow-xl"><Icon name={app.i} size={36} className={app.c} /></div>
-                                    <span className="text-white text-[11px] font-medium drop-shadow-lg">{app.l}</span>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Janelas */}
-                        <div className="absolute inset-0 z-20 pointer-events-none">
-                            <AnimatePresence>
-                                {windows.map(win => (
-                                    <Window key={win.id} windowData={win} onClose={() => setWindows(windows.filter(w => w.id !== win.id))} onMinimize={() => setWindows(windows.map(w => w.id === win.id ? {...w, isMinimized: true} : w))} onFocus={() => setWindows(windows.map(w => w.id === win.id ? {...w, zIndex: Math.max(...windows.map(x => x.zIndex)) + 1} : w))}>
-                                        {win.type === 'calculator' && <CalculatorApp />}
-                                        {win.type === 'music' && <MusicApp />}
-                                        {win.type === 'gallery' && <GalleryApp />}
-                                        {win.type === 'folder' && <FilesApp />}
-                                        {win.type === 'settings' && <SettingsApp isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} setWallpaper={setWallpaper} />}
-                                    </Window>
-                                ))}
-                            </AnimatePresence>
-                        </div>
-
-                        {/* Taskbar Refinada */}
-                        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-[800px] h-16 glass rounded-full flex items-center justify-between px-2 z-[150] shadow-2xl">
-                            <div className="flex items-center gap-2">
-                                <button onClick={e => { e.stopPropagation(); setIsStartOpen(!isStartOpen); }} className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-all"><MintLogo size={28} /></button>
-                                <div className="h-8 w-px bg-white/10 mx-1"></div>
-                                <div className="flex gap-1.5">
-                                    {windows.map(win => <button key={win.id} onClick={() => setWindows(windows.map(w => w.id === win.id ? {...w, isMinimized: false, zIndex: Math.max(...windows.map(x => x.zIndex)) + 1} : w))} className={`w-11 h-11 rounded-2xl flex items-center justify-center transition-all ${!win.isMinimized ? 'bg-white/20 shadow-inner' : 'bg-white/5'}`}><Icon name={win.icon} size={18} className="text-white/80" /></button>)}
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <button onClick={e => { e.stopPropagation(); setIsPanelOpen(!isPanelOpen); }} className="flex items-center gap-4 bg-black/20 px-5 py-2.5 rounded-full text-white transition-all hover:bg-black/30">
-                                    <div className="flex gap-2.5 opacity-50"><Icon name="wifi" size={14} /><Icon name="battery" size={14} className="rotate-90" /></div>
-                                    <span className="text-xs font-bold">{time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
     </script>
 </body>
 </html>
