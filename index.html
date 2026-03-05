@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MintOS</title>
+    <title>MintOS v1.6</title>
     
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -13,19 +13,11 @@
            RESET E FUNDO GERAL
            ========================================= */
         body, html {
-            margin: 0; padding: 0;
-            height: 100%; width: 100%;
-            overflow: hidden; 
-            background-color: #051d38; 
-            font-family: 'Poppins', sans-serif;
-            touch-action: none; 
-            -webkit-user-select: none; 
-            user-select: none;
+            margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; 
+            background-color: #051d38; font-family: 'Poppins', sans-serif;
+            touch-action: none; -webkit-user-select: none; user-select: none;
         }
 
-        /* =========================================
-           WALLPAPER E ÁREA DE TRABALHO
-           ========================================= */
         .wallpaper-container {
             display: flex; justify-content: center; align-items: center;
             width: 100%; height: 100%; position: fixed; top: 0; left: 0; z-index: 1; 
@@ -33,11 +25,7 @@
             background-position: center center; background-size: cover; background-repeat: no-repeat;
         }
 
-        #rings-container {
-            display: flex; justify-content: center; align-items: center;
-            width: 100%; height: 100%;
-        }
-
+        #rings-container { display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
         .ring { border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
         .outer-ring-4 { width: 250vh; height: 250vh; background-color: #0b2040; box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.7); }
         .outer-ring-3 { width: 180vh; height: 180vh; background-color: #0d3870; box-shadow: inset 0 0 45px rgba(0, 0, 0, 0.6); }
@@ -46,167 +34,180 @@
         .inner-circle { width: 30vh; height: 30vh; background-image: radial-gradient(circle at center, #7bb9f2 0%, #1e88e5 100%); border-radius: 50%; box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.3); }
 
         /* =========================================
-           ÍCONES DA ÁREA DE TRABALHO
+           ÍCONES MODERNOS (SQUIRCLE)
            ========================================= */
+        .bg-blue { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .bg-red { background: linear-gradient(135deg, #f77062 0%, #fe5196 100%); }
+        .bg-green { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .bg-yellow { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
+        .bg-purple { background: linear-gradient(135deg, #c471ed 0%, #f64f59 100%); }
+        .bg-gray { background: linear-gradient(135deg, #606c88 0%, #3f4c6b 100%); }
+
+        .squircle {
+            width: 54px; height: 54px; border-radius: 14px; 
+            display: flex; justify-content: center; align-items: center; 
+            color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+        .squircle .material-symbols-outlined { font-size: 28px; }
+
         .desktop-area {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             padding: 20px; display: flex; flex-direction: column; 
-            align-content: flex-start; flex-wrap: wrap; gap: 15px; z-index: 10;
-            /* BUG CORRIGIDO: Inicia invisível para não aparecer na tela de bloqueio */
+            align-content: flex-start; flex-wrap: wrap; gap: 20px; z-index: 10;
             opacity: 0; pointer-events: none; transition: opacity 0.8s ease; 
         }
-        
-        .desktop-area.show { opacity: 1; pointer-events: none; /* Apenas os ícones recebem clique */ }
+        .desktop-area.show { opacity: 1; }
 
         .desktop-icon {
-            width: 75px; display: flex; flex-direction: column; align-items: center; gap: 5px;
-            padding: 10px 5px; border-radius: 8px; cursor: pointer; pointer-events: all; transition: background 0.2s, transform 0.1s;
+            width: 70px; display: flex; flex-direction: column; align-items: center; gap: 6px;
+            cursor: pointer; pointer-events: all;
         }
-
-        .desktop-icon:hover { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); }
-        .desktop-icon:active { transform: scale(0.95); background: rgba(255, 255, 255, 0.25); }
-        .desktop-icon .material-symbols-outlined { font-size: 38px; color: white; text-shadow: 0 2px 5px rgba(0,0,0,0.6); }
-        .icon-label { color: white; font-size: 12px; text-align: center; text-shadow: 0 1px 4px rgba(0,0,0,0.9); font-weight: 400; line-height: 1.2; }
+        .desktop-icon:active .squircle { transform: scale(0.9); }
+        .icon-label { color: white; font-size: 11px; text-align: center; text-shadow: 0 1px 3px rgba(0,0,0,0.8); font-weight: 500; }
 
         /* =========================================
-           MENU CLIQUE DIREITO
-           ========================================= */
-        .context-menu {
-            position: absolute; display: none; width: 220px;
-            background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            padding: 6px; z-index: 1000; flex-direction: column; gap: 2px; color: white; font-size: 14px;
-        }
-        .context-menu-item { padding: 10px 12px; border-radius: 8px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.2s; }
-        .context-menu-item:hover { background: rgba(255, 255, 255, 0.2); }
-        .context-menu-item .material-symbols-outlined { font-size: 18px; }
-        .context-menu-divider { height: 1px; background: rgba(255, 255, 255, 0.2); margin: 4px 0; }
-
-        /* =========================================
-           MENU INICIAR (NOVO)
+           MENUS FLUTUANTES
            ========================================= */
         .start-menu {
-            position: fixed; 
-            /* Alinhado com a borda esquerda da barra de tarefas */
-            left: max(12.5%, calc((100% - 800px) / 2)); 
-            bottom: 80px; width: 320px;
+            position: fixed; left: 50%; transform: translateX(-50%) translateY(20px); 
+            bottom: 80px; width: 90%; max-width: 320px; 
             background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-            padding: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 15;
-            opacity: 0; transform: translateY(20px); pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease, background 0.3s;
+            padding: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 100;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease;
         }
-
-        .start-menu.show { opacity: 1; transform: translateY(0); pointer-events: all; }
+        .start-menu.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: all; }
 
         .sm-header { display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 15px; }
         .sm-user-icon { width: 46px; height: 46px; border-radius: 50%; background: #2fb58f; display: flex; justify-content: center; align-items: center; font-size: 24px; color: #051d38; font-weight: 600; }
-        
-        .sm-apps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; justify-items: center; }
-        .sm-app { display: flex; flex-direction: column; align-items: center; gap: 5px; color: white; cursor: pointer; transition: transform 0.2s; }
-        .sm-app:hover { transform: scale(1.05); }
-        .sm-app .icon-box { width: 50px; height: 50px; border-radius: 16px; background: rgba(255, 255, 255, 0.1); display: flex; justify-content: center; align-items: center; border: 1px solid rgba(255,255,255,0.1); }
-        .sm-app span { font-size: 11px; font-weight: 500; }
+        .sm-apps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; justify-items: center; }
+        .sm-app { display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
+        .sm-app .squircle { width: 44px; height: 44px; border-radius: 12px; }
+        .sm-app .squircle .material-symbols-outlined { font-size: 24px; }
+        .sm-app span { color: white; font-size: 10px; font-weight: 500; text-align: center; }
 
-        .sm-footer { display: flex; justify-content: flex-end; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 15px; }
-        .sm-power { width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 95, 86, 0.8); display: flex; justify-content: center; align-items: center; color: white; cursor: pointer; transition: background 0.2s, transform 0.2s; }
-        .sm-power:hover { background: rgba(255, 95, 86, 1); transform: scale(1.1); }
+        .control-panel {
+            position: fixed; right: 15px; bottom: 80px; width: 85%; max-width: 300px;
+            background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 20px; display: flex; flex-direction: column; gap: 20px; z-index: 100;
+            opacity: 0; transform: translateY(20px); pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .control-panel.show { opacity: 1; transform: translateY(0); pointer-events: all; }
+        .quick-settings { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; justify-items: center; }
+        .qs-btn { width: 46px; height: 46px; border-radius: 50%; background: rgba(0, 0, 0, 0.3); color: white; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: background 0.2s, transform 0.1s; }
+        .qs-btn.active { background: #2fb58f; color: #051d38; }
+        .slider-row { display: flex; align-items: center; gap: 10px; background: rgba(0, 0, 0, 0.2); padding: 10px 15px; border-radius: 20px; }
+        .slider-input { flex-grow: 1; -webkit-appearance: none; height: 6px; background: rgba(255, 255, 255, 0.3); border-radius: 3px; outline: none; }
+        .slider-input::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: white; cursor: pointer; }
 
         /* =========================================
-           SISTEMA DE JANELAS
+           NOVO SISTEMA DE JANELAS
            ========================================= */
         .window {
-            position: absolute; top: 20%; left: 5%; width: 90%; max-width: 350px;
-            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            display: flex; flex-direction: column; z-index: 50;
-            opacity: 0; transform: scale(0.95); pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease;
+            position: absolute; top: 10%; left: 5%; 
+            width: 90%; max-width: 380px; height: 65vh; max-height: 550px;
+            background: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(35px) brightness(0.9); -webkit-backdrop-filter: blur(35px) brightness(0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            border-radius: 20px; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            display: none; flex-direction: column; z-index: 50; overflow: hidden;
+            transform: scale(0.95); opacity: 0; transition: opacity 0.2s, transform 0.2s;
         }
-        .window.active { opacity: 1; transform: scale(1); pointer-events: all; }
-        .window-header { height: 40px; background: rgba(0, 0, 0, 0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; padding: 0 15px; cursor: grab; border-radius: 16px 16px 0 0; }
+        .window.active { display: flex; opacity: 1; transform: scale(1); pointer-events: all; }
+        .window.minimized { display: none !important; }
+        .window.maximized { top: 0 !important; left: 0 !important; width: 100% !important; max-width: 100% !important; height: 100% !important; max-height: 100% !important; border-radius: 0; }
+
+        .window-header { 
+            height: 50px; background: transparent; 
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 15px; cursor: grab; 
+        }
         .window-header:active { cursor: grabbing; }
-        .window-controls { display: flex; gap: 8px; margin-right: 15px; }
-        .win-btn { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; transition: opacity 0.2s; }
-        .win-btn:hover { opacity: 0.7; }
-        .win-close { background-color: #ff5f56; } .win-min { background-color: #ffbd2e; } .win-max { background-color: #27c93f; }
-        .window-title { color: white; font-size: 13px; font-weight: 500; flex-grow: 1; text-align: center; padding-right: 50px; }
-        .window-content { padding: 20px; color: white; display: flex; flex-direction: column; align-items: center; gap: 15px; }
-        .mint-button { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); color: white; padding: 10px 20px; border-radius: 20px; font-family: 'Poppins', sans-serif; font-size: 14px; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 8px; }
-        .mint-button:hover { background: rgba(255, 255, 255, 0.3); }
+        
+        .window-title { 
+            color: rgba(255, 255, 255, 0.9); font-size: 14px; font-weight: 600; 
+            pointer-events: none; letter-spacing: 0.5px;
+        }
+
+        .window-controls { display: flex; gap: 8px; }
+        .win-btn { 
+            width: 14px; height: 14px; border-radius: 50%; cursor: pointer; 
+            background-color: rgba(0, 0, 0, 0.5); 
+            transition: background-color 0.2s;
+        }
+        .win-close:hover, .win-close:active { background-color: #ff5f56; } 
+        .win-min:hover, .win-min:active { background-color: #ffbd2e; } 
+        .win-max:hover, .win-max:active { background-color: #27c93f; }
+        
+        .window-body { flex-grow: 1; display: flex; flex-direction: column; padding: 0 15px 15px 15px; overflow-y: auto; color: white; }
+        
+        /* Calc */
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; flex-grow: 1; }
+        .calc-btn { background: rgba(255,255,255,0.15); border: none; border-radius: 16px; color: white; font-size: 22px; cursor: pointer; font-family: 'Poppins', sans-serif;}
+        .calc-btn:active { background: rgba(255,255,255,0.3); transform: scale(0.95); }
+        .calc-display { background: transparent; padding: 10px; text-align: right; font-size: 42px; margin-bottom: 10px; height: 60px; overflow: hidden; font-weight: 300; letter-spacing: 1px;}
+        
+        /* Notes */
+        .notes-area { width: 100%; height: 100%; background: transparent; border: none; color: white; font-family: 'Poppins', sans-serif; font-size: 15px; resize: none; outline: none; line-height: 1.5; }
+        .notes-area::placeholder { color: rgba(255,255,255,0.4); }
+
+        /* Gallery */
+        .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .gallery-img { width: 100%; aspect-ratio: 1; border-radius: 16px; object-fit: cover; background: rgba(0,0,0,0.3); }
+
+        /* Paint */
+        #paintCanvas { background: rgba(255,255,255,0.9); border-radius: 16px; cursor: crosshair; touch-action: none; width: 100%; flex-grow: 1; }
 
         /* =========================================
            BARRA DE TAREFAS 
            ========================================= */
         .taskbar {
-            position: fixed; bottom: 20px; left: 50%; width: 75%; max-width: 800px; height: 48px; z-index: 20; 
-            background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-            display: flex; align-items: center; justify-content: space-between; padding: 0 6px;
-            transform: translate(-50%, 0); opacity: 1; transition: background 0.3s, border 0.3s, transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
+            position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); 
+            width: 90%; max-width: 600px; height: 54px; z-index: 90; 
+            background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 27px; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 8px;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s;
         }
         .taskbar.taskbar-hidden { transform: translate(-50%, 150px); opacity: 0; pointer-events: none; }
-        .taskbar-left { display: flex; align-items: center; gap: 12px; }
-        .start-btn { width: 36px; height: 36px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-left: 4px; cursor: pointer; transition: transform 0.2s, background 0.2s; }
-        .start-btn:hover { transform: scale(1.05); background: rgba(255, 255, 255, 0.35); }
-        .system-tray { background: rgba(0, 0, 0, 0.4); height: 36px; border-radius: 18px; display: flex; align-items: center; padding: 0 12px; gap: 10px; color: white; cursor: pointer; transition: background 0.2s; }
-        .system-tray:hover { background: rgba(0, 0, 0, 0.6); }
-        .system-tray .material-symbols-outlined { font-size: 16px; }
-        .battery-icon { transform: rotate(90deg); margin-top: 2px; }
-        #clock { font-weight: 600; font-size: 13px; letter-spacing: 0.5px; margin-top: 1px; }
+        
+        .taskbar-left { display: flex; align-items: center; gap: 8px; flex-grow: 1; }
+        .start-btn { width: 40px; height: 40px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.2s; }
+        .start-btn:active { transform: scale(0.9); }
+        
+        .taskbar-apps { display: flex; gap: 8px; overflow-x: auto; padding: 0 5px; scrollbar-width: none; }
+        .tb-app-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.3);}
+        .tb-app-icon:active { transform: scale(0.9); }
+        .tb-app-icon .material-symbols-outlined { font-size: 20px; color: white; }
 
-        /* =========================================
-           PAINEL DE CONTROLE FLUTUANTE
-           ========================================= */
-        .control-panel {
-            position: fixed; right: max(12.5%, calc((100% - 800px) / 2)); bottom: 80px; width: 300px;
-            background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            padding: 20px; display: flex; flex-direction: column; gap: 20px; z-index: 15;
-            opacity: 0; transform: translateY(20px); pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease, background 0.3s;
-        }
-        .control-panel.show { opacity: 1; transform: translateY(0); pointer-events: all; }
-        .quick-settings { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; justify-items: center; }
-        .qs-btn { width: 46px; height: 46px; border-radius: 50%; background: rgba(0, 0, 0, 0.3); color: white; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: background 0.2s, transform 0.1s; }
-        .qs-btn:active { transform: scale(0.95); }
-        .qs-btn.active { background: #2fb58f; color: #051d38; }
-        .slider-row { display: flex; align-items: center; gap: 15px; background: rgba(0, 0, 0, 0.2); padding: 10px 15px; border-radius: 20px; }
-        .slider-row .material-symbols-outlined { color: white; font-size: 20px; }
-        .slider-input { flex-grow: 1; -webkit-appearance: none; height: 6px; background: rgba(255, 255, 255, 0.3); border-radius: 3px; outline: none; }
-        .slider-input::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: white; cursor: pointer; }
+        .system-tray { background: rgba(0, 0, 0, 0.4); height: 40px; border-radius: 20px; display: flex; align-items: center; padding: 0 16px 0 12px; gap: 8px; color: white; cursor: pointer; }
+        .system-tray .material-symbols-outlined { font-size: 16px; }
+        #clock { font-weight: 600; font-size: 12px; }
 
         /* =========================================
            TELA DE BLOQUEIO
            ========================================= */
         .lock-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 25%, rgba(0,0,0,0) 75%, rgba(0,0,0,0.6) 100%); 
-            /* BUG CORRIGIDO: Adicionado blur pesado para esconder os ícones perfeitos por baixo */
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            z-index: 100; display: flex; flex-direction: column; align-items: center; transition: opacity 0.5s ease;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%); 
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            z-index: 200; display: flex; flex-direction: column; align-items: center; transition: opacity 0.5s ease;
         }
         .lock-screen.hidden { opacity: 0; pointer-events: none; }
-        .lock-time-container { margin-top: 12vh; text-align: center; color: white; }
-        .lock-clock { font-size: 85px; font-weight: 300; letter-spacing: 1px; margin: 0; text-shadow: 0 4px 15px rgba(0,0,0,0.4); line-height: 1; }
-        .lock-date { font-size: 18px; font-weight: 400; color: rgba(255, 255, 255, 0.95); margin-top: 5px; text-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+        .lock-time-container { margin-top: 15vh; text-align: center; color: white; }
+        .lock-clock { font-size: 70px; font-weight: 300; margin: 0; line-height: 1; }
+        .lock-date { font-size: 16px; opacity: 0.9; margin-top: 5px; }
         .slide-to-unlock-container {
-            margin-top: auto; margin-bottom: 80px; width: 85%; max-width: 350px; height: 60px;
-            background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border-radius: 30px; position: relative; display: flex; align-items: center; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 10px 25px rgba(0,0,0,0.2); overflow: hidden;
+            margin-top: auto; margin-bottom: 60px; width: 85%; max-width: 320px; height: 55px;
+            background: rgba(0, 0, 0, 0.3); border-radius: 30px; position: relative; display: flex; align-items: center; border: 1px solid rgba(255, 255, 255, 0.2); overflow: hidden;
         }
-        .slide-text { width: 100%; text-align: center; color: rgba(255, 255, 255, 0.7); font-size: 15px; font-weight: 400; position: absolute; pointer-events: none; animation: shimmer 2.5s infinite linear; }
-        @keyframes shimmer { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
-        .slide-thumb { width: 50px; height: 50px; background: white; border-radius: 50%; position: absolute; left: 5px; display: flex; justify-content: center; align-items: center; cursor: grab; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); transition: transform 0.3s ease; }
-        .slide-thumb:active { cursor: grabbing; }
-        .slide-thumb .material-symbols-outlined { color: #051d38; font-size: 24px; margin-left: 2px; }
-
-        /* =========================================
-           MODO ESCURO 
-           ========================================= */
-        .dark-theme .taskbar { background: rgba(35, 45, 60, 0.65); border: 1px solid rgba(255, 255, 255, 0.15); }
-        .dark-theme .system-tray { background: rgba(20, 25, 35, 0.5); }
-        .dark-theme .control-panel { background: rgba(35, 45, 60, 0.75); border: 1px solid rgba(255, 255, 255, 0.15); }
-        .dark-theme .start-menu { background: rgba(35, 45, 60, 0.75); border: 1px solid rgba(255, 255, 255, 0.15); }
-        .dark-theme .window { background: rgba(35, 45, 60, 0.65); border: 1px solid rgba(255, 255, 255, 0.15); }
-        .dark-theme .context-menu { background: rgba(35, 45, 60, 0.75); border: 1px solid rgba(255, 255, 255, 0.15); }
+        .slide-text { width: 100%; text-align: center; color: rgba(255,255,255,0.6); font-size: 14px; position: absolute; pointer-events: none; animation: shimmer 2s infinite linear; }
+        @keyframes shimmer { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+        .slide-thumb { width: 45px; height: 45px; background: white; border-radius: 50%; position: absolute; left: 5px; display: flex; justify-content: center; align-items: center; cursor: grab; }
+        .slide-thumb .material-symbols-outlined { color: #051d38; font-size: 20px; margin-left: 2px; }
     </style>
 </head>
 <body>
@@ -230,122 +231,195 @@
         </div>
 
         <div class="desktop-area" id="desktopArea">
-            <div class="desktop-icon" onclick="alert('Em breve: Gerenciador de Arquivos do MintOS!')" oncontextmenu="event.stopPropagation();">
-                <span class="material-symbols-outlined" style="color: #ffbd2e;">folder</span>
+            <div class="desktop-icon" onclick="openApp('arquivos')">
+                <div class="squircle bg-blue"><span class="material-symbols-outlined">folder</span></div>
                 <span class="icon-label">Arquivos</span>
             </div>
-            <div class="desktop-icon" onclick="alert('Em breve: Mint Paint!')" oncontextmenu="event.stopPropagation();">
-                <span class="material-symbols-outlined" style="color: #ff5f56;">palette</span>
+            <div class="desktop-icon" onclick="openApp('galeria')">
+                <div class="squircle bg-purple"><span class="material-symbols-outlined">image</span></div>
+                <span class="icon-label">Galeria</span>
+            </div>
+            <div class="desktop-icon" onclick="openApp('paint')">
+                <div class="squircle bg-red"><span class="material-symbols-outlined">palette</span></div>
                 <span class="icon-label">Paint</span>
             </div>
-            <div class="desktop-icon" onclick="alert('Em breve: Calculadora do MintOS!')" oncontextmenu="event.stopPropagation();">
-                <span class="material-symbols-outlined" style="color: #27c93f;">calculate</span>
+            <div class="desktop-icon" onclick="openApp('notas')">
+                <div class="squircle bg-yellow"><span class="material-symbols-outlined">edit_note</span></div>
+                <span class="icon-label">Notas</span>
+            </div>
+            <div class="desktop-icon" onclick="openApp('calculadora')">
+                <div class="squircle bg-green"><span class="material-symbols-outlined">calculate</span></div>
                 <span class="icon-label">Calculadora</span>
             </div>
         </div>
     </div>
 
-    <div class="context-menu" id="contextMenu">
-        <div class="context-menu-item" onclick="alert('Função de criar pasta em breve!')">
-            <span class="material-symbols-outlined">create_new_folder</span>
-            Nova Pasta
-        </div>
-        <div class="context-menu-item" onclick="alert('Função de criar documento em breve!')">
-            <span class="material-symbols-outlined">description</span>
-            Novo Documento
-        </div>
-        <div class="context-menu-divider"></div>
-        <div class="context-menu-item" onclick="location.reload()">
-            <span class="material-symbols-outlined">refresh</span>
-            Atualizar
-        </div>
-        <div class="context-menu-divider"></div>
-        <div class="context-menu-item" onclick="openWindow('personalizationWindow')">
-            <span class="material-symbols-outlined">palette</span>
-            Personalizar
-        </div>
-        <div class="context-menu-item" onclick="alert('Configurações do sistema já estão no Menu Iniciar!')">
-            <span class="material-symbols-outlined">settings</span>
-            Configurações
-        </div>
-    </div>
-
-    <div class="window" id="personalizationWindow">
-        <div class="window-header" id="personalizationHeader">
+    <div class="window" id="win-config">
+        <div class="window-header" id="header-config">
+            <span class="window-title">Configurações</span>
             <div class="window-controls">
-                <div class="win-btn win-close" onclick="closeWindow('personalizationWindow')"></div>
-                <div class="win-btn win-min"></div>
-                <div class="win-btn win-max"></div>
+                <div class="win-btn win-min" onclick="minApp('config')"></div>
+                <div class="win-btn win-max" onclick="maxApp('config')"></div>
+                <div class="win-btn win-close" onclick="closeApp('config')"></div>
             </div>
-            <span class="window-title">Aparência</span>
         </div>
-        <div class="window-content">
-            <span class="material-symbols-outlined" style="font-size: 40px; color: #2fb58f;">wallpaper</span>
-            <p style="margin: 0; text-align: center; font-size: 14px;">Personalize a sua área de trabalho do MintOS.</p>
-            <button class="mint-button" onclick="document.getElementById('wallpaper-picker').click()">
-                <span class="material-symbols-outlined" style="font-size: 18px;">image</span>
-                Procurar Imagem
-            </button>
+        <div class="window-body">
+            <h3 style="margin-top:0; font-weight: 500;">Aparência</h3>
+            <div style="background:rgba(255,255,255,0.1); padding:20px; border-radius:16px;">
+                <p style="margin: 0 0 15px 0; font-size:14px; opacity: 0.9;">Papel de Parede da Tela Inicial</p>
+                <button onclick="document.getElementById('wallpaper-picker').click()" style="width:100%; padding:12px; border-radius:12px; border:none; background:rgba(255,255,255,0.25); color:white; font-family:'Poppins'; font-weight:500;">Procurar na Galeria...</button>
+                <input type="file" id="wallpaper-picker" accept="image/*" style="display: none;">
+            </div>
         </div>
     </div>
 
-    <input type="file" id="wallpaper-picker" accept="image/*" style="display: none;">
+    <div class="window" id="win-calculadora">
+        <div class="window-header" id="header-calculadora">
+            <span class="window-title">Calculadora</span>
+            <div class="window-controls">
+                <div class="win-btn win-min" onclick="minApp('calculadora')"></div>
+                <div class="win-btn win-max" onclick="maxApp('calculadora')"></div>
+                <div class="win-btn win-close" onclick="closeApp('calculadora')"></div>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="calc-display" id="calcDisplay">0</div>
+            <div class="calc-grid">
+                <button class="calc-btn" onclick="calcPress('7')">7</button>
+                <button class="calc-btn" onclick="calcPress('8')">8</button>
+                <button class="calc-btn" onclick="calcPress('9')">9</button>
+                <button class="calc-btn" onclick="calcPress('/')" style="color: #38f9d7;">÷</button>
+                <button class="calc-btn" onclick="calcPress('4')">4</button>
+                <button class="calc-btn" onclick="calcPress('5')">5</button>
+                <button class="calc-btn" onclick="calcPress('6')">6</button>
+                <button class="calc-btn" onclick="calcPress('*')" style="color: #38f9d7;">×</button>
+                <button class="calc-btn" onclick="calcPress('1')">1</button>
+                <button class="calc-btn" onclick="calcPress('2')">2</button>
+                <button class="calc-btn" onclick="calcPress('3')">3</button>
+                <button class="calc-btn" onclick="calcPress('-')" style="color: #38f9d7;">−</button>
+                <button class="calc-btn" onclick="calcPress('C')" style="color: #ff5f56;">C</button>
+                <button class="calc-btn" onclick="calcPress('0')">0</button>
+                <button class="calc-btn" onclick="calcPress('=')" style="background: rgba(56, 249, 215, 0.2); color: #38f9d7;">=</button>
+                <button class="calc-btn" onclick="calcPress('+')" style="color: #38f9d7;">+</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="window" id="win-notas">
+        <div class="window-header" id="header-notas">
+            <span class="window-title">Notas</span>
+            <div class="window-controls">
+                <div class="win-btn win-min" onclick="minApp('notas')"></div>
+                <div class="win-btn win-max" onclick="maxApp('notas')"></div>
+                <div class="win-btn win-close" onclick="closeApp('notas')"></div>
+            </div>
+        </div>
+        <div class="window-body">
+            <textarea id="notesArea" class="notes-area" placeholder="Digite sua nota aqui... (Ela é salva automaticamente)"></textarea>
+        </div>
+    </div>
+
+    <div class="window" id="win-paint">
+        <div class="window-header" id="header-paint">
+            <span class="window-title">Mint Paint</span>
+            <div class="window-controls">
+                <div class="win-btn win-min" onclick="minApp('paint')"></div>
+                <div class="win-btn win-max" onclick="maxApp('paint')"></div>
+                <div class="win-btn win-close" onclick="closeApp('paint')"></div>
+            </div>
+        </div>
+        <div class="window-body">
+            <div style="display:flex; gap:10px; margin-bottom:15px; justify-content: center;">
+                <button onclick="paintColor='black'" style="width:35px;height:35px;background:black;border-radius:50%;border:2px solid rgba(255,255,255,0.5);"></button>
+                <button onclick="paintColor='#ff5f56'" style="width:35px;height:35px;background:#ff5f56;border-radius:50%;border:2px solid rgba(255,255,255,0.5);"></button>
+                <button onclick="paintColor='#4facfe'" style="width:35px;height:35px;background:#4facfe;border-radius:50%;border:2px solid rgba(255,255,255,0.5);"></button>
+                <button onclick="paintColor='#43e97b'" style="width:35px;height:35px;background:#43e97b;border-radius:50%;border:2px solid rgba(255,255,255,0.5);"></button>
+                <button onclick="clearCanvas()" style="padding:0 15px; border-radius:12px; border:none; background:rgba(255,255,255,0.2); color:white; font-family:'Poppins';">Limpar</button>
+            </div>
+            <canvas id="paintCanvas"></canvas>
+        </div>
+    </div>
+
+    <div class="window" id="win-galeria">
+        <div class="window-header" id="header-galeria">
+            <span class="window-title">Galeria</span>
+            <div class="window-controls">
+                <div class="win-btn win-min" onclick="minApp('galeria')"></div>
+                <div class="win-btn win-max" onclick="maxApp('galeria')"></div>
+                <div class="win-btn win-close" onclick="closeApp('galeria')"></div>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="gallery-grid">
+                <img class="gallery-img" src="https://picsum.photos/seed/m1/300/300">
+                <img class="gallery-img" src="https://picsum.photos/seed/m2/300/300">
+                <img class="gallery-img" src="https://picsum.photos/seed/m3/300/300">
+                <img class="gallery-img" src="https://picsum.photos/seed/m4/300/300">
+                <img class="gallery-img" src="https://picsum.photos/seed/m5/300/300">
+                <img class="gallery-img" src="https://picsum.photos/seed/m6/300/300">
+            </div>
+        </div>
+    </div>
 
     <div class="start-menu" id="startMenu">
         <div class="sm-header">
             <div class="sm-user-icon">L</div>
             <div>
                 <h3 style="margin: 0; font-size: 16px; color: white;">Luiz</h3>
-                <p style="margin: 0; font-size: 12px; color: rgba(255,255,255,0.6);">Administrador MintOS</p>
+                <p style="margin: 0; font-size: 11px; color: rgba(255,255,255,0.6);">Admin MintOS</p>
             </div>
         </div>
-        
-        <p style="color: white; font-size: 12px; margin: 0; opacity: 0.7; font-weight: 500;">Fixados</p>
+        <p style="color: white; font-size: 11px; margin: 0; opacity: 0.7;">Fixados</p>
         <div class="sm-apps">
-            <div class="sm-app" onclick="alert('Configurações do sistema em breve!')">
-                <div class="icon-box"><span class="material-symbols-outlined" style="color: #a0aec0; font-size: 28px;">settings</span></div>
-                <span>Configurações</span>
+            <div class="sm-app" onclick="openApp('config')">
+                <div class="squircle bg-gray"><span class="material-symbols-outlined">settings</span></div>
+                <span>Ajustes</span>
             </div>
-            <div class="sm-app" onclick="openWindow('personalizationWindow')">
-                <div class="icon-box"><span class="material-symbols-outlined" style="color: #2fb58f; font-size: 28px;">palette</span></div>
-                <span>Aparência</span>
+            <div class="sm-app" onclick="openApp('notas')">
+                <div class="squircle bg-yellow"><span class="material-symbols-outlined">edit_note</span></div>
+                <span>Notas</span>
             </div>
-            <div class="sm-app" onclick="alert('Mint Store em breve!')">
-                <div class="icon-box"><span class="material-symbols-outlined" style="color: #ffbd2e; font-size: 28px;">shopping_bag</span></div>
-                <span>Loja</span>
+            <div class="sm-app" onclick="openApp('galeria')">
+                <div class="squircle bg-purple"><span class="material-symbols-outlined">image</span></div>
+                <span>Galeria</span>
+            </div>
+            <div class="sm-app" onclick="openApp('paint')">
+                <div class="squircle bg-red"><span class="material-symbols-outlined">palette</span></div>
+                <span>Paint</span>
             </div>
         </div>
-        
-        <div class="sm-footer">
-            <div class="sm-power" onclick="window.location.reload()" title="Reiniciar/Desligar">
-                <span class="material-symbols-outlined">power_settings_new</span>
+        <div style="display: flex; justify-content: flex-end; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 15px;">
+            <div onclick="window.location.reload()" style="width: 36px; height: 36px; border-radius: 50%; background: #ff5f56; display: flex; justify-content: center; align-items: center; color: white; cursor: pointer;">
+                <span class="material-symbols-outlined" style="font-size: 20px;">power_settings_new</span>
             </div>
         </div>
     </div>
 
     <div class="control-panel" id="controlPanel">
         <div class="quick-settings">
-            <div class="qs-btn active" onclick="toggleBtn(this)" title="Wi-Fi"><span class="material-symbols-outlined">wifi</span></div>
-            <div class="qs-btn active" onclick="toggleBtn(this)" title="Bluetooth"><span class="material-symbols-outlined">bluetooth</span></div>
-            <div class="qs-btn" onclick="toggleBtn(this)" title="Modo Avião"><span class="material-symbols-outlined">flight</span></div>
-            <div class="qs-btn" id="darkModeBtn" title="Modo Escuro"><span class="material-symbols-outlined">dark_mode</span></div>
+            <div class="qs-btn active"><span class="material-symbols-outlined">wifi</span></div>
+            <div class="qs-btn active"><span class="material-symbols-outlined">bluetooth</span></div>
+            <div class="qs-btn"><span class="material-symbols-outlined">flight</span></div>
+            <div class="qs-btn"><span class="material-symbols-outlined">dark_mode</span></div>
         </div>
-        <div class="slider-row"><span class="material-symbols-outlined">light_mode</span><input type="range" min="0" max="100" value="80" class="slider-input"></div>
-        <div class="slider-row"><span class="material-symbols-outlined">volume_up</span><input type="range" min="0" max="100" value="50" class="slider-input"></div>
+        <div class="slider-row"><span class="material-symbols-outlined" style="color:white; font-size:16px;">light_mode</span><input type="range" class="slider-input"></div>
+        <div class="slider-row"><span class="material-symbols-outlined" style="color:white; font-size:16px;">volume_up</span><input type="range" class="slider-input"></div>
     </div>
 
     <div class="taskbar taskbar-hidden" id="taskbar">
         <div class="taskbar-left">
-            <div class="start-btn" id="startBtn" title="Menu MintOS">
-                <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <div class="start-btn" id="startBtn">
+                <svg width="16" height="16" viewBox="0 0 100 100" fill="none">
                     <path d="M 75 22 A 40 40 0 1 0 75 78" stroke="white" stroke-width="12" stroke-linecap="round"/>
                     <rect x="25" y="44" width="38" height="12" rx="6" fill="white"/>
                 </svg>
             </div>
+            <div style="width:1px; height:20px; background:rgba(255,255,255,0.2); margin:0 5px;"></div>
+            <div class="taskbar-apps" id="taskbarApps"></div>
         </div>
-        <div class="system-tray" id="systemTrayBtn" title="Painel de Controle">
+        <div class="system-tray" id="systemTrayBtn">
             <span class="material-symbols-outlined">wifi</span>
-            <span class="material-symbols-outlined battery-icon">battery_5_bar</span>
+            <span class="material-symbols-outlined" style="transform: rotate(90deg);">battery_5_bar</span>
             <span id="clock">00:00</span>
         </div>
     </div>
@@ -354,154 +428,232 @@
         // ================== RELÓGIO ==================
         function updateClock() {
             const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('clock').textContent = `${hours}:${minutes}`;
-            document.getElementById('lockClockText').textContent = `${hours}:${minutes}`;
-            let dateString = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
-            document.getElementById('lockDateText').textContent = dateString.charAt(0).toUpperCase() + dateString.slice(1);
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${h}:${m}`;
+            document.getElementById('lockClockText').textContent = `${h}:${m}`;
         }
         setInterval(updateClock, 1000); updateClock();
 
-        // ================== MENU CLIQUE DIREITO ==================
-        const contextMenu = document.getElementById('contextMenu');
-        const desktopArea = document.getElementById('desktop-wallpaper');
+        // ================== SISTEMA DE APPS ==================
+        const appData = {
+            'config': { title: 'Ajustes', icon: 'settings', color: 'bg-gray' },
+            'calculadora': { title: 'Calculadora', icon: 'calculate', color: 'bg-green' },
+            'notas': { title: 'Notas', icon: 'edit_note', color: 'bg-yellow' },
+            'paint': { title: 'Paint', icon: 'palette', color: 'bg-red' },
+            'galeria': { title: 'Galeria', icon: 'image', color: 'bg-purple' },
+            'arquivos': { title: 'Arquivos', icon: 'folder', color: 'bg-blue' } 
+        };
 
-        desktopArea.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            let x = e.clientX;
-            let y = e.clientY;
+        let zIndexCount = 50;
 
-            if (x + 220 > window.innerWidth) { x = window.innerWidth - 220; }
-            if (y + 250 > window.innerHeight) { y = window.innerHeight - 250; }
-
-            contextMenu.style.left = `${x}px`;
-            contextMenu.style.top = `${y}px`;
-            contextMenu.style.display = 'flex';
-        });
-
-        document.addEventListener('click', (e) => {
-            if (e.button !== 2) { 
-                contextMenu.style.display = 'none';
+        function openApp(appId) {
+            if(appId === 'arquivos') { alert('Gerenciador de Arquivos em breve!'); return; }
+            
+            const win = document.getElementById(`win-${appId}`);
+            if(!win) return;
+            
+            zIndexCount++;
+            win.style.zIndex = zIndexCount;
+            win.classList.add('active');
+            win.classList.remove('minimized');
+            
+            // Adiciona na barra de tarefas
+            const tbContainer = document.getElementById('taskbarApps');
+            if(!document.getElementById(`tb-${appId}`)) {
+                const iconDiv = document.createElement('div');
+                iconDiv.className = `tb-app-icon ${appData[appId].color}`;
+                iconDiv.id = `tb-${appId}`;
+                iconDiv.onclick = () => toggleMinMax(appId);
+                iconDiv.innerHTML = `<span class="material-symbols-outlined">${appData[appId].icon}</span>`;
+                tbContainer.appendChild(iconDiv);
             }
+            
+            document.getElementById('startMenu').classList.remove('show');
+            
+            // Dá o start correto no Paint dependendo do tamanho da tela
+            if(appId === 'paint') {
+                setTimeout(initPaint, 250); 
+            }
+        }
+
+        function closeApp(appId) {
+            document.getElementById(`win-${appId}`).classList.remove('active');
+            const tbIcon = document.getElementById(`tb-${appId}`);
+            if(tbIcon) tbIcon.remove();
+        }
+
+        function toggleMinMax(appId) {
+            const win = document.getElementById(`win-${appId}`);
+            if(win.classList.contains('minimized')) {
+                win.classList.remove('minimized');
+                zIndexCount++; win.style.zIndex = zIndexCount;
+            } else {
+                win.classList.add('minimized');
+            }
+        }
+
+        function minApp(appId) { document.getElementById(`win-${appId}`).classList.add('minimized'); }
+        function maxApp(appId) { document.getElementById(`win-${appId}`).classList.toggle('maximized'); }
+
+        // Clicar na janela traz ela para a frente
+        document.querySelectorAll('.window').forEach(win => {
+            win.addEventListener('mousedown', () => { zIndexCount++; win.style.zIndex = zIndexCount; });
+            win.addEventListener('touchstart', () => { zIndexCount++; win.style.zIndex = zIndexCount; }, {passive:true});
         });
 
-        // ================== GERENCIADOR DE JANELAS ==================
-        function openWindow(id) {
-            document.getElementById(id).classList.add('active');
-            contextMenu.style.display = 'none'; 
-            startMenu.classList.remove('show');
-        }
+        // ================== LÓGICA DE ARRASTAR ==================
+        function makeDraggable(winId, headerId) {
+            const win = document.getElementById(winId);
+            const header = document.getElementById(headerId);
+            if(!win || !header) return;
 
-        function closeWindow(id) {
-            document.getElementById(id).classList.remove('active');
-        }
+            let isDragging = false, startX, startY, initialX = 0, initialY = 0;
 
-        function makeDraggable(windowElement, headerElement) {
-            let isDragging = false, currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
             function dragStart(e) {
-                if (e.type === "touchstart") { initialX = e.touches[0].clientX - xOffset; initialY = e.touches[0].clientY - yOffset; } 
-                else { initialX = e.clientX - xOffset; initialY = e.clientY - yOffset; }
                 if (e.target.closest('.window-controls')) return;
+                if(win.classList.contains('maximized')) return;
+                
+                let clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+                let clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+                
+                const style = window.getComputedStyle(win);
+                const matrix = new WebKitCSSMatrix(style.transform);
+                initialX = matrix.m41; initialY = matrix.m42;
+                
+                startX = clientX - initialX; startY = clientY - initialY;
                 isDragging = true;
             }
-            function dragEnd(e) { initialX = currentX; initialY = currentY; isDragging = false; }
+
             function drag(e) {
-                if (isDragging) {
-                    e.preventDefault();
-                    if (e.type === "touchmove") { currentX = e.touches[0].clientX - initialX; currentY = e.touches[0].clientY - initialY; } 
-                    else { currentX = e.clientX - initialX; currentY = e.clientY - initialY; }
-                    xOffset = currentX; yOffset = currentY;
-                    windowElement.style.transform = `translate(${currentX}px, ${currentY}px) scale(1)`;
-                }
+                if (!isDragging) return;
+                e.preventDefault();
+                let clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+                let clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+                win.style.transform = `translate(${clientX - startX}px, ${clientY - startY}px) scale(1)`;
             }
-            headerElement.addEventListener("mousedown", dragStart, false); document.addEventListener("mouseup", dragEnd, false); document.addEventListener("mousemove", drag, false);
-            headerElement.addEventListener("touchstart", dragStart, {passive: false}); document.addEventListener("touchend", dragEnd, false); document.addEventListener("touchmove", drag, {passive: false});
+
+            function dragEnd() { isDragging = false; }
+
+            header.addEventListener('mousedown', dragStart);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', dragEnd);
+            
+            header.addEventListener('touchstart', dragStart, {passive: false});
+            document.addEventListener('touchmove', drag, {passive: false});
+            document.addEventListener('touchend', dragEnd);
         }
-        makeDraggable(document.getElementById('personalizationWindow'), document.getElementById('personalizationHeader'));
 
-        // ================== APLICATIVO DE WALLPAPER ==================
-        const wallpaperPicker = document.getElementById('wallpaper-picker');
-        const desktopWallpaper = document.getElementById('desktop-wallpaper');
-        const ringsContainer = document.getElementById('rings-container');
+        makeDraggable('win-config', 'header-config');
+        makeDraggable('win-calculadora', 'header-calculadora');
+        makeDraggable('win-notas', 'header-notas');
+        makeDraggable('win-paint', 'header-paint');
+        makeDraggable('win-galeria', 'header-galeria');
 
-        wallpaperPicker.addEventListener('change', (event) => {
-            const file = event.target.files[0]; 
-            if (file) {
-                const imageUrl = URL.createObjectURL(file);
-                ringsContainer.style.display = 'none';
-                desktopWallpaper.style.backgroundImage = `url('${imageUrl}')`;
-            }
-        });
-
-        // ================== MENU INICIAR & PAINEL DE CONTROLE ==================
-        const systemTrayBtn = document.getElementById('systemTrayBtn');
-        const controlPanel = document.getElementById('controlPanel');
-        const darkModeBtn = document.getElementById('darkModeBtn');
-        const startBtn = document.getElementById('startBtn');
-        const startMenu = document.getElementById('startMenu');
-
-        systemTrayBtn.addEventListener('click', (e) => { 
-            e.stopPropagation(); 
-            controlPanel.classList.toggle('show'); 
-            startMenu.classList.remove('show');
-        });
-
-        startBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            startMenu.classList.toggle('show');
-            controlPanel.classList.remove('show');
-        });
-
-        document.addEventListener('click', (e) => { 
-            if (!controlPanel.contains(e.target) && e.target !== systemTrayBtn) {
-                controlPanel.classList.remove('show'); 
-            }
-            if (!startMenu.contains(e.target) && e.target !== startBtn) {
-                startMenu.classList.remove('show');
-            }
-        });
-
-        function toggleBtn(element) { element.classList.toggle('active'); }
-        darkModeBtn.addEventListener('click', () => { darkModeBtn.classList.toggle('active'); document.body.classList.toggle('dark-theme'); });
-
-        // ================== SLIDE TO UNLOCK ==================
-        const lockScreen = document.getElementById('lockScreen');
-        const slideContainer = document.getElementById('slideContainer');
-        const slideThumb = document.getElementById('slideThumb');
-        const slideText = document.getElementById('slideText');
-        const taskbar = document.getElementById('taskbar'); 
-        const desktopAreaIcons = document.getElementById('desktopArea');
+        // ================== APPS FUNCIONALIDADES ==================
         
-        let isSliding = false, startSlideX = 0, maxTranslateX = 0;
-        function calcMax() { maxTranslateX = slideContainer.clientWidth - slideThumb.clientWidth - 10; }
-        function sDragStart(clientX) { isSliding = true; startSlideX = clientX; calcMax(); slideThumb.style.transition = 'none'; slideText.style.opacity = '0.1'; }
-        function sDrag(clientX) {
-            if (!isSliding) return; let moveX = clientX - startSlideX;
-            if (moveX < 0) moveX = 0; if (moveX > maxTranslateX) moveX = maxTranslateX;
-            slideThumb.style.transform = `translateX(${moveX}px)`;
+        // --- Calculadora ---
+        let calcVal = '0';
+        function calcPress(v) {
+            const display = document.getElementById('calcDisplay');
+            if(v === 'C') calcVal = '0';
+            else if(v === '=') { 
+                try { calcVal = String(eval(calcVal)); } 
+                catch { calcVal = 'Erro'; } 
+            }
+            else { 
+                if(calcVal === '0' || calcVal === 'Erro') calcVal = v;
+                else calcVal += v; 
+            }
+            display.innerText = calcVal;
         }
-        function sDragEnd() {
-            if (!isSliding) return; isSliding = false; slideThumb.style.transition = 'transform 0.3s ease'; slideText.style.opacity = '1';
-            let matrix = new WebKitCSSMatrix(window.getComputedStyle(slideThumb).transform);
-            if (matrix.m41 > maxTranslateX * 0.8) {
-                slideThumb.style.transform = `translateX(${maxTranslateX}px)`; 
+
+        // --- Notas (Com Salvar Automaticamente) ---
+        const notesArea = document.getElementById('notesArea');
+        notesArea.value = localStorage.getItem('mintos_notes') || '';
+        notesArea.addEventListener('input', (e) => {
+            localStorage.setItem('mintos_notes', e.target.value);
+        });
+
+        // --- Wallpaper ---
+        document.getElementById('wallpaper-picker').addEventListener('change', (e) => {
+            if (e.target.files[0]) {
+                document.getElementById('rings-container').style.display = 'none';
+                document.getElementById('desktop-wallpaper').style.backgroundImage = `url('${URL.createObjectURL(e.target.files[0])}')`;
+            }
+        });
+
+        // --- Paint ---
+        let paintColor = 'black';
+        let isDrawing = false;
+        let ctx;
+        function initPaint() {
+            const canvas = document.getElementById('paintCanvas');
+            const winBody = canvas.parentElement;
+            
+            // Pega o tamanho exato da janela pra n bugar o toque do dedo
+            canvas.width = winBody.clientWidth - 30; 
+            canvas.height = winBody.clientHeight - 80;
+            
+            ctx = canvas.getContext('2d');
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        function clearCanvas() {
+            if(ctx) { ctx.fillStyle="white"; ctx.fillRect(0,0,document.getElementById('paintCanvas').width, document.getElementById('paintCanvas').height); }
+        }
+        const canvas = document.getElementById('paintCanvas');
+        function startPosition(e) { isDrawing = true; draw(e); }
+        function endPosition() { isDrawing = false; ctx.beginPath(); }
+        function draw(e) {
+            if(!isDrawing || !ctx) return;
+            e.preventDefault();
+            let x = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+            let y = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineWidth = 4; ctx.lineCap = "round"; ctx.strokeStyle = paintColor;
+            ctx.lineTo(x - rect.left, y - rect.top); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x - rect.left, y - rect.top);
+        }
+        canvas.addEventListener('mousedown', startPosition); canvas.addEventListener('mouseup', endPosition); canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('touchstart', startPosition, {passive:false}); canvas.addEventListener('touchend', endPosition); canvas.addEventListener('touchmove', draw, {passive:false});
+
+        // ================== MENUS E DESBLOQUEIO ==================
+        document.getElementById('startBtn').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('startMenu').classList.toggle('show'); document.getElementById('controlPanel').classList.remove('show'); });
+        document.getElementById('systemTrayBtn').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('controlPanel').classList.toggle('show'); document.getElementById('startMenu').classList.remove('show'); });
+        document.addEventListener('click', (e) => {
+            if (!document.getElementById('startMenu').contains(e.target) && e.target.id !== 'startBtn') document.getElementById('startMenu').classList.remove('show');
+            if (!document.getElementById('controlPanel').contains(e.target) && e.target.id !== 'systemTrayBtn') document.getElementById('controlPanel').classList.remove('show');
+        });
+
+        // Slide to unlock
+        const lockScreen = document.getElementById('lockScreen');
+        const slideThumb = document.getElementById('slideThumb');
+        let isSliding = false, startX = 0, maxW = 0;
+        
+        slideThumb.addEventListener('touchstart', (e) => { isSliding=true; startX=e.touches[0].clientX; maxW = document.getElementById('slideContainer').clientWidth - 50; }, {passive:true});
+        document.addEventListener('touchmove', (e) => { if(!isSliding) return; let move = e.touches[0].clientX - startX; if(move<0) move=0; if(move>maxW) move=maxW; slideThumb.style.transform=`translateX(${move}px)`; }, {passive:false});
+        document.addEventListener('touchend', () => {
+            if(!isSliding) return; isSliding = false;
+            let m = new WebKitCSSMatrix(window.getComputedStyle(slideThumb).transform).m41;
+            if(m > maxW * 0.8) {
+                slideThumb.style.transform = `translateX(${maxW}px)`;
                 setTimeout(() => { 
                     lockScreen.classList.add('hidden'); 
-                    // Mostra os ícones da área de trabalho de forma suave
-                    desktopAreaIcons.classList.add('show');
-                    
-                    setTimeout(() => { taskbar.classList.remove('taskbar-hidden'); }, 150); 
+                    document.getElementById('desktopArea').classList.add('show');
+                    setTimeout(() => document.getElementById('taskbar').classList.remove('taskbar-hidden'), 150);
                 }, 200);
-            } else { slideThumb.style.transform = `translateX(0px)`; }
-        }
-        slideThumb.addEventListener('touchstart', (e) => sDragStart(e.touches[0].clientX), {passive: true});
-        document.addEventListener('touchmove', (e) => { if(isSliding) sDrag(e.touches[0].clientX) }, {passive: false});
-        document.addEventListener('touchend', sDragEnd);
-        slideThumb.addEventListener('mousedown', (e) => sDragStart(e.clientX));
-        document.addEventListener('mousemove', (e) => { if(isSliding) sDrag(e.clientX) });
-        document.addEventListener('mouseup', sDragEnd);
-
+            } else { slideThumb.style.transition='transform 0.3s'; slideThumb.style.transform='translateX(0)'; setTimeout(()=>slideThumb.style.transition='none', 300); }
+        });
+        slideThumb.addEventListener('mousedown', (e) => { isSliding=true; startX=e.clientX; maxW = document.getElementById('slideContainer').clientWidth - 50; });
+        document.addEventListener('mousemove', (e) => { if(!isSliding) return; let move = e.clientX - startX; if(move<0) move=0; if(move>maxW) move=maxW; slideThumb.style.transform=`translateX(${move}px)`; });
+        document.addEventListener('mouseup', () => {
+            if(!isSliding) return; isSliding = false;
+            let m = new WebKitCSSMatrix(window.getComputedStyle(slideThumb).transform).m41;
+            if(m > maxW * 0.8) {
+                slideThumb.style.transform = `translateX(${maxW}px)`;
+                setTimeout(() => { lockScreen.classList.add('hidden'); document.getElementById('desktopArea').classList.add('show'); setTimeout(() => document.getElementById('taskbar').classList.remove('taskbar-hidden'), 150); }, 200);
+            } else { slideThumb.style.transition='transform 0.3s'; slideThumb.style.transform='translateX(0)'; setTimeout(()=>slideThumb.style.transition='none', 300); }
+        });
     </script>
 </body>
 </html>
