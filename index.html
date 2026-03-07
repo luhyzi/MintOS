@@ -3,754 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MintOS v2.6 - Windows Vertical Settings & Skip Boot</title>
-    
+    <title>MintOS v3.0 Ultimate</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* =========================================
-           VARIÁVEIS DE TEMA E CORES DO SISTEMA
-           ========================================= */
-        :root {
-            --glass-bg: rgba(255, 255, 255, 0.6); --glass-border: rgba(255, 255, 255, 0.4); --win-bg: rgba(240, 245, 250, 0.75);
-            --text-main: #051d38; --text-muted: rgba(5, 29, 56, 0.6); --cc-btn-bg: rgba(0, 0, 0, 0.05);
-            --cc-btn-active: #051d38; --cc-text-active: #ffffff; --calc-btn: rgba(0, 0, 0, 0.05); --calc-btn-active: rgba(0, 0, 0, 0.15);
-            --start-bg: rgba(0, 0, 0, 0.4); --start-logo: #ffffff; --tray-bg: rgba(0, 0, 0, 0.4); --tray-text: #ffffff;
-            
-            /* CORES DINÂMICAS DA INTERFACE (Variam com a escolha do usuário) */
-            --ui-accent: var(--cc-btn-active);      
-            --ui-accent-text: var(--cc-text-active); 
-            
-            /* CORES DO WALLPAPER DE FÁBRICA (Roxo) */
-            --ring-center: #9d4edd;
-            --ring-1: #4b1a8c;
-            --ring-2: #31105e;
-            --ring-3: #1e093b;
-            --ring-4: #120424;
-        }
-
-        body.dark-theme {
-            --glass-bg: rgba(15, 23, 42, 0.6); --glass-border: rgba(255, 255, 255, 0.1); --win-bg: rgba(30, 41, 59, 0.75);
-            --text-main: #ffffff; --text-muted: rgba(255, 255, 255, 0.6); --cc-btn-bg: rgba(255, 255, 255, 0.1);
-            --cc-btn-active: #ffffff; --cc-text-active: #051d38; --calc-btn: rgba(255, 255, 255, 0.1); --calc-btn-active: rgba(255, 255, 255, 0.25);
-            --start-bg: rgba(255, 255, 255, 0.2); --start-logo: #ffffff; --tray-bg: rgba(255, 255, 255, 0.15); --tray-text: #ffffff;
-        }
-
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #051d38; font-family: 'Poppins', sans-serif; touch-action: none; -webkit-user-select: none; user-select: none; transition: background-color 0.5s ease; }
-
-        /* =========================================
-           TELA DE PRÉ-BOOT E BOOT
-           ========================================= */
-        #preBootScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100000; background: #08020d; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: opacity 0.5s ease; }
-        .preboot-content { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 20px; gap: 15px; max-width: 400px; }
-        .preboot-content span.material-symbols-outlined.animate-rotate { font-size: 72px; color: var(--ring-center); }
-        .preboot-content h2 { margin: 0; font-weight: 500; font-size: 24px; }
-        .preboot-content p { margin: 0; font-size: 14px; opacity: 0.8; line-height: 1.5; }
-        .preboot-btn { padding: 15px 30px; background: white; color: #08020d; border: none; border-radius: 12px; font-family: 'Poppins'; font-size: 16px; font-weight: 600; cursor: pointer; transition: transform 0.2s, background 0.2s; margin-top: 10px; }
-        .preboot-btn.outline { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 10px 20px; font-size: 13px; font-weight: 400; margin-top: 5px; }
-        .preboot-btn:active { transform: scale(0.95); } .preboot-btn:not(.outline):hover { background: #e0e0e0; }
-        @keyframes rotatePhone { 0% { transform: rotate(0deg); } 50% { transform: rotate(-90deg); } 100% { transform: rotate(-90deg); } }
-        .animate-rotate { animation: rotatePhone 2s infinite ease-in-out alternate; }
-
-        #bootScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000000; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.8s ease-out; }
-        #bootText { position: absolute; color: white; font-size: 52px; font-weight: 300; letter-spacing: 2px; filter: blur(20px); opacity: 0; transition: filter 1s ease-out, opacity 1s ease-out; }
-        #bootLogoContainer { position: absolute; display: flex; flex-direction: column; align-items: center; opacity: 0; transition: opacity 1s ease-in-out; }
-        #bootLogo { width: 70px; height: 70px; color: white; }
-        .progress-bar-container { width: 220px; height: 4px; background: rgba(255, 255, 255, 0.15); border-radius: 4px; overflow: hidden; margin-top: 35px; opacity: 0; transition: opacity 1s ease-in-out; }
-        #bootProgress { width: 0%; height: 100%; background: white; border-radius: 4px; transition: width 4.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
-
-        /* =========================================
-           LOGIN E TELA DE BLOQUEIO
-           ========================================= */
-        #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
-        #loginOverlay.show { opacity: 1; pointer-events: all; }
-        .login-box { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255,255,255,0.2); padding: 35px; border-radius: 28px; width: 80%; max-width: 340px; display: flex; flex-direction: column; align-items: center; gap: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
-        .login-box h2 { color: white; margin: 0; font-weight: 500; font-size: 22px; }
-        .login-input { width: 100%; padding: 15px; border-radius: 16px; border: none; background: rgba(0,0,0,0.3); color: white; font-family: 'Poppins'; font-size: 16px; outline: none; text-align: center; box-sizing: border-box; border: 1px solid rgba(255,255,255,0.1); }
-        .login-input::placeholder { color: rgba(255,255,255,0.4); }
-        .login-actions { display: flex; gap: 10px; width: 100%; }
-        .login-btn { flex: 1; padding: 15px; border-radius: 16px; border: none; font-weight: 500; font-family: 'Poppins'; font-size: 15px; cursor: pointer; transition: transform 0.2s, background 0.2s; }
-        .login-btn.save { background: white; color: black; } .login-btn.skip { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
-        .login-btn:active { transform: scale(0.95); } .login-btn.skip:hover { background: rgba(255,255,255,0.2); }
-
-        .lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); z-index: 200; display: none; flex-direction: column; align-items: center; transition: opacity 0.5s ease; }
-        .lock-screen.hidden { opacity: 0; pointer-events: none; }
-        .lock-time-container { margin-top: 15vh; text-align: center; color: white; }
-        .lock-clock { font-size: 70px; font-weight: 300; margin: 0; line-height: 1; }
-        .lock-date { font-size: 16px; opacity: 0.9; margin-top: 5px; }
-        .slide-to-unlock-container { margin-top: auto; margin-bottom: 60px; width: 85%; max-width: 320px; height: 55px; background: rgba(0, 0, 0, 0.3); border-radius: 30px; position: relative; display: flex; align-items: center; border: 1px solid rgba(255, 255, 255, 0.2); overflow: hidden; }
-        .slide-text { width: 100%; text-align: center; color: rgba(255,255,255,0.6); font-size: 14px; position: absolute; pointer-events: none; animation: shimmer 2s infinite linear; }
-        @keyframes shimmer { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-        .slide-thumb { width: 45px; height: 45px; background: white; border-radius: 50%; position: absolute; left: 5px; display: flex; justify-content: center; align-items: center; cursor: grab; }
-        .slide-thumb .material-symbols-outlined { color: #051d38; font-size: 20px; margin-left: 2px; }
-
-        /* =========================================
-           WALLPAPER E ÁREA DE TRABALHO
-           ========================================= */
-        .wallpaper-container { display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; position: fixed; top: 0; left: 0; z-index: 1; transition: background-image 0.5s ease-in-out; background-position: center center; background-size: cover; background-repeat: no-repeat; }
-        #rings-container { display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
-        .ring { border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; transition: background-color 0.5s; }
-        
-        .outer-ring-4 { width: 250vh; height: 250vh; background-color: var(--ring-4); box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.7); }
-        .outer-ring-3 { width: 180vh; height: 180vh; background-color: var(--ring-3); box-shadow: inset 0 0 45px rgba(0, 0, 0, 0.6); }
-        .outer-ring-2 { width: 120vh; height: 120vh; background-color: var(--ring-2); box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.5); }
-        .outer-ring-1 { width: 70vh; height: 70vh; background-color: var(--ring-1); box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.4); }
-        .inner-circle { width: 30vh; height: 30vh; background-image: radial-gradient(circle at center, var(--ring-center) 0%, var(--ring-1) 100%); border-radius: 50%; box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.3); transition: background-image 0.5s;}
-
-        .bg-blue { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); } .bg-red { background: linear-gradient(135deg, #f77062 0%, #fe5196 100%); }
-        .bg-green { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); } .bg-yellow { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
-        .bg-purple { background: linear-gradient(135deg, #c471ed 0%, #f64f59 100%); } .bg-gray { background: linear-gradient(135deg, #606c88 0%, #3f4c6b 100%); }
-        .bg-ocean { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); } .bg-mint { background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%); } 
-
-        .squircle { width: 54px; height: 54px; border-radius: 14px; display: flex; justify-content: center; align-items: center; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: transform 0.2s; }
-        .squircle .material-symbols-outlined { font-size: 28px; }
-        .desktop-area { position: absolute; top: 0; left: 0; right: 0; bottom: 0; padding: 20px; display: flex; flex-direction: column; align-content: flex-start; flex-wrap: wrap; gap: 20px; z-index: 10; opacity: 0; pointer-events: none; transition: opacity 0.8s ease; }
-        .desktop-area.show { opacity: 1; }
-        .desktop-icon { width: 70px; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; pointer-events: all; }
-        .desktop-icon:active .squircle { transform: scale(0.9); }
-        .icon-label { color: white; font-size: 11px; text-align: center; text-shadow: 0 1px 3px rgba(0,0,0,0.8); font-weight: 500; }
-
-        /* =========================================
-           MENUS FLUTUANTES 
-           ========================================= */
-        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px); border: 1px solid var(--glass-border); border-radius: 24px; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2); color: var(--text-main); transition: background 0.3s, border 0.3s, color 0.3s; }
-        .start-menu { position: fixed; left: 50%; bottom: 80px; width: 90%; max-width: 320px; padding: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 100; visibility: hidden; opacity: 0; transform: translateX(-50%) translateY(20px); transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        .start-menu.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: all; }
-        .sm-header { display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px; }
-        .sm-user-icon { width: 46px; height: 46px; border-radius: 50%; background: var(--text-main); display: flex; justify-content: center; align-items: center; font-size: 20px; color: var(--glass-bg); font-weight: 600; text-transform: uppercase;}
-        .sm-apps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; justify-items: center; }
-        .sm-app { display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
-        .sm-app .squircle { width: 44px; height: 44px; border-radius: 12px; }
-        .sm-app .squircle .material-symbols-outlined { font-size: 24px; }
-        .sm-app span { color: var(--text-main); font-size: 10px; font-weight: 500; text-align: center; }
-
-        .control-panel { position: fixed; right: 15px; bottom: 80px; width: 85%; max-width: 320px; padding: 20px; display: flex; flex-direction: column; gap: 20px; z-index: 100; visibility: hidden; opacity: 0; transform: translateY(20px); transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        .control-panel.show { visibility: visible; opacity: 1; transform: translateY(0); pointer-events: all; }
-        .cc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .cc-module { background: var(--cc-btn-bg); border-radius: 16px; padding: 15px; display: flex; flex-direction: column; gap: 8px; cursor: pointer; transition: all 0.2s ease; border: 1px solid var(--glass-border); }
-        .cc-module .material-symbols-outlined { font-size: 22px; color: var(--text-main); transition: color 0.2s; }
-        .cc-label { font-size: 12px; font-weight: 500; color: var(--text-main); transition: color 0.2s; }
-        
-        .cc-module.active { background: var(--ui-accent); border-color: transparent; }
-        .cc-module.active .material-symbols-outlined, .cc-module.active .cc-label { color: var(--ui-accent-text); }
-        
-        .cc-sliders { display: flex; flex-direction: column; gap: 12px; background: var(--cc-btn-bg); padding: 15px; border-radius: 16px; border: 1px solid var(--glass-border); }
-        .slider-row { display: flex; align-items: center; gap: 12px; }
-        .slider-row .material-symbols-outlined { font-size: 18px; color: var(--text-main); }
-        .slider-input { flex-grow: 1; -webkit-appearance: none; height: 6px; background: var(--glass-border); border-radius: 3px; outline: none; }
-        .slider-input::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--text-main); cursor: pointer; }
-
-        /* =========================================
-           SISTEMA DE JANELAS E CONFIGURAÇÕES
-           ========================================= */
-        .window {
-            position: absolute; top: 10%; left: 5%; width: 90%; max-width: 480px; height: 70vh; max-height: 600px;
-            background: var(--win-bg); backdrop-filter: blur(40px) brightness(1.1); -webkit-backdrop-filter: blur(40px) brightness(1.1);
-            border: 1px solid var(--glass-border); border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.25);
-            display: flex; flex-direction: column; z-index: 50; overflow: hidden;
-            visibility: hidden; opacity: 0; transform: scale(0.9) translateY(30px); transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); color: var(--text-main);
-        }
-        .window.active { visibility: visible; opacity: 1; transform: scale(1) translateY(0); pointer-events: all; }
-        .window.minimized { visibility: hidden; opacity: 0; transform: scale(0.7) translateY(150px); pointer-events: none; }
-        .window.maximized { top: 0 !important; left: 0 !important; width: 100vw !important; max-width: 100vw !important; height: 100vh !important; max-height: 100vh !important; border-radius: 0; transform: translate(0, 0) scale(1) !important; }
-
-        .window-header { height: 50px; background: transparent; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; cursor: grab; flex-shrink: 0; }
-        .window-header:active { cursor: grabbing; }
-        .window-title { color: var(--text-main); font-size: 14px; font-weight: 600; pointer-events: none; }
-        .window-controls { display: flex; gap: 8px; }
-        .win-btn { width: 14px; height: 14px; border-radius: 50%; cursor: pointer; background: var(--text-muted); transition: background 0.2s; }
-        .win-close:hover, .win-close:active { background: #ff5f56; } .win-min:hover, .win-min:active { background: #ffbd2e; } .win-max:hover, .win-max:active { background: #27c93f; }
-        .window-body { flex-grow: 1; display: flex; flex-direction: column; padding: 0 15px 15px 15px; overflow-y: auto; overflow-x: hidden; }
-
-        /* --- LAYOUT DE CONFIGURAÇÃO VERTICAL (ESTILO WINDOWS) --- */
-        .config-layout { display: flex; height: 100%; width: 100%; overflow: hidden; }
-        
-        /* LINHA CORRIGIDA COM PADDING-LEFT: 15PX E LARGURA DE 155PX */
-        .config-sidebar { width: 155px; flex-shrink: 0; display: flex; flex-direction: column; gap: 5px; border-right: 1px solid var(--glass-border); padding-left: 15px; padding-right: 10px; padding-top: 5px; overflow-y: auto; }
-        
-        .config-tab { 
-            padding: 10px 12px; font-size: 13px; font-weight: 500; cursor: pointer; 
-            color: var(--text-muted); border-radius: 8px; transition: background 0.2s, color 0.2s; 
-            text-align: left; position: relative; word-break: break-word; line-height: 1.3;
-        }
-        .config-tab:hover { background: rgba(0,0,0,0.05); }
-        .dark-theme .config-tab:hover { background: rgba(255,255,255,0.05); }
-        
-        /* Aba ativa com linha lateral igual Windows 11 */
-        .config-tab.active { background: var(--cc-btn-bg); color: var(--text-main); }
-        .config-tab.active::before { content: ''; position: absolute; left: 0; top: 20%; height: 60%; width: 4px; background: var(--ui-accent); border-radius: 4px; }
-        
-        .config-main-area { flex-grow: 1; overflow-y: auto; padding-left: 15px; padding-right: 5px; }
-        
-        .config-content { display: none; animation: fadeIn 0.3s ease; padding-bottom: 20px;}
-        .config-content.active { display: flex; flex-direction: column; gap: 20px; }
-        
-        .config-section { background: var(--calc-btn); padding: 20px; border-radius: 16px; border: 1px solid var(--glass-border); }
-        .config-section h4 { margin: 0 0 15px 0; font-size: 14px; font-weight: 600; }
-        .color-picker { display: flex; gap: 12px; margin-top: 10px; align-items: center; flex-wrap: wrap;}
-        .color-circle { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
-        .color-circle:hover { transform: scale(1.1); }
-        .color-circle.active { border-color: var(--text-main); transform: scale(1.1); }
-        
-        /* Alavancas (Toggles) */
-        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--glass-border); }
-        .setting-row:last-child { border-bottom: none; padding-bottom: 0; }
-        .setting-info { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500;}
-        .setting-info .material-symbols-outlined { color: var(--text-muted); }
-        .switch { position: relative; display: inline-block; width: 46px; height: 26px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--glass-border); transition: .4s; border-radius: 26px; }
-        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        input:checked + .slider { background-color: var(--ui-accent); }
-        input:checked + .slider:before { transform: translateX(20px); }
-
-        /* Sistema Info */
-        .sys-info-header { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .sys-info-header svg { width: 60px; height: 60px; color: var(--ring-center); }
-        .sys-info-header h2 { margin: 0; font-size: 20px; }
-        .sys-info-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-        .sys-box { background: rgba(0,0,0,0.05); padding: 12px 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;}
-        .dark-theme .sys-box { background: rgba(255,255,255,0.05); }
-        .sys-box span { font-size: 12px; color: var(--text-muted); }
-        .sys-box strong { font-size: 13px; color: var(--text-main); }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* OUTROS APPS */
-        .calc-wrapper { display: flex; flex-direction: column; height: 100%; } .calc-display { background: transparent; padding: 10px; text-align: right; font-size: 48px; min-height: 70px; display:flex; align-items:flex-end; justify-content:flex-end; font-weight: 300; letter-spacing: 1px;} .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); gap: 10px; flex-grow: 1; } .calc-btn { background: var(--calc-btn); border: none; border-radius: 16px; color: var(--text-main); font-size: 24px; cursor: pointer; font-family: 'Poppins', sans-serif; transition: background 0.1s;} .calc-btn:active { background: var(--calc-btn-active); transform: scale(0.95); } 
-        .calc-op { color: var(--ring-center); font-weight: 500; }
-        .notes-area { width: 100%; flex-grow: 1; background: transparent; border: none; color: var(--text-main); font-family: 'Poppins', sans-serif; font-size: 15px; resize: none; outline: none; line-height: 1.6; } .notes-area::placeholder { color: var(--text-muted); }
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; } .gallery-img { width: 100%; aspect-ratio: 1; border-radius: 16px; object-fit: cover; background: rgba(0,0,0,0.1); }
-        .paint-toolbar { display:flex; gap:10px; margin-bottom:15px; justify-content: center; flex-wrap: wrap;} .paint-color { width:35px; height:35px; border-radius:50%; border:2px solid var(--glass-border); cursor: pointer; } #paintCanvas { background: rgba(255,255,255,0.9); border-radius: 16px; cursor: crosshair; touch-action: none; width: 100%; flex-grow: 1; box-shadow: inset 0 0 10px rgba(0,0,0,0.1); }
-        .browser-toolbar { display: flex; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid var(--glass-border); margin-bottom: 15px; } .browser-btn { width: 32px; height: 32px; border-radius: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; background: var(--cc-btn-bg); transition: background 0.2s; } .browser-url-bar { flex-grow: 1; height: 36px; border-radius: 18px; background: var(--cc-btn-bg); border: 1px solid var(--glass-border); display: flex; align-items: center; padding: 0 15px; gap: 8px; } .browser-url-bar input { flex-grow: 1; background: transparent; border: none; color: var(--text-main); font-family: 'Poppins'; outline: none; font-size: 13px; } .browser-content { flex-grow: 1; border-radius: 16px; background: white; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; padding: 0; } #browserIframe { width: 100%; height: 100%; border: none; display: none; background: white; border-radius: 16px; } #browserHome { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; } .google-logo { font-size: 40px; font-weight: 500; font-family: sans-serif; letter-spacing: -1px; margin-bottom: 25px; } .g-blue { color: #4285F4; } .g-red { color: #EA4335; } .g-yellow { color: #FBBC05; } .g-green { color: #34A853; } .google-search-box { width: 85%; max-width: 400px; border: 1px solid #dfe1e5; border-radius: 24px; padding: 12px 20px; display: flex; align-items: center; gap: 10px; box-shadow: 0 1px 6px rgba(32,33,36,.28); background: white; } .google-search-box input { flex-grow: 1; border: none; outline: none; font-size: 16px; color: black; }
-        .update-body { display: flex; flex-direction: column; align-items: center; padding: 10px 15px; } .update-hero { text-align: center; margin-bottom: 25px; animation: slideDown 0.6s ease-out; } .update-icon-wrapper { width: 64px; height: 64px; background: linear-gradient(135deg, #00c6ff, #0072ff); border-radius: 20px; display: flex; justify-content: center; align-items: center; margin: 0 auto 15px auto; box-shadow: 0 10px 20px rgba(0,114,255,0.3); } .update-icon-wrapper span { font-size: 36px; color: white; } .update-hero h2 { margin: 0 0 5px 0; font-size: 24px; font-weight: 600; color: var(--text-main); } .update-hero p { margin: 0; opacity: 0.7; font-size: 13px; color: var(--text-main); } .update-list { display: flex; flex-direction: column; gap: 12px; width: 100%; } .update-item { display: flex; gap: 15px; align-items: center; background: var(--calc-btn); padding: 15px; border-radius: 16px; border: 1px solid var(--glass-border); opacity: 0; animation: fadeInRight 0.5s forwards; } 
-        .update-item span { font-size: 28px; color: var(--ring-center); } 
-        .update-item h4 { margin: 0 0 3px 0; font-size: 14px; font-weight: 600; color: var(--text-main); } .update-item p { margin: 0; font-size: 12px; color: var(--text-muted); }
-
-        /* =========================================
-           BARRA DE TAREFAS 
-           ========================================= */
-        .taskbar { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 650px; height: 56px; z-index: 90; border-radius: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 8px; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s; }
-        .taskbar.taskbar-hidden { transform: translate(-50%, 150px); opacity: 0; pointer-events: none; }
-        .taskbar-left { display: flex; align-items: center; gap: 8px; flex-grow: 1; }
-        .start-btn { width: 42px; height: 42px; background: var(--start-bg); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.2s, background 0.3s; }
-        .start-btn svg { color: var(--start-logo); } .start-btn:active { transform: scale(0.9); }
-        .taskbar-apps { display: flex; gap: 8px; overflow-x: auto; padding: 0 5px; scrollbar-width: none; }
-        .tb-app-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.15);} .tb-app-icon:active { transform: scale(0.9); } .tb-app-icon .material-symbols-outlined { font-size: 22px; color: white; }
-        .system-tray { background: var(--tray-bg); height: 42px; border-radius: 21px; display: flex; align-items: center; padding: 0 16px 0 14px; gap: 10px; color: var(--tray-text); cursor: pointer; transition: background 0.3s, color 0.3s; }
-        .system-tray .material-symbols-outlined { font-size: 18px; } #clock { font-weight: 600; font-size: 13px; letter-spacing: 0.5px;}
+        :root { --glass-bg: rgba(255,255,255,0.6); --glass-border: rgba(255,255,255,0.4); --win-bg: rgba(240,245,250,0.75); --text-main: #051d38; --text-muted: rgba(5,29,56,0.6); --cc-btn-bg: rgba(0,0,0,0.05); --cc-btn-active: #051d38; --cc-text-active: #ffffff; --calc-btn: rgba(0,0,0,0.05); --calc-btn-active: rgba(0,0,0,0.15); --start-bg: rgba(0,0,0,0.4); --start-logo: #ffffff; --tray-bg: rgba(0,0,0,0.4); --tray-text: #ffffff; --ui-accent: var(--cc-btn-active); --ui-accent-text: var(--cc-text-active); --ring-center: #9d4edd; --ring-1: #4b1a8c; --ring-2: #31105e; --ring-3: #1e093b; --ring-4: #120424; }
+        body.dark-theme { --glass-bg: rgba(15,23,42,0.6); --glass-border: rgba(255,255,255,0.1); --win-bg: rgba(30,41,59,0.75); --text-main: #ffffff; --text-muted: rgba(255,255,255,0.6); --cc-btn-bg: rgba(255,255,255,0.1); --cc-btn-active: #ffffff; --cc-text-active: #051d38; --calc-btn: rgba(255,255,255,0.1); --calc-btn-active: rgba(255,255,255,0.25); --start-bg: rgba(255,255,255,0.2); --start-logo: #ffffff; --tray-bg: rgba(255,255,255,0.15); --tray-text: #ffffff; }
+        body,html { margin:0; padding:0; height:100%; width:100%; overflow:hidden; background-color:#051d38; font-family:'Poppins',sans-serif; touch-action:none; -webkit-user-select:none; user-select:none; transition:background-color 0.5s ease; }
+        #preBootScreen,#bootScreen,#loginOverlay,.lock-screen { position:fixed; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+        #preBootScreen { z-index:100000; background:#08020d; color:white; transition:opacity 0.5s ease; } .preboot-content { display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px; gap:15px; max-width:400px; } .preboot-content span.material-symbols-outlined.animate-rotate { font-size:72px; color:var(--ring-center); animation:rotatePhone 2s infinite ease-in-out alternate; } .preboot-btn { padding:15px 30px; background:white; color:#08020d; border:none; border-radius:12px; font-family:'Poppins'; font-size:16px; font-weight:600; cursor:pointer; transition:transform 0.2s; margin-top:10px; } .preboot-btn.outline { background:transparent; border:1px solid rgba(255,255,255,0.3); color:white; padding:10px 20px; font-size:13px; font-weight:400; } .preboot-btn:active { transform:scale(0.95); } @keyframes rotatePhone { 0%{transform:rotate(0deg);} 100%{transform:rotate(-90deg);} }
+        #bootScreen { background-color:#000000; z-index:9999; display:none; transition:opacity 0.8s ease-out; } #bootText { position:absolute; color:white; font-size:52px; font-weight:300; filter:blur(20px); opacity:0; transition:all 1s ease-out; } #bootLogoContainer { position:absolute; display:flex; flex-direction:column; align-items:center; opacity:0; transition:opacity 1s; } .progress-bar-container { width:220px; height:4px; background:rgba(255,255,255,0.15); border-radius:4px; margin-top:35px; opacity:0; transition:opacity 1s; } #bootProgress { width:0%; height:100%; background:white; border-radius:4px; transition:width 4.5s cubic-bezier(0.2,0.8,0.2,1); }
+        #loginOverlay { z-index:10000; background:rgba(0,0,0,0.5); backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px); opacity:0; pointer-events:none; transition:opacity 0.4s ease; } #loginOverlay.show { opacity:1; pointer-events:all; } .login-box { background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2); padding:35px; border-radius:28px; width:80%; max-width:340px; display:flex; flex-direction:column; align-items:center; gap:20px; box-shadow:0 20px 50px rgba(0,0,0,0.3); } .login-input { width:100%; padding:15px; border-radius:16px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.3); color:white; font-family:'Poppins'; font-size:16px; text-align:center; outline:none; } .login-actions { display:flex; gap:10px; width:100%; } .login-btn { flex:1; padding:15px; border-radius:16px; border:none; font-weight:500; font-family:'Poppins'; font-size:15px; cursor:pointer; transition:transform 0.2s; } .login-btn.save { background:white; color:black; } .login-btn.skip { background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.2); } .login-btn:active { transform:scale(0.95); }
+        .lock-screen { background:linear-gradient(to bottom,rgba(0,0,0,0.2) 0%,rgba(0,0,0,0.6) 100%); backdrop-filter:blur(25px); -webkit-backdrop-filter:blur(25px); z-index:200; display:none; transition:opacity 0.5s ease; } .lock-screen.hidden { opacity:0; pointer-events:none; } .lock-time-container { margin-top:15vh; text-align:center; color:white; } .lock-clock { font-size:70px; font-weight:300; margin:0; line-height:1; } .lock-date { font-size:16px; opacity:0.9; margin-top:5px; } .slide-to-unlock-container { margin-top:auto; margin-bottom:60px; width:85%; max-width:320px; height:55px; background:rgba(0,0,0,0.3); border-radius:30px; position:relative; display:flex; align-items:center; border:1px solid rgba(255,255,255,0.2); overflow:hidden; } .slide-text { width:100%; text-align:center; color:rgba(255,255,255,0.6); font-size:14px; position:absolute; pointer-events:none; animation:shimmer 2s infinite linear; } @keyframes shimmer { 0%,100%{opacity:0.3;} 50%{opacity:1;} } .slide-thumb { width:45px; height:45px; background:white; border-radius:50%; position:absolute; left:5px; display:flex; justify-content:center; align-items:center; cursor:grab; }
+        .wallpaper-container { display:flex; justify-content:center; align-items:center; width:100%; height:100%; position:fixed; top:0; left:0; z-index:1; transition:background-image 0.5s ease-in-out; background-position:center center; background-size:cover; } #rings-container { display:flex; justify-content:center; align-items:center; width:100%; height:100%; } .ring { border-radius:50%; display:flex; justify-content:center; align-items:center; flex-shrink:0; transition:background-color 0.5s; } .outer-ring-4 { width:250vh; height:250vh; background-color:var(--ring-4); box-shadow:inset 0 0 50px rgba(0,0,0,0.7); } .outer-ring-3 { width:180vh; height:180vh; background-color:var(--ring-3); box-shadow:inset 0 0 45px rgba(0,0,0,0.6); } .outer-ring-2 { width:120vh; height:120vh; background-color:var(--ring-2); box-shadow:inset 0 0 40px rgba(0,0,0,0.5); } .outer-ring-1 { width:70vh; height:70vh; background-color:var(--ring-1); box-shadow:inset 0 0 35px rgba(0,0,0,0.4); } .inner-circle { width:30vh; height:30vh; background-image:radial-gradient(circle at center,var(--ring-center) 0%,var(--ring-1) 100%); border-radius:50%; box-shadow:inset 0 0 25px rgba(0,0,0,0.3); transition:background-image 0.5s;}
+        .bg-blue{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);} .bg-red{background:linear-gradient(135deg,#f77062 0%,#fe5196 100%);} .bg-green{background:linear-gradient(135deg,#43e97b 0%,#38f9d7 100%);} .bg-yellow{background:linear-gradient(135deg,#f6d365 0%,#fda085 100%);} .bg-purple{background:linear-gradient(135deg,#c471ed 0%,#f64f59 100%);} .bg-gray{background:linear-gradient(135deg,#606c88 0%,#3f4c6b 100%);} .bg-ocean{background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);} .bg-orange{background:linear-gradient(135deg,#f12711 0%,#f5af19 100%);} .bg-dark{background:linear-gradient(135deg,#141e30 0%,#243b55 100%);} .bg-mint{background:linear-gradient(135deg,#00c6ff 0%,#0072ff 100%);}
+        .squircle { width:54px; height:54px; border-radius:14px; display:flex; justify-content:center; align-items:center; color:white; box-shadow:0 4px 12px rgba(0,0,0,0.3); transition:transform 0.2s; } .squircle .material-symbols-outlined { font-size:28px; }
+        .desktop-area { position:absolute; top:0; left:0; right:0; bottom:0; padding:20px; display:flex; flex-direction:column; align-content:flex-start; flex-wrap:wrap; gap:20px; z-index:10; opacity:0; pointer-events:none; transition:opacity 0.8s ease; } .desktop-area.show { opacity:1; pointer-events:all; } .desktop-widget { width:100%; display:flex; flex-direction:column; align-items:flex-start; padding-left:10px; margin-bottom:20px; text-shadow:0 2px 10px rgba(0,0,0,0.5); pointer-events:none;} .dw-time { font-size:52px; font-weight:300; color:white; line-height:1; margin:0;} .dw-greet { font-size:16px; font-weight:500; color:rgba(255,255,255,0.9); margin:5px 0 0 0;} .dw-weather { display:flex; align-items:center; gap:5px; font-size:13px; color:rgba(255,255,255,0.8); margin-top:5px; } .dw-weather .material-symbols-outlined { font-size:16px; } .desktop-icon { width:70px; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; pointer-events:all; } .desktop-icon:active .squircle { transform:scale(0.9); } .icon-label { color:white; font-size:11px; text-align:center; text-shadow:0 1px 3px rgba(0,0,0,0.8); font-weight:500; }
+        .glass-panel { background:var(--glass-bg); backdrop-filter:blur(35px); -webkit-backdrop-filter:blur(35px); border:1px solid var(--glass-border); border-radius:24px; box-shadow:0 15px 40px rgba(0,0,0,0.2); color:var(--text-main); transition:background 0.3s,border 0.3s,color 0.3s; }
+        .context-menu { position:fixed; z-index:100000; width:220px; padding:10px; display:flex; flex-direction:column; gap:5px; visibility:hidden; opacity:0; transform:scale(0.9) translateY(10px); transition:all 0.2s cubic-bezier(0.2,0.8,0.2,1); transform-origin:top left;} .context-menu.show { visibility:visible; opacity:1; transform:scale(1) translateY(0); } .context-item { padding:12px; border-radius:12px; font-size:13px; font-weight:500; display:flex; align-items:center; gap:12px; cursor:pointer; transition:background 0.2s; } .context-item:hover { background:var(--cc-btn-bg); } .context-item .material-symbols-outlined { font-size:18px; color:var(--text-muted); }
+        #notif-container { position:fixed; top:20px; right:20px; display:flex; flex-direction:column; gap:10px; z-index:100000; pointer-events:none; } .notif-card { background:var(--glass-bg); backdrop-filter:blur(30px); border:1px solid var(--glass-border); padding:15px; border-radius:20px; display:flex; gap:15px; align-items:center; color:var(--text-main); transform:translateX(120%); opacity:0; transition:all 0.5s cubic-bezier(0.2,0.8,0.2,1); width:260px; box-shadow:0 15px 35px rgba(0,0,0,0.2); } .notif-card.show { transform:translateX(0); opacity:1; }
+        .start-menu, .control-panel { position:fixed; bottom:80px; width:90%; max-width:320px; padding:20px; z-index:100; visibility:hidden; opacity:0; transition:all 0.3s cubic-bezier(0.2,0.8,0.2,1); pointer-events:none;} .start-menu { left:50%; transform:translateX(-50%) translateY(20px); display:flex; flex-direction:column; gap:15px; } .start-menu.show { visibility:visible; opacity:1; transform:translateX(-50%) translateY(0); pointer-events:all; } .control-panel { right:15px; transform:translateY(20px); display:flex; flex-direction:column; gap:20px; } .control-panel.show { visibility:visible; opacity:1; transform:translateY(0); pointer-events:all; } .sm-header { display:flex; align-items:center; gap:15px; border-bottom:1px solid var(--glass-border); padding-bottom:15px; } .sm-user-icon { width:46px; height:46px; border-radius:50%; background:var(--text-main); display:flex; justify-content:center; align-items:center; font-size:20px; color:var(--glass-bg); font-weight:600; text-transform:uppercase;} .sm-apps { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; justify-items:center; } .sm-app { display:flex; flex-direction:column; align-items:center; gap:5px; cursor:pointer; } .sm-app .squircle { width:44px; height:44px; border-radius:12px; } .sm-app .squircle .material-symbols-outlined { font-size:24px; } .sm-app span { color:var(--text-main); font-size:10px; font-weight:500; text-align:center; }
+        .cc-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; } .cc-module { background:var(--cc-btn-bg); border-radius:16px; padding:15px; display:flex; flex-direction:column; gap:8px; cursor:pointer; transition:all 0.2s ease; border:1px solid var(--glass-border); } .cc-module .material-symbols-outlined { font-size:22px; color:var(--text-main); transition:color 0.2s; } .cc-label { font-size:12px; font-weight:500; color:var(--text-main); transition:color 0.2s; } .cc-module.active { background:var(--ui-accent); border-color:transparent; } .cc-module.active .material-symbols-outlined, .cc-module.active .cc-label { color:var(--ui-accent-text); } .cc-sliders { display:flex; flex-direction:column; gap:12px; background:var(--cc-btn-bg); padding:15px; border-radius:16px; border:1px solid var(--glass-border); } .slider-row { display:flex; align-items:center; gap:12px; } .slider-row .material-symbols-outlined { font-size:18px; color:var(--text-main); } .slider-input { flex-grow:1; -webkit-appearance:none; height:6px; background:var(--glass-border); border-radius:3px; outline:none; } .slider-input::-webkit-slider-thumb { -webkit-appearance:none; width:16px; height:16px; border-radius:50%; background:var(--text-main); cursor:pointer; }
+        .window { position:absolute; top:10%; left:5%; width:90%; max-width:480px; height:70vh; max-height:600px; background:var(--win-bg); backdrop-filter:blur(40px) brightness(1.1); -webkit-backdrop-filter:blur(40px) brightness(1.1); border:1px solid var(--glass-border); border-radius:20px; box-shadow:0 20px 50px rgba(0,0,0,0.25); display:flex; flex-direction:column; z-index:50; overflow:hidden; visibility:hidden; opacity:0; transform:scale(0.9) translateY(30px); transition:all 0.3s cubic-bezier(0.2,0.8,0.2,1); color:var(--text-main); } .window.active { visibility:visible; opacity:1; transform:scale(1) translateY(0); pointer-events:all; } .window.minimized { visibility:hidden; opacity:0; transform:scale(0.7) translateY(150px); pointer-events:none; } .window.maximized { top:0 !important; left:0 !important; width:100vw !important; max-width:100vw !important; height:100vh !important; max-height:100vh !important; border-radius:0; transform:translate(0,0) scale(1) !important; } .window-header { height:50px; background:transparent; display:flex; align-items:center; justify-content:space-between; padding:0 15px; cursor:grab; flex-shrink:0; } .window-header:active { cursor:grabbing; } .window-title { color:var(--text-main); font-size:14px; font-weight:600; pointer-events:none; } .window-controls { display:flex; gap:8px; } .win-btn { width:14px; height:14px; border-radius:50%; cursor:pointer; background:var(--text-muted); transition:background 0.2s; } .win-close:hover,.win-close:active { background:#ff5f56; } .win-min:hover,.win-min:active { background:#ffbd2e; } .win-max:hover,.win-max:active { background:#27c93f; } .window-body { flex-grow:1; display:flex; flex-direction:column; padding:0 15px 15px 15px; overflow-y:auto; overflow-x:hidden; }
+        /* APPS CSS */
+        .config-layout { display:flex; height:100%; width:100%; overflow:hidden; } .config-sidebar { width:155px; flex-shrink:0; display:flex; flex-direction:column; gap:5px; border-right:1px solid var(--glass-border); padding-left:15px; padding-right:10px; padding-top:5px; overflow-y:auto; } .config-tab { padding:10px 12px; font-size:13px; font-weight:500; cursor:pointer; color:var(--text-muted); border-radius:8px; transition:background 0.2s,color 0.2s; text-align:left; position:relative; word-break:break-word; line-height:1.3; } .config-tab:hover { background:rgba(0,0,0,0.05); } .dark-theme .config-tab:hover { background:rgba(255,255,255,0.05); } .config-tab.active { background:var(--cc-btn-bg); color:var(--text-main); } .config-tab.active::before { content:''; position:absolute; left:0; top:20%; height:60%; width:4px; background:var(--ui-accent); border-radius:4px; } .config-main-area { flex-grow:1; overflow-y:auto; padding-left:15px; padding-right:5px; } .config-content { display:none; animation:fadeIn 0.3s ease; padding-bottom:20px;} .config-content.active { display:flex; flex-direction:column; gap:20px; } .config-section { background:var(--calc-btn); padding:20px; border-radius:16px; border:1px solid var(--glass-border); } .config-section h4 { margin:0 0 15px 0; font-size:14px; font-weight:600; } .color-picker { display:flex; gap:12px; margin-top:10px; align-items:center; flex-wrap:wrap;} .color-circle { width:32px; height:32px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition:transform 0.2s; } .color-circle:hover { transform:scale(1.1); } .color-circle.active { border-color:var(--text-main); transform:scale(1.1); } .sys-info-header { display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:20px; } .sys-info-header svg { width:60px; height:60px; color:var(--ring-center); } .sys-info-header h2 { margin:0; font-size:20px; } .sys-info-grid { display:grid; grid-template-columns:1fr; gap:10px; } .sys-box { background:rgba(0,0,0,0.05); padding:12px 15px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;} .dark-theme .sys-box { background:rgba(255,255,255,0.05); } .sys-box span { font-size:12px; color:var(--text-muted); } .sys-box strong { font-size:13px; color:var(--text-main); } @keyframes fadeIn { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+        .calc-wrapper { display:flex; flex-direction:column; height:100%; } .calc-display { background:transparent; padding:10px; text-align:right; font-size:48px; min-height:70px; display:flex; align-items:flex-end; justify-content:flex-end; font-weight:300; letter-spacing:1px;} .calc-grid { display:grid; grid-template-columns:repeat(4,1fr); grid-template-rows:repeat(4,1fr); gap:10px; flex-grow:1; } .calc-btn { background:var(--calc-btn); border:none; border-radius:16px; color:var(--text-main); font-size:24px; cursor:pointer; font-family:'Poppins',sans-serif; transition:background 0.1s;} .calc-btn:active { background:var(--calc-btn-active); transform:scale(0.95); } .calc-op { color:var(--ring-center); font-weight:500; }
+        .notes-area { width:100%; flex-grow:1; background:transparent; border:none; color:var(--text-main); font-family:'Poppins',sans-serif; font-size:15px; resize:none; outline:none; line-height:1.6; } .notes-area::placeholder { color:var(--text-muted); }
+        .paint-toolbar { display:flex; gap:10px; margin-bottom:15px; justify-content:center; flex-wrap:wrap;} .paint-color { width:35px; height:35px; border-radius:50%; border:2px solid var(--glass-border); cursor:pointer; } #paintCanvas { background:rgba(255,255,255,0.9); border-radius:16px; cursor:crosshair; touch-action:none; width:100%; flex-grow:1; box-shadow:inset 0 0 10px rgba(0,0,0,0.1); }
+        .file-toolbar { display:flex; gap:10px; padding-bottom:10px; border-bottom:1px solid var(--glass-border); margin-bottom:15px; } .file-path { background:var(--calc-btn); padding:8px 15px; border-radius:8px; font-size:12px; font-weight:500; color:var(--text-muted); flex-grow:1;} .file-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:15px; } .file-folder { display:flex; flex-direction:column; align-items:center; gap:5px; cursor:pointer; padding:10px; border-radius:12px; transition:background 0.2s;} .file-folder:hover { background:var(--calc-btn); } .file-folder .material-symbols-outlined { font-size:40px; color:var(--ring-center); } .file-folder span { font-size:11px; font-weight:500; text-align:center;}
+        .music-cover { width:100%; aspect-ratio:1; background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%); border-radius:20px; display:flex; justify-content:center; align-items:center; box-shadow:0 10px 30px rgba(0,0,0,0.3); margin-bottom:20px;} .music-cover .material-symbols-outlined { font-size:80px; color:rgba(255,255,255,0.5); } .music-info { text-align:center; margin-bottom:20px; } .music-title { font-size:20px; font-weight:600; margin:0; color:var(--text-main); } .music-artist { font-size:13px; color:var(--text-muted); margin:0; } .music-progress-container { width:100%; display:flex; align-items:center; gap:10px; margin-bottom:20px; font-size:11px; color:var(--text-muted);} .music-bar-bg { flex-grow:1; height:6px; background:var(--glass-border); border-radius:3px; position:relative; overflow:hidden; cursor:pointer;} .music-bar-fill { height:100%; width:35%; background:var(--ring-center); border-radius:3px; } .music-controls { display:flex; justify-content:center; align-items:center; gap:20px; } .music-btn { width:40px; height:40px; border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; color:var(--text-main); } .music-btn-play { width:60px; height:60px; background:var(--text-main); color:var(--glass-bg); border-radius:50%; box-shadow:0 5px 15px rgba(0,0,0,0.2); } .music-btn:active { transform:scale(0.9); }
+        .browser-toolbar { display:flex; align-items:center; gap:10px; padding-bottom:12px; border-bottom:1px solid var(--glass-border); margin-bottom:15px; } .browser-btn { width:32px; height:32px; border-radius:10px; display:flex; justify-content:center; align-items:center; cursor:pointer; background:var(--cc-btn-bg); transition:background 0.2s; } .browser-url-bar { flex-grow:1; height:36px; border-radius:18px; background:var(--cc-btn-bg); border:1px solid var(--glass-border); display:flex; align-items:center; padding:0 15px; gap:8px; } .browser-url-bar input { flex-grow:1; background:transparent; border:none; color:var(--text-main); font-family:'Poppins'; outline:none; font-size:13px; } .browser-content { flex-grow:1; border-radius:16px; background:white; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; overflow:hidden; padding:0; } #browserIframe { width:100%; height:100%; border:none; display:none; background:white; border-radius:16px; } #browserHome { display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; height:100%; } .google-logo { font-size:40px; font-weight:500; font-family:sans-serif; letter-spacing:-1px; margin-bottom:25px; } .g-blue { color:#4285F4; } .g-red { color:#EA4335; } .g-yellow { color:#FBBC05; } .g-green { color:#34A853; } .google-search-box { width:85%; max-width:400px; border:1px solid #dfe1e5; border-radius:24px; padding:12px 20px; display:flex; align-items:center; gap:10px; box-shadow:0 1px 6px rgba(32,33,36,.28); background:white; } .google-search-box input { flex-grow:1; border:none; outline:none; font-size:16px; color:black; }
+        .gallery-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:10px; } .gallery-img { width:100%; aspect-ratio:1; border-radius:12px; object-fit:cover; }
+        .update-hero { text-align:center; margin-bottom:20px; } .update-icon-wrapper { width:64px; height:64px; background:var(--ring-center); border-radius:20px; display:flex; justify-content:center; align-items:center; margin:0 auto 15px auto; box-shadow:0 10px 20px rgba(0,0,0,0.2); color:white; font-size:32px; } .update-list { display:flex; flex-direction:column; gap:10px; } .update-item { background:var(--calc-btn); padding:15px; border-radius:16px; border:1px solid var(--glass-border); } .update-item h4 { margin:0 0 5px 0; font-size:14px; } .update-item p { margin:0; font-size:12px; color:var(--text-muted); }
+        .store-grid { display:flex; flex-direction:column; gap:15px; } .store-app { display:flex; align-items:center; gap:15px; padding:15px; background:var(--calc-btn); border-radius:16px; border:1px solid var(--glass-border); } .store-icon { width:50px; height:50px; border-radius:12px; display:flex; justify-content:center; align-items:center; color:white; font-size:24px; } .store-info { flex-grow:1; } .store-info h4 { margin:0; font-size:14px; } .store-info p { margin:0; font-size:11px; color:var(--text-muted); } .store-btn { padding:8px 15px; border-radius:8px; border:none; background:var(--text-main); color:var(--glass-bg); font-family:'Poppins'; font-size:12px; font-weight:600; cursor:pointer; }
+        .terminal-body { background:#0a0a0a; color:#00ff00; font-family:'JetBrains Mono',monospace; padding:10px; flex-grow:1; border-radius:12px; display:flex; flex-direction:column; overflow:hidden;} .term-output { flex-grow:1; overflow-y:auto; font-size:12px; margin-bottom:10px; word-break:break-all;} .term-input-line { display:flex; align-items:center; gap:5px; } .term-input { flex-grow:1; background:transparent; border:none; color:#00ff00; font-family:'JetBrains Mono',monospace; font-size:12px; outline:none; }
+        .taskbar { position:fixed; bottom:15px; left:50%; transform:translateX(-50%); width:90%; max-width:650px; height:56px; z-index:90; border-radius:50px; display:flex; align-items:center; justify-content:space-between; padding:0 8px; transition:transform 0.6s cubic-bezier(0.25,1,0.5,1),opacity 0.4s; } .taskbar.taskbar-hidden { transform:translate(-50%,150px); opacity:0; pointer-events:none; } .taskbar-left { display:flex; align-items:center; gap:8px; flex-grow:1; } .start-btn { width:42px; height:42px; background:var(--start-bg); border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; transition:transform 0.2s,background 0.3s; } .start-btn svg { color:var(--start-logo); } .start-btn:active { transform:scale(0.9); } .taskbar-apps { display:flex; gap:8px; overflow-x:auto; padding:0 5px; scrollbar-width:none; } .tb-app-icon { width:40px; height:40px; border-radius:12px; display:flex; justify-content:center; align-items:center; cursor:pointer; transition:transform 0.2s; box-shadow:0 4px 10px rgba(0,0,0,0.15);} .tb-app-icon:active { transform:scale(0.9); } .tb-app-icon .material-symbols-outlined { font-size:22px; color:white; } .system-tray { background:var(--tray-bg); height:42px; border-radius:21px; display:flex; align-items:center; padding:0 16px 0 14px; gap:10px; color:var(--tray-text); cursor:pointer; transition:background 0.3s,color 0.3s; } .system-tray .material-symbols-outlined { font-size:18px; } #clock { font-weight:600; font-size:13px; letter-spacing:0.5px;}
     </style>
 </head>
 <body class="dark-theme">
 
-    <div id="preBootScreen">
-        <div class="preboot-content" id="msgPortrait">
-            <span class="material-symbols-outlined animate-rotate">screen_rotation</span>
-            <h2>Gire o Celular</h2>
-            <p>O MintOS foi projetado para telas largas. Vire seu celular na horizontal para continuar.</p>
-            <button class="preboot-btn outline" onclick="initSystem(event)" ontouchstart="initSystem(event)">Pular (Iniciar Assim Mesmo)</button>
-        </div>
-        <div class="preboot-content" id="msgLandscape" style="display: none;">
-            <span class="material-symbols-outlined">desktop_windows</span>
-            <h2>Modo Desktop</h2>
-            <p>Para uma experiência perfeita, ative o "Modo para Computador / Desktop" no navegador.</p>
-            <button class="preboot-btn" onclick="initSystem(event)" ontouchstart="initSystem(event)">Já ativei, Iniciar MintOS</button>
-        </div>
-    </div>
+    <div id="notif-container"></div>
+    <div class="context-menu glass-panel" id="contextMenu"><div class="context-item" onclick="openApp('config'); switchTab('personalizacao'); document.getElementById('contextMenu').classList.remove('show');"><span class="material-symbols-outlined">wallpaper</span> Trocar Papel de Parede</div><div class="context-item" onclick="openApp('terminal'); document.getElementById('contextMenu').classList.remove('show');"><span class="material-symbols-outlined">terminal</span> Abrir Terminal</div><div class="context-item" onclick="openApp('config'); document.getElementById('contextMenu').classList.remove('show');"><span class="material-symbols-outlined">settings</span> Configurações</div></div>
 
-    <div id="bootScreen">
-        <h1 id="bootText">MintOS</h1>
-        <div id="bootLogoContainer">
-            <svg id="bootLogo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M 75 25 A 35 35 0 1 0 75 75" stroke="currentColor" stroke-width="12" stroke-linecap="round"/>
-                <line x1="30" y1="50" x2="75" y2="50" stroke="currentColor" stroke-width="12" stroke-linecap="round"/>
-            </svg>
-            <div class="progress-bar-container" id="bootBarContainer">
-                <div id="bootProgress"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="loginOverlay">
-        <div class="login-box">
-            <h2>Bem-vindo ao MintOS</h2>
-            <p style="color: rgba(255,255,255,0.7); font-size: 12px; margin: 0; text-align: center;">Como prefere ser chamado?</p>
-            <input type="text" id="usernameInput" class="login-input" placeholder="Ex: Luiz" autocomplete="off">
-            <div class="login-actions">
-                <button class="login-btn skip" onclick="skipLogin()">Pular</button>
-                <button class="login-btn save" onclick="saveUser()">Salvar</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="lock-screen" id="lockScreen">
-        <div class="lock-time-container">
-            <h1 class="lock-clock" id="lockClockText">00:00</h1>
-            <p class="lock-date" id="lockDateText">Data carregando...</p>
-        </div>
-        <div class="slide-to-unlock-container" id="slideContainer">
-            <div class="slide-text" id="slideText">Deslize para desbloquear</div>
-            <div class="slide-thumb" id="slideThumb">
-                <span class="material-symbols-outlined">arrow_forward_ios</span>
-            </div>
-        </div>
-    </div>
+    <div id="preBootScreen"><div class="preboot-content" id="msgPortrait"><span class="material-symbols-outlined animate-rotate">screen_rotation</span><h2>Gire o Celular</h2><button class="preboot-btn outline" onclick="initSystem(event)" ontouchstart="initSystem(event)">Pular</button></div><div class="preboot-content" id="msgLandscape" style="display:none;"><span class="material-symbols-outlined">desktop_windows</span><h2>Modo Desktop</h2><button class="preboot-btn" onclick="initSystem(event)" ontouchstart="initSystem(event)">Iniciar MintOS</button></div></div>
+    <div id="bootScreen"><h1 id="bootText">MintOS</h1><div id="bootLogoContainer"><svg id="bootLogo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M 75 25 A 35 35 0 1 0 75 75" stroke="currentColor" stroke-width="12" stroke-linecap="round"/><line x1="30" y1="50" x2="75" y2="50" stroke="currentColor" stroke-width="12" stroke-linecap="round"/></svg><div class="progress-bar-container"><div id="bootProgress"></div></div></div></div>
+    <div id="loginOverlay"><div class="login-box"><h2>Bem-vindo ao MintOS</h2><input type="text" id="usernameInput" class="login-input" placeholder="Ex: Luiz" autocomplete="off"><div class="login-actions"><button class="login-btn skip" onclick="skipLogin()">Pular</button><button class="login-btn save" onclick="saveUser()">Salvar</button></div></div></div>
+    <div class="lock-screen" id="lockScreen"><div class="lock-time-container"><h1 class="lock-clock" id="lockClockText">00:00</h1><p class="lock-date">Deslize para acessar</p></div><div class="slide-to-unlock-container" id="slideContainer"><div class="slide-text">Deslize para desbloquear</div><div class="slide-thumb" id="slideThumb"><span class="material-symbols-outlined">arrow_forward_ios</span></div></div></div>
 
     <div class="wallpaper-container" id="desktop-wallpaper">
-        <div id="rings-container">
-            <div class="ring outer-ring-4"><div class="ring outer-ring-3"><div class="ring outer-ring-2"><div class="ring outer-ring-1"><div class="inner-circle"></div></div></div></div></div>
-        </div>
-
+        <div id="rings-container"><div class="ring outer-ring-4"><div class="ring outer-ring-3"><div class="ring outer-ring-2"><div class="ring outer-ring-1"><div class="inner-circle"></div></div></div></div></div></div>
         <div class="desktop-area" id="desktopArea">
-            <div class="desktop-icon" onclick="openApp('config')">
-                <div class="squircle bg-gray"><span class="material-symbols-outlined">settings</span></div>
-                <span class="icon-label">Ajustes</span>
-            </div>
-            <div class="desktop-icon" onclick="openApp('navegador')">
-                <div class="squircle bg-ocean"><span class="material-symbols-outlined">public</span></div>
-                <span class="icon-label">Navegador</span>
-            </div>
-            <div class="desktop-icon" onclick="openApp('galeria')">
-                <div class="squircle bg-purple"><span class="material-symbols-outlined">image</span></div>
-                <span class="icon-label">Galeria</span>
-            </div>
-            <div class="desktop-icon" onclick="openApp('paint')">
-                <div class="squircle bg-red"><span class="material-symbols-outlined">palette</span></div>
-                <span class="icon-label">Paint</span>
-            </div>
-            <div class="desktop-icon" onclick="openApp('calculadora')">
-                <div class="squircle bg-green"><span class="material-symbols-outlined">calculate</span></div>
-                <span class="icon-label">Calculadora</span>
-            </div>
+            <div class="desktop-widget"><h1 class="dw-time" id="widgetClock">00:00</h1><p class="dw-greet" id="widgetGreet">Bom dia</p><div class="dw-weather"><span class="material-symbols-outlined">partly_cloudy_day</span> 32°C em Marabá</div></div>
+            <div class="desktop-icon" onclick="openApp('config')"><div class="squircle bg-gray"><span class="material-symbols-outlined">settings</span></div><span class="icon-label">Ajustes</span></div>
+            <div class="desktop-icon" onclick="openApp('arquivos')"><div class="squircle bg-yellow"><span class="material-symbols-outlined">folder</span></div><span class="icon-label">Arquivos</span></div>
+            <div class="desktop-icon" onclick="openApp('musica')"><div class="squircle bg-orange"><span class="material-symbols-outlined">headphones</span></div><span class="icon-label">Música</span></div>
+            <div class="desktop-icon" onclick="openApp('navegador')"><div class="squircle bg-ocean"><span class="material-symbols-outlined">public</span></div><span class="icon-label">Navegador</span></div>
+            <div class="desktop-icon" onclick="openApp('store')"><div class="squircle bg-mint"><span class="material-symbols-outlined">shopping_bag</span></div><span class="icon-label">Store</span></div>
+            <div class="desktop-icon" onclick="openApp('terminal')"><div class="squircle bg-dark"><span class="material-symbols-outlined">terminal</span></div><span class="icon-label">Terminal</span></div>
         </div>
     </div>
 
-    <div class="window" id="win-config" style="width: 95%; max-width: 600px; height: 75vh; max-height: 600px;">
-        <div class="window-header" id="header-config">
-            <span class="window-title">Configurações</span>
-            <div class="window-controls">
-                <div class="win-btn win-min" onclick="minApp('config')"></div>
-                <div class="win-btn win-max" onclick="maxApp('config')"></div>
-                <div class="win-btn win-close" onclick="closeApp('config')"></div>
-            </div>
-        </div>
-        
-        <div class="window-body" style="padding: 0 15px 15px 0;">
-            <div class="config-layout">
-                
-                <div class="config-sidebar">
-                    <div class="config-tab active" onclick="switchTab('personalizacao')" id="tab-btn-personalizacao">Personalização</div>
-                    <div class="config-tab" onclick="switchTab('conexao')" id="tab-btn-conexao">Conexão</div>
-                    <div class="config-tab" onclick="switchTab('sistema')" id="tab-btn-sistema">Sistema</div>
-                </div>
+    <div class="window" id="win-config"><div class="window-header" id="header-config"><span class="window-title">Configurações</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('config')"></div><div class="win-btn win-max" onclick="maxApp('config')"></div><div class="win-btn win-close" onclick="closeApp('config')"></div></div></div><div class="window-body" style="padding:0 15px 15px 0;"><div class="config-layout"><div class="config-sidebar"><div class="config-tab active" onclick="switchTab('personalizacao')" id="tab-btn-personalizacao">Personalização</div><div class="config-tab" onclick="switchTab('sistema')" id="tab-btn-sistema">Sistema</div></div><div class="config-main-area"><div class="config-content active" id="tab-personalizacao"><div class="config-section"><h4>Cor do Sistema</h4><div class="color-picker"><div class="color-circle" style="background:var(--cc-btn-active); border:1px solid var(--glass-border);" onclick="setTheme('padrao', this)"></div><div class="color-circle" style="background:#9d4edd;" onclick="setTheme('roxo', this)"></div><div class="color-circle" style="background:#4facfe;" onclick="setTheme('azul', this)"></div><div class="color-circle" style="background:#38f9d7;" onclick="setTheme('verde', this)"></div><div class="color-circle" style="background:#ff5f56;" onclick="setTheme('vermelho', this)"></div></div></div><div class="config-section"><h4>Papel de Parede</h4><button onclick="document.getElementById('wallpaper-picker').click()" style="width:100%; padding:12px; border-radius:12px; border:none; background:var(--text-main); color:var(--glass-bg); font-family:'Poppins'; cursor:pointer;">Escolher Foto...</button><input type="file" id="wallpaper-picker" accept="image/*" style="display:none;"></div></div><div class="config-content" id="tab-sistema"><div class="sys-info-header"><svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M 75 25 A 35 35 0 1 0 75 75" stroke="currentColor" stroke-width="12" stroke-linecap="round"/><line x1="30" y1="50" x2="75" y2="50" stroke="currentColor" stroke-width="12" stroke-linecap="round"/></svg><h2>MintOS v3.0 Ultimate</h2></div><div class="sys-info-grid"><div class="sys-box"><span>Processador</span><strong>Mint Silicon X1</strong></div><div class="sys-box"><span>RAM</span><strong>8.0 GB</strong></div><div class="sys-box"><span>Dev</span><strong>Luiz</strong></div></div></div></div></div></div></div>
+    <div class="window" id="win-arquivos"><div class="window-header" id="header-arquivos"><span class="window-title">Mint Files</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('arquivos')"></div><div class="win-btn win-max" onclick="maxApp('arquivos')"></div><div class="win-btn win-close" onclick="closeApp('arquivos')"></div></div></div><div class="window-body"><div class="file-toolbar"><span class="material-symbols-outlined" style="cursor:pointer; color:var(--text-muted);">arrow_upward</span><div class="file-path">C:\Usuários\Luiz</div></div><div class="file-grid"><div class="file-folder"><span class="material-symbols-outlined">folder</span><span>Imagens</span></div><div class="file-folder"><span class="material-symbols-outlined">folder</span><span>Docs</span></div><div class="file-folder"><span class="material-symbols-outlined">folder</span><span>Downloads</span></div></div></div></div>
+    <div class="window" id="win-musica"><div class="window-header" id="header-musica"><span class="window-title">Mint Music</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('musica')"></div><div class="win-btn win-max" onclick="maxApp('musica')"></div><div class="win-btn win-close" onclick="closeApp('musica')"></div></div></div><div class="window-body" style="padding:15px 30px;"><div class="music-cover"><span class="material-symbols-outlined">music_note</span></div><div class="music-info"><h3 class="music-title">Lofi to Code</h3><p class="music-artist">MintOS Orig</p></div><div class="music-progress-container"><span>01:15</span><div class="music-bar-bg"><div class="music-bar-fill"></div></div><span>03:40</span></div><div class="music-controls"><div class="music-btn"><span class="material-symbols-outlined">skip_previous</span></div><div class="music-btn music-btn-play"><span class="material-symbols-outlined" style="font-size:32px;">play_arrow</span></div><div class="music-btn"><span class="material-symbols-outlined">skip_next</span></div></div></div></div>
+    <div class="window" id="win-navegador"><div class="window-header" id="header-navegador"><span class="window-title">Mint Browser</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('navegador')"></div><div class="win-btn win-max" onclick="maxApp('navegador')"></div><div class="win-btn win-close" onclick="closeApp('navegador')"></div></div></div><div class="window-body" style="padding-bottom:15px;"><div class="browser-toolbar"><div class="browser-btn" onclick="resetBrowser()"><span class="material-symbols-outlined">home</span></div><div class="browser-btn" onclick="reloadBrowser()"><span class="material-symbols-outlined">refresh</span></div><div class="browser-url-bar"><span class="material-symbols-outlined" style="font-size:16px; color:var(--text-muted);">lock</span><input type="text" id="topUrlBar" value="google.com" onkeydown="if(event.key==='Enter') doInternalSearch()"></div></div><div class="browser-content" style="padding:0;"><iframe id="browserIframe" src="" title="Nav"></iframe><div id="browserHome"><div class="google-logo"><span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span></div><div class="google-search-box"><span class="material-symbols-outlined" style="color:#9aa0a6;">search</span><input type="text" id="homeSearchInput" placeholder="Pesquisar..." onkeydown="if(event.key==='Enter') doInternalSearch()"></div></div></div></div></div>
+    <div class="window" id="win-calculadora"><div class="window-header" id="header-calculadora"><span class="window-title">Calculadora</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('calculadora')"></div><div class="win-btn win-max" onclick="maxApp('calculadora')"></div><div class="win-btn win-close" onclick="closeApp('calculadora')"></div></div></div><div class="window-body" style="padding-bottom:20px;"><div class="calc-wrapper"><div class="calc-display" id="calcDisplay">0</div><div class="calc-grid"><button class="calc-btn" onclick="calcPress('7')">7</button><button class="calc-btn" onclick="calcPress('8')">8</button><button class="calc-btn" onclick="calcPress('9')">9</button><button class="calc-btn calc-op" onclick="calcPress('/')">÷</button><button class="calc-btn" onclick="calcPress('4')">4</button><button class="calc-btn" onclick="calcPress('5')">5</button><button class="calc-btn" onclick="calcPress('6')">6</button><button class="calc-btn calc-op" onclick="calcPress('*')">×</button><button class="calc-btn" onclick="calcPress('1')">1</button><button class="calc-btn" onclick="calcPress('2')">2</button><button class="calc-btn" onclick="calcPress('3')">3</button><button class="calc-btn calc-op" onclick="calcPress('-')">−</button><button class="calc-btn" onclick="calcPress('C')" style="color:#ff5f56;">C</button><button class="calc-btn" onclick="calcPress('0')">0</button><button class="calc-btn" onclick="calcPress('=')" style="background:var(--text-main); color:var(--glass-bg);">=</button><button class="calc-btn calc-op" onclick="calcPress('+')">+</button></div></div></div></div>
+    <div class="window" id="win-notas"><div class="window-header" id="header-notas"><span class="window-title">Notas</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('notas')"></div><div class="win-btn win-max" onclick="maxApp('notas')"></div><div class="win-btn win-close" onclick="closeApp('notas')"></div></div></div><div class="window-body"><textarea id="notesArea" class="notes-area" placeholder="Digite sua nota..."></textarea></div></div>
+    <div class="window" id="win-paint"><div class="window-header" id="header-paint"><span class="window-title">Mint Paint</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('paint')"></div><div class="win-btn win-max" onclick="maxApp('paint')"></div><div class="win-btn win-close" onclick="closeApp('paint')"></div></div></div><div class="window-body"><div class="paint-toolbar"><div class="paint-color" onclick="paintColor='black'" style="background:black;"></div><div class="paint-color" onclick="paintColor='#ff5f56'" style="background:#ff5f56;"></div><div class="paint-color" onclick="paintColor='#4facfe'" style="background:#4facfe;"></div><div class="paint-color" onclick="paintColor='#43e97b'" style="background:#43e97b;"></div><button onclick="clearCanvas()" style="padding:0 15px; border-radius:12px; border:none; background:var(--calc-btn); color:var(--text-main); cursor:pointer;">Limpar</button></div><canvas id="paintCanvas"></canvas></div></div>
+    <div class="window" id="win-galeria"><div class="window-header" id="header-galeria"><span class="window-title">Galeria</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('galeria')"></div><div class="win-btn win-max" onclick="maxApp('galeria')"></div><div class="win-btn win-close" onclick="closeApp('galeria')"></div></div></div><div class="window-body"><div class="gallery-grid"><img class="gallery-img" src="https://picsum.photos/seed/m1/200/200"><img class="gallery-img" src="https://picsum.photos/seed/m2/200/200"><img class="gallery-img" src="https://picsum.photos/seed/m3/200/200"><img class="gallery-img" src="https://picsum.photos/seed/m4/200/200"><img class="gallery-img" src="https://picsum.photos/seed/m5/200/200"><img class="gallery-img" src="https://picsum.photos/seed/m6/200/200"></div></div></div>
+    <div class="window" id="win-atualizacoes"><div class="window-header" id="header-atualizacoes"><span class="window-title">Novidades</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('atualizacoes')"></div><div class="win-btn win-max" onclick="maxApp('atualizacoes')"></div><div class="win-btn win-close" onclick="closeApp('atualizacoes')"></div></div></div><div class="window-body"><div class="update-hero"><div class="update-icon-wrapper"><span class="material-symbols-outlined">rocket_launch</span></div><h2>MintOS 3.0</h2></div><div class="update-list"><div class="update-item"><h4>Tudo em Um</h4><p>Todos os apps do sistema reunidos em um código limpo e minificado.</p></div><div class="update-item"><h4>Terminal</h4><p>Sistema via linha de comando para usuários avançados.</p></div></div></div></div>
+    <div class="window" id="win-store"><div class="window-header" id="header-store"><span class="window-title">Mint Store</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('store')"></div><div class="win-btn win-max" onclick="maxApp('store')"></div><div class="win-btn win-close" onclick="closeApp('store')"></div></div></div><div class="window-body"><h3 style="margin-top:0;">Recomendados</h3><div class="store-grid"><div class="store-app"><div class="store-icon bg-red"><span class="material-symbols-outlined">smart_display</span></div><div class="store-info"><h4>YouVideo</h4><p>Plataforma de vídeos</p></div><button class="store-btn" onclick="installApp(this, 'YouVideo')">Instalar</button></div><div class="store-app"><div class="store-icon bg-green"><span class="material-symbols-outlined">chat</span></div><div class="store-info"><h4>ZappChat</h4><p>Mensagens rápidas</p></div><button class="store-btn" onclick="installApp(this, 'ZappChat')">Instalar</button></div></div></div></div>
+    <div class="window" id="win-terminal"><div class="window-header" id="header-terminal"><span class="window-title">Terminal root@mintos</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('terminal')"></div><div class="win-btn win-max" onclick="maxApp('terminal')"></div><div class="win-btn win-close" onclick="closeApp('terminal')"></div></div></div><div class="window-body terminal-body"><div class="term-output" id="termOutput">MintOS Bash v3.0<br>Digite 'help' para comandos.<br><br></div><div class="term-input-line"><span style="color:#ff5f56;">root@luiz:~$</span><input type="text" id="termInput" class="term-input" autocomplete="off" spellcheck="false"></div></div></div>
 
-                <div class="config-main-area">
-                    
-                    <div class="config-content active" id="tab-personalizacao">
-                        <div class="config-section">
-                            <h4>Cor do Sistema</h4>
-                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px; margin-top: 0;">Muda os detalhes visuais e o Wallpaper padrão.</p>
-                            <div class="color-picker">
-                                <div class="color-circle" style="background: var(--cc-btn-active); border: 1px solid var(--glass-border);" onclick="setTheme('padrao', this)" title="Padrão"></div>
-                                <div class="color-circle" style="background: #9d4edd;" onclick="setTheme('roxo', this)"></div>
-                                <div class="color-circle" style="background: #4facfe;" onclick="setTheme('azul', this)"></div>
-                                <div class="color-circle" style="background: #38f9d7;" onclick="setTheme('verde', this)"></div>
-                                <div class="color-circle" style="background: #ff5f56;" onclick="setTheme('vermelho', this)"></div>
-                            </div>
-                        </div>
-
-                        <div class="config-section">
-                            <h4>Papel de Parede Personalizado</h4>
-                            <button onclick="document.getElementById('wallpaper-picker').click()" style="width:100%; padding:12px; border-radius:12px; border:none; background:var(--text-main); color:var(--glass-bg); font-family:'Poppins'; font-weight:500; cursor:pointer;">Escolher Foto...</button>
-                            <input type="file" id="wallpaper-picker" accept="image/*" style="display: none;">
-                        </div>
-                    </div>
-
-                    <div class="config-content" id="tab-conexao">
-                        <div class="config-section" style="padding: 10px 20px;">
-                            <div class="setting-row">
-                                <div class="setting-info">
-                                    <span class="material-symbols-outlined">wifi</span>
-                                    <span>Wi-Fi</span>
-                                </div>
-                                <label class="switch">
-                                    <input type="checkbox" checked id="toggle-wifi" onchange="syncToggle('wifi')">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                            <div class="setting-row">
-                                <div class="setting-info">
-                                    <span class="material-symbols-outlined">bluetooth</span>
-                                    <span>Bluetooth</span>
-                                </div>
-                                <label class="switch">
-                                    <input type="checkbox" checked id="toggle-bt" onchange="syncToggle('bt')">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                            <div class="setting-row">
-                                <div class="setting-info">
-                                    <span class="material-symbols-outlined">flight</span>
-                                    <span>Modo Avião</span>
-                                </div>
-                                <label class="switch">
-                                    <input type="checkbox" id="toggle-plane" onchange="syncToggle('plane')">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="config-content" id="tab-sistema">
-                        <div class="sys-info-header">
-                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M 75 25 A 35 35 0 1 0 75 75" stroke="currentColor" stroke-width="12" stroke-linecap="round"/>
-                                <line x1="30" y1="50" x2="75" y2="50" stroke="currentColor" stroke-width="12" stroke-linecap="round"/>
-                            </svg>
-                            <h2>MintOS v2.6</h2>
-                        </div>
-                        <div class="sys-info-grid">
-                            <div class="sys-box"><span>Processador</span><strong>Mint Silicon X1</strong></div>
-                            <div class="sys-box"><span>Memória RAM</span><strong>8.0 GB</strong></div>
-                            <div class="sys-box"><span>Armazenamento</span><strong>256 GB NVMe</strong></div>
-                            <div class="sys-box"><span>Desenvolvedor</span><strong>Luiz</strong></div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="window" id="win-atualizacoes">
-        <div class="window-header" id="header-atualizacoes">
-            <span class="window-title">Novidades do MintOS</span>
-            <div class="window-controls"><div class="win-btn win-min" onclick="minApp('atualizacoes')"></div><div class="win-btn win-max" onclick="maxApp('atualizacoes')"></div><div class="win-btn win-close" onclick="closeApp('atualizacoes')"></div></div>
-        </div>
-        <div class="window-body update-body">
-            <div class="update-hero"><div class="update-icon-wrapper"><span class="material-symbols-outlined">rocket_launch</span></div><h2>MintOS v2.6</h2><p>Windows Style Layout.</p></div>
-            <div class="update-list">
-                <div class="update-item" style="animation-delay: 0.1s"><span class="material-symbols-outlined">fast_forward</span><div><h4>Botão Pular</h4><p>Pule o aviso de rotação de tela se o navegador falhar.</p></div></div>
-                <div class="update-item" style="animation-delay: 0.2s"><span class="material-symbols-outlined">vertical_split</span><div><h4>Abas Verticais</h4><p>O menu de Configurações agora usa o layout clássico e elegante do Windows.</p></div></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="window" id="win-navegador"><div class="window-header" id="header-navegador"><span class="window-title">Mint Browser</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('navegador')"></div><div class="win-btn win-max" onclick="maxApp('navegador')"></div><div class="win-btn win-close" onclick="closeApp('navegador')"></div></div></div><div class="window-body" style="padding-bottom: 15px;"><div class="browser-toolbar"><div class="browser-btn" onclick="resetBrowser()"><span class="material-symbols-outlined">home</span></div><div class="browser-btn" onclick="reloadBrowser()"><span class="material-symbols-outlined">refresh</span></div><div class="browser-url-bar"><span class="material-symbols-outlined" style="font-size: 16px; color: var(--text-muted);">lock</span><input type="text" id="topUrlBar" value="google.com.br" onkeydown="if(event.key === 'Enter') doInternalSearch()"></div></div><div class="browser-content" style="padding: 0;"><iframe id="browserIframe" src="" title="Navegador Interno"></iframe><div id="browserHome"><div class="google-logo"><span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span></div><div class="google-search-box"><span class="material-symbols-outlined" style="color: #9aa0a6;">search</span><input type="text" id="homeSearchInput" placeholder="Pesquise ou digite um URL" onkeydown="if(event.key === 'Enter') doInternalSearch()"></div><p style="margin-top: 20px; font-size: 11px; color: #70757a; text-align: center; padding: 0 20px;">Pesquisando DENTRO do MintOS.</p></div></div></div></div>
-    <div class="window" id="win-calculadora"><div class="window-header" id="header-calculadora"><span class="window-title">Calculadora</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('calculadora')"></div><div class="win-btn win-max" onclick="maxApp('calculadora')"></div><div class="win-btn win-close" onclick="closeApp('calculadora')"></div></div></div><div class="window-body" style="padding-bottom: 20px;"><div class="calc-wrapper"><div class="calc-display" id="calcDisplay">0</div><div class="calc-grid"><button class="calc-btn" onclick="calcPress('7')">7</button><button class="calc-btn" onclick="calcPress('8')">8</button><button class="calc-btn" onclick="calcPress('9')">9</button><button class="calc-btn calc-op" onclick="calcPress('/')">÷</button><button class="calc-btn" onclick="calcPress('4')">4</button><button class="calc-btn" onclick="calcPress('5')">5</button><button class="calc-btn" onclick="calcPress('6')">6</button><button class="calc-btn calc-op" onclick="calcPress('*')">×</button><button class="calc-btn" onclick="calcPress('1')">1</button><button class="calc-btn" onclick="calcPress('2')">2</button><button class="calc-btn" onclick="calcPress('3')">3</button><button class="calc-btn calc-op" onclick="calcPress('-')">−</button><button class="calc-btn" onclick="calcPress('C')" style="color: #ff5f56;">C</button><button class="calc-btn" onclick="calcPress('0')">0</button><button class="calc-btn" onclick="calcPress('=')" style="background: var(--text-main); color: var(--glass-bg);">=</button><button class="calc-btn calc-op" onclick="calcPress('+')">+</button></div></div></div></div>
-    <div class="window" id="win-notas"><div class="window-header" id="header-notas"><span class="window-title">Notas</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('notas')"></div><div class="win-btn win-max" onclick="maxApp('notas')"></div><div class="win-btn win-close" onclick="closeApp('notas')"></div></div></div><div class="window-body"><textarea id="notesArea" class="notes-area" placeholder="Digite sua nota aqui..."></textarea></div></div>
-    <div class="window" id="win-paint"><div class="window-header" id="header-paint"><span class="window-title">Mint Paint</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('paint')"></div><div class="win-btn win-max" onclick="maxApp('paint')"></div><div class="win-btn win-close" onclick="closeApp('paint')"></div></div></div><div class="window-body"><div class="paint-toolbar"><div class="paint-color" onclick="paintColor='black'" style="background:black;"></div><div class="paint-color" onclick="paintColor='#ff5f56'" style="background:#ff5f56;"></div><div class="paint-color" onclick="paintColor='#4facfe'" style="background:#4facfe;"></div><div class="paint-color" onclick="paintColor='#43e97b'" style="background:#43e97b;"></div><button onclick="clearCanvas()" style="padding:0 15px; border-radius:12px; border:none; background:var(--calc-btn); color:var(--text-main); font-family:'Poppins'; cursor:pointer;">Limpar</button></div><canvas id="paintCanvas"></canvas></div></div>
-    <div class="window" id="win-galeria"><div class="window-header" id="header-galeria"><span class="window-title">Galeria</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('galeria')"></div><div class="win-btn win-max" onclick="maxApp('galeria')"></div><div class="win-btn win-close" onclick="closeApp('galeria')"></div></div></div><div class="window-body"><div class="gallery-grid"><img class="gallery-img" src="https://picsum.photos/seed/m1/400/400"><img class="gallery-img" src="https://picsum.photos/seed/m2/400/400"><img class="gallery-img" src="https://picsum.photos/seed/m3/400/400"><img class="gallery-img" src="https://picsum.photos/seed/m4/400/400"><img class="gallery-img" src="https://picsum.photos/seed/m5/400/400"><img class="gallery-img" src="https://picsum.photos/seed/m6/400/400"></div></div></div>
-
-    <div class="start-menu glass-panel" id="startMenu">
-        <div class="sm-header">
-            <div class="sm-user-icon" id="smUserInitial">U</div>
-            <div>
-                <h3 style="margin: 0; font-size: 16px;" id="smUserName">Usuário</h3>
-                <p style="margin: 0; font-size: 11px; color: var(--text-muted);">Admin MintOS</p>
-            </div>
-        </div>
-        <p style="font-size: 11px; margin: 0; color: var(--text-muted);">Fixados</p>
-        <div class="sm-apps">
-            <div class="sm-app" onclick="openApp('config')"><div class="squircle bg-gray"><span class="material-symbols-outlined">settings</span></div><span>Ajustes</span></div>
-            <div class="sm-app" onclick="openApp('atualizacoes')"><div class="squircle bg-mint"><span class="material-symbols-outlined">system_update_alt</span></div><span>Novidades</span></div>
-            <div class="sm-app" onclick="openApp('navegador')"><div class="squircle bg-ocean"><span class="material-symbols-outlined">public</span></div><span>Navegador</span></div>
-            <div class="sm-app" onclick="openApp('notas')"><div class="squircle bg-yellow"><span class="material-symbols-outlined">edit_note</span></div><span>Notas</span></div>
-        </div>
-        <div style="display: flex; justify-content: flex-end; border-top: 1px solid var(--glass-border); padding-top: 15px;">
-            <div onclick="window.location.reload()" style="width: 36px; height: 36px; border-radius: 50%; background: #ff5f56; display: flex; justify-content: center; align-items: center; color: white; cursor: pointer;">
-                <span class="material-symbols-outlined" style="font-size: 20px;">power_settings_new</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="control-panel glass-panel" id="controlPanel">
-        <div class="cc-grid">
-            <div class="cc-module active" id="cc-wifi" onclick="toggleCC('wifi')"><span class="material-symbols-outlined">wifi</span><span class="cc-label">Wi-Fi</span></div>
-            <div class="cc-module active" id="cc-bt" onclick="toggleCC('bt')"><span class="material-symbols-outlined">bluetooth</span><span class="cc-label">Bluetooth</span></div>
-            <div class="cc-module" id="cc-plane" onclick="toggleCC('plane')"><span class="material-symbols-outlined">flight</span><span class="cc-label">Avião</span></div>
-            <div class="cc-module active" id="darkModeBtn"><span class="material-symbols-outlined">dark_mode</span><span class="cc-label">Tema Escuro</span></div>
-        </div>
-        <div class="cc-sliders">
-            <div class="slider-row"><span class="material-symbols-outlined">light_mode</span><input type="range" class="slider-input" value="80"></div>
-            <div class="slider-row"><span class="material-symbols-outlined">volume_up</span><input type="range" class="slider-input" value="50"></div>
-        </div>
-    </div>
-
-    <div class="taskbar glass-panel taskbar-hidden" id="taskbar">
-        <div class="taskbar-left">
-            <div class="start-btn" id="startBtn">
-                <svg width="22" height="22" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M 75 25 A 35 35 0 1 0 75 75" stroke="currentColor" stroke-width="12" stroke-linecap="round"/>
-                    <line x1="30" y1="50" x2="75" y2="50" stroke="currentColor" stroke-width="12" stroke-linecap="round"/>
-                </svg>
-            </div>
-            <div style="width:1px; height:24px; background:var(--glass-border); margin:0 5px;"></div>
-            <div class="taskbar-apps" id="taskbarApps"></div>
-        </div>
-        <div class="system-tray" id="systemTrayBtn">
-            <span class="material-symbols-outlined">wifi</span>
-            <span class="material-symbols-outlined" style="transform: rotate(90deg);">battery_5_bar</span>
-            <span id="clock">00:00</span>
-        </div>
-    </div>
+    <div class="start-menu glass-panel" id="startMenu"><div class="sm-header"><div class="sm-user-icon" id="smUserInitial">U</div><div><h3 style="margin:0; font-size:16px;" id="smUserName">Usuário</h3><p style="margin:0; font-size:11px; color:var(--text-muted);">Admin MintOS</p></div></div><p style="font-size:11px; margin:0; color:var(--text-muted);">Fixados</p><div class="sm-apps"><div class="sm-app" onclick="openApp('config')"><div class="squircle bg-gray"><span class="material-symbols-outlined">settings</span></div><span>Ajustes</span></div><div class="sm-app" onclick="openApp('arquivos')"><div class="squircle bg-yellow"><span class="material-symbols-outlined">folder</span></div><span>Arquivos</span></div><div class="sm-app" onclick="openApp('atualizacoes')"><div class="squircle bg-purple"><span class="material-symbols-outlined">update</span></div><span>Novidades</span></div><div class="sm-app" onclick="openApp('galeria')"><div class="squircle bg-blue"><span class="material-symbols-outlined">image</span></div><span>Galeria</span></div></div><div style="display:flex; justify-content:flex-end; border-top:1px solid var(--glass-border); padding-top:15px;"><div onclick="window.location.reload()" style="width:36px; height:36px; border-radius:50%; background:#ff5f56; display:flex; justify-content:center; align-items:center; color:white; cursor:pointer;"><span class="material-symbols-outlined" style="font-size:20px;">power_settings_new</span></div></div></div>
+    <div class="control-panel glass-panel" id="controlPanel"><div class="cc-grid"><div class="cc-module active" id="cc-wifi" onclick="toggleCC('wifi')"><span class="material-symbols-outlined">wifi</span><span class="cc-label">Wi-Fi</span></div><div class="cc-module active" id="cc-bt" onclick="toggleCC('bt')"><span class="material-symbols-outlined">bluetooth</span><span class="cc-label">Bluetooth</span></div><div class="cc-module" id="cc-plane" onclick="toggleCC('plane')"><span class="material-symbols-outlined">flight</span><span class="cc-label">Avião</span></div><div class="cc-module active" id="darkModeBtn"><span class="material-symbols-outlined">dark_mode</span><span class="cc-label">Tema Escuro</span></div></div><div class="cc-sliders"><div class="slider-row"><span class="material-symbols-outlined">light_mode</span><input type="range" class="slider-input" value="80"></div><div class="slider-row"><span class="material-symbols-outlined">volume_up</span><input type="range" class="slider-input" value="50"></div></div></div>
+    <div class="taskbar glass-panel taskbar-hidden" id="taskbar"><div class="taskbar-left"><div class="start-btn" id="startBtn"><svg width="22" height="22" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M 75 25 A 35 35 0 1 0 75 75" stroke="currentColor" stroke-width="12" stroke-linecap="round"/><line x1="30" y1="50" x2="75" y2="50" stroke="currentColor" stroke-width="12" stroke-linecap="round"/></svg></div><div style="width:1px; height:24px; background:var(--glass-border); margin:0 5px;"></div><div class="taskbar-apps" id="taskbarApps"></div></div><div class="system-tray" id="systemTrayBtn"><span class="material-symbols-outlined">wifi</span><span class="material-symbols-outlined" style="transform:rotate(90deg);">battery_5_bar</span><span id="clock">00:00</span></div></div>
 
     <script>
-        // ================== GERENCIAMENTO DE TEMA E CORES ==================
-        const colorThemes = {
-            'padrao': { ui: 'var(--cc-btn-active)', text: 'var(--cc-text-active)', center: '#9d4edd', r1: '#4b1a8c', r2: '#31105e', r3: '#1e093b', r4: '#120424' },
-            'roxo': { ui: '#9d4edd', text: '#ffffff', center: '#9d4edd', r1: '#4b1a8c', r2: '#31105e', r3: '#1e093b', r4: '#120424' },
-            'azul': { ui: '#4facfe', text: '#ffffff', center: '#4facfe', r1: '#1e88e5', r2: '#1255a0', r3: '#0d3870', r4: '#0b2040' },
-            'verde': { ui: '#38f9d7', text: '#051d38', center: '#38f9d7', r1: '#148041', r2: '#0d5c2e', r3: '#07381b', r4: '#03200f' },
-            'vermelho': { ui: '#ff5f56', text: '#ffffff', center: '#ff5f56', r1: '#a81c1c', r2: '#701313', r3: '#4a0b0b', r4: '#2b0606' }
-        };
-
-        function setTheme(colorKey, element) {
-            const t = colorThemes[colorKey];
-            document.documentElement.style.setProperty('--ui-accent', t.ui);
-            document.documentElement.style.setProperty('--ui-accent-text', t.text);
-            document.documentElement.style.setProperty('--ring-center', t.center);
-            document.documentElement.style.setProperty('--ring-1', t.r1);
-            document.documentElement.style.setProperty('--ring-2', t.r2);
-            document.documentElement.style.setProperty('--ring-3', t.r3);
-            document.documentElement.style.setProperty('--ring-4', t.r4);
-            
-            document.querySelectorAll('.color-circle').forEach(c => c.classList.remove('active'));
-            if(element) element.classList.add('active');
-
-            document.getElementById('desktop-wallpaper').style.backgroundImage = 'none';
-            document.getElementById('rings-container').style.display = 'flex';
-            
-            localStorage.setItem('mintos_color', colorKey);
-            localStorage.removeItem('mintos_wp');
-        }
-
-        function loadSavedTheme() {
-            const savedColor = localStorage.getItem('mintos_color') || 'padrao';
-            setTheme(savedColor, null);
-            const colors = ['padrao', 'roxo', 'azul', 'verde', 'vermelho'];
-            const idx = colors.indexOf(savedColor);
-            if(idx !== -1) document.querySelectorAll('.color-circle')[idx].classList.add('active');
-        }
-
-        // ================== NAVEGAÇÃO DAS CONFIGURAÇÕES ==================
-        function switchTab(tabId) {
-            document.querySelectorAll('.config-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.config-content').forEach(c => c.classList.remove('active'));
-            document.getElementById('tab-btn-' + tabId).classList.add('active');
-            document.getElementById('tab-' + tabId).classList.add('active');
-        }
-
-        // ================== SINCRONIZAÇÃO DAS ALAVANCAS ==================
-        function syncToggle(type) {
-            const toggle = document.getElementById('toggle-' + type).checked;
-            const ccBtn = document.getElementById('cc-' + type);
-            if(toggle) ccBtn.classList.add('active'); else ccBtn.classList.remove('active');
-        }
-
-        function toggleCC(type) {
-            const ccBtn = document.getElementById('cc-' + type);
-            ccBtn.classList.toggle('active');
-            document.getElementById('toggle-' + type).checked = ccBtn.classList.contains('active');
-        }
-
-        // ================== VERIFICAÇÃO DE ROTAÇÃO APRIMORADA ==================
-        function checkOrientation() {
-            const preBoot = document.getElementById('preBootScreen');
-            if(preBoot.style.display === 'none') return;
-            
-            let isPortrait = window.innerHeight > window.innerWidth;
-            if(screen.orientation && screen.orientation.type) {
-                isPortrait = screen.orientation.type.includes('portrait');
-            }
-
-            if (isPortrait) {
-                document.getElementById('msgPortrait').style.display = 'flex';
-                document.getElementById('msgLandscape').style.display = 'none';
-            } else {
-                document.getElementById('msgPortrait').style.display = 'none';
-                document.getElementById('msgLandscape').style.display = 'flex';
-            }
-        }
-        
-        window.addEventListener('resize', checkOrientation);
-        window.addEventListener('orientationchange', () => { setTimeout(checkOrientation, 200); });
-
-        let systemInitiated = false;
-        function initSystem(e) {
-            if(e) e.preventDefault();
-            if(systemInitiated) return;
-            systemInitiated = true;
-            document.getElementById('preBootScreen').style.opacity = '0';
-            setTimeout(() => { 
-                document.getElementById('preBootScreen').style.display = 'none'; 
-                startBootSequence(); 
-            }, 500);
-        }
-
-        // ================== GERENCIAMENTO DE USUÁRIO E WALLPAPER ==================
-        function checkUser() {
-            const savedName = localStorage.getItem('mintos_username');
-            if (savedName) {
-                document.getElementById('smUserName').innerText = savedName; document.getElementById('smUserInitial').innerText = savedName.charAt(0).toUpperCase();
-            } else { document.getElementById('loginOverlay').classList.add('show'); }
-        }
-
-        function saveUser() {
-            let name = document.getElementById('usernameInput').value.trim();
-            if (!name) name = "Visitante";
-            localStorage.setItem('mintos_username', name);
-            document.getElementById('smUserName').innerText = name; document.getElementById('smUserInitial').innerText = name.charAt(0).toUpperCase();
-            document.getElementById('loginOverlay').classList.remove('show');
-        }
-
-        function skipLogin() {
-            localStorage.setItem('mintos_username', 'Visitante');
-            document.getElementById('smUserName').innerText = 'Visitante'; document.getElementById('smUserInitial').innerText = 'V';
-            document.getElementById('loginOverlay').classList.remove('show');
-        }
-
-        function loadSavedWallpaper() {
-            const savedWp = localStorage.getItem('mintos_wp');
-            if (savedWp) {
-                document.getElementById('rings-container').style.display = 'none';
-                document.getElementById('desktop-wallpaper').style.backgroundImage = `url('${savedWp}')`;
-            }
-        }
-
-        document.getElementById('wallpaper-picker').addEventListener('change', (e) => {
-            if (e.target.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const base64Wp = event.target.result;
-                    localStorage.setItem('mintos_wp', base64Wp);
-                    document.getElementById('rings-container').style.display = 'none';
-                    document.getElementById('desktop-wallpaper').style.backgroundImage = `url('${base64Wp}')`;
-                };
-                reader.readAsDataURL(e.target.files[0]);
-            }
-        });
-
-        // ================== SEQUÊNCIA DE BOOT ==================
-        function startBootSequence() {
-            const bootScreen = document.getElementById('bootScreen');
-            bootScreen.style.display = 'flex';
-            setTimeout(() => {
-                document.getElementById('bootText').style.filter = 'blur(0px)'; document.getElementById('bootText').style.opacity = '1';
-                setTimeout(() => {
-                    document.getElementById('bootText').style.opacity = '0';
-                    setTimeout(() => {
-                        document.getElementById('bootText').style.display = 'none'; document.getElementById('bootLogoContainer').style.opacity = '1';
-                        setTimeout(() => {
-                            document.getElementById('bootBarContainer').style.opacity = '1';
-                            setTimeout(() => {
-                                document.getElementById('bootProgress').style.width = '100%';
-                                setTimeout(() => {
-                                    bootScreen.style.opacity = '0'; document.getElementById('lockScreen').style.display = 'flex';
-                                    checkUser(); setTimeout(() => bootScreen.style.display = 'none', 800);
-                                }, 4800); 
-                            }, 500);
-                        }, 800);
-                    }, 1000);
-                }, 2000);
-            }, 100);
-        }
-
-        window.addEventListener('load', () => {
-            loadSavedTheme();
-            loadSavedWallpaper();
-            checkOrientation();
-        });
-
-        // ================== SISTEMA GERAL E APPS ==================
-        function doInternalSearch() {
-            let query = document.getElementById('homeSearchInput').value.trim();
-            if(!query) query = document.getElementById('topUrlBar').value.trim();
-            if(query) {
-                document.getElementById('browserHome').style.display = 'none';
-                const iframe = document.getElementById('browserIframe'); iframe.style.display = 'block';
-                if (query.includes('.') && !query.includes(' ')) {
-                    let url = query.startsWith('http') ? query : 'https://' + query;
-                    iframe.src = url; document.getElementById('topUrlBar').value = url;
-                } else {
-                    let searchUrl = 'https://www.bing.com/search?q=' + encodeURIComponent(query);
-                    iframe.src = searchUrl; document.getElementById('topUrlBar').value = searchUrl;
-                }
-            }
-        }
-        function resetBrowser() { document.getElementById('browserIframe').style.display = 'none'; document.getElementById('browserIframe').src = ''; document.getElementById('browserHome').style.display = 'flex'; document.getElementById('topUrlBar').value = 'google.com.br'; document.getElementById('homeSearchInput').value = ''; }
-        function reloadBrowser() { const iframe = document.getElementById('browserIframe'); if(iframe.style.display === 'block') iframe.src = iframe.src; }
-
-        const darkModeBtn = document.getElementById('darkModeBtn');
-        darkModeBtn.addEventListener('click', () => {
-            document.body.classList.toggle('dark-theme'); darkModeBtn.classList.toggle('active');
-            const label = darkModeBtn.querySelector('.cc-label');
-            if(document.body.classList.contains('dark-theme')) { label.innerText = "Tema Escuro"; darkModeBtn.querySelector('.material-symbols-outlined').innerText = "dark_mode"; } 
-            else { label.innerText = "Tema Claro"; darkModeBtn.querySelector('.material-symbols-outlined').innerText = "light_mode"; }
-        });
-
-        function updateClock() {
-            const now = new Date(); const h = String(now.getHours()).padStart(2, '0'); const m = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('clock').textContent = `${h}:${m}`; document.getElementById('lockClockText').textContent = `${h}:${m}`;
-        } setInterval(updateClock, 1000); updateClock();
-
-        const appData = { 'config': { title: 'Ajustes', icon: 'settings', color: 'bg-gray' }, 'calculadora': { title: 'Calculadora', icon: 'calculate', color: 'bg-green' }, 'notas': { title: 'Notas', icon: 'edit_note', color: 'bg-yellow' }, 'paint': { title: 'Paint', icon: 'palette', color: 'bg-red' }, 'galeria': { title: 'Galeria', icon: 'image', color: 'bg-purple' }, 'navegador': { title: 'Navegador', icon: 'public', color: 'bg-ocean' }, 'atualizacoes': { title: 'Novidades', icon: 'system_update_alt', color: 'bg-mint' } };
-        let zIndexCount = 50;
-
-        function openApp(appId) {
-            const win = document.getElementById(`win-${appId}`); if(!win) return;
-            zIndexCount++; win.style.zIndex = zIndexCount; win.classList.remove('minimized'); win.classList.add('active');
-            if(appId === 'atualizacoes') { const items = win.querySelectorAll('.update-hero, .update-item'); items.forEach(el => { el.style.animation = 'none'; setTimeout(() => el.style.animation = '', 10); }); }
-            const tbContainer = document.getElementById('taskbarApps');
-            if(!document.getElementById(`tb-${appId}`)) {
-                const iconDiv = document.createElement('div'); iconDiv.className = `tb-app-icon ${appData[appId].color}`; iconDiv.id = `tb-${appId}`;
-                iconDiv.onclick = () => toggleMinMax(appId); iconDiv.innerHTML = `<span class="material-symbols-outlined">${appData[appId].icon}</span>`; tbContainer.appendChild(iconDiv);
-            }
-            document.getElementById('startMenu').classList.remove('show'); if(appId === 'paint') setTimeout(initPaint, 300);
-        }
-        function closeApp(appId) { document.getElementById(`win-${appId}`).classList.remove('active'); document.getElementById(`win-${appId}`).classList.remove('maximized'); setTimeout(() => { const tbIcon = document.getElementById(`tb-${appId}`); if(tbIcon) tbIcon.remove(); }, 300); }
-        function toggleMinMax(appId) { const win = document.getElementById(`win-${appId}`); if(win.classList.contains('minimized')) { win.classList.remove('minimized'); zIndexCount++; win.style.zIndex = zIndexCount; } else { win.classList.add('minimized'); } }
-        function minApp(appId) { document.getElementById(`win-${appId}`).classList.add('minimized'); }
-        function maxApp(appId) { const win = document.getElementById(`win-${appId}`); win.classList.toggle('maximized'); if(appId === 'paint') setTimeout(initPaint, 300); }
-
-        document.querySelectorAll('.window').forEach(win => {
-            win.addEventListener('mousedown', () => { zIndexCount++; win.style.zIndex = zIndexCount; });
-            win.addEventListener('touchstart', () => { zIndexCount++; win.style.zIndex = zIndexCount; }, {passive:true});
-        });
-
-        function makeDraggable(winId, headerId) {
-            const win = document.getElementById(winId); const header = document.getElementById(headerId); if(!win || !header) return;
-            let isDragging = false, startX, startY, initialX = 0, initialY = 0;
-            function dragStart(e) { if (e.target.closest('.window-controls')) return; if(win.classList.contains('maximized')) return; let clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX; let clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY; const style = window.getComputedStyle(win); const matrix = new WebKitCSSMatrix(style.transform); initialX = matrix.m41; initialY = matrix.m42; startX = clientX - initialX; startY = clientY - initialY; isDragging = true; }
-            function drag(e) { if (!isDragging) return; e.preventDefault(); let clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX; let clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY; win.style.transform = `translate(${clientX - startX}px, ${clientY - startY}px) scale(1)`; }
-            function dragEnd() { isDragging = false; }
-            header.addEventListener('mousedown', dragStart); document.addEventListener('mousemove', drag); document.addEventListener('mouseup', dragEnd);
-            header.addEventListener('touchstart', dragStart, {passive: false}); document.addEventListener('touchmove', drag, {passive: false}); document.addEventListener('touchend', dragEnd);
-        }
-        makeDraggable('win-config', 'header-config'); makeDraggable('win-calculadora', 'header-calculadora'); makeDraggable('win-notas', 'header-notas'); makeDraggable('win-paint', 'header-paint'); makeDraggable('win-galeria', 'header-galeria'); makeDraggable('win-navegador', 'header-navegador'); makeDraggable('win-atualizacoes', 'header-atualizacoes');
-
+        function showNotification(title, text, icon) { const container = document.getElementById('notif-container'); const card = document.createElement('div'); card.className = 'notif-card'; card.innerHTML = `<span class="material-symbols-outlined" style="font-size:28px; color:var(--ring-center);">${icon}</span><div><h4 style="margin:0 0 2px 0; font-size:14px; font-weight:600;">${title}</h4><p style="margin:0; font-size:12px; opacity:0.8;">${text}</p></div>`; container.appendChild(card); setTimeout(() => card.classList.add('show'), 10); setTimeout(() => { card.classList.remove('show'); setTimeout(() => card.remove(), 500); }, 3500); }
+        const desktopArea = document.getElementById('desktopArea'); const contextMenu = document.getElementById('contextMenu'); let pressTimer; function showContextMenu(x, y) { contextMenu.style.left = `${Math.min(x, window.innerWidth - 230)}px`; contextMenu.style.top = `${Math.min(y, window.innerHeight - 150)}px`; contextMenu.classList.add('show'); } desktopArea.addEventListener('contextmenu', (e) => { if(e.target === desktopArea) { e.preventDefault(); showContextMenu(e.clientX, e.clientY); } }); desktopArea.addEventListener('touchstart', (e) => { if(e.target !== desktopArea) return; pressTimer = window.setTimeout(() => { showContextMenu(e.touches[0].clientX, e.touches[0].clientY); }, 600); }, {passive: true}); desktopArea.addEventListener('touchend', () => { clearTimeout(pressTimer); }); desktopArea.addEventListener('touchmove', () => { clearTimeout(pressTimer); }, {passive: true}); document.addEventListener('click', (e) => { if(!contextMenu.contains(e.target)) contextMenu.classList.remove('show'); });
+        const colorThemes = { 'padrao':{ui:'var(--cc-btn-active)',text:'var(--cc-text-active)',center:'#9d4edd',r1:'#4b1a8c',r2:'#31105e',r3:'#1e093b',r4:'#120424'}, 'roxo':{ui:'#9d4edd',text:'#ffffff',center:'#9d4edd',r1:'#4b1a8c',r2:'#31105e',r3:'#1e093b',r4:'#120424'}, 'azul':{ui:'#4facfe',text:'#ffffff',center:'#4facfe',r1:'#1e88e5',r2:'#1255a0',r3:'#0d3870',r4:'#0b2040'}, 'verde':{ui:'#38f9d7',text:'#051d38',center:'#38f9d7',r1:'#148041',r2:'#0d5c2e',r3:'#07381b',r4:'#03200f'}, 'vermelho':{ui:'#ff5f56',text:'#ffffff',center:'#ff5f56',r1:'#a81c1c',r2:'#701313',r3:'#4a0b0b',r4:'#2b0606'} };
+        function setTheme(colorKey, element) { const t = colorThemes[colorKey]; if(!t)return; document.documentElement.style.setProperty('--ui-accent', t.ui); document.documentElement.style.setProperty('--ui-accent-text', t.text); document.documentElement.style.setProperty('--ring-center', t.center); document.documentElement.style.setProperty('--ring-1', t.r1); document.documentElement.style.setProperty('--ring-2', t.r2); document.documentElement.style.setProperty('--ring-3', t.r3); document.documentElement.style.setProperty('--ring-4', t.r4); document.querySelectorAll('.color-circle').forEach(c => c.classList.remove('active')); if(element) element.classList.add('active'); document.getElementById('desktop-wallpaper').style.backgroundImage = 'none'; document.getElementById('rings-container').style.display = 'flex'; localStorage.setItem('mintos_color', colorKey); localStorage.removeItem('mintos_wp'); showNotification('Tema', 'Cor alterada.', 'palette'); }
+        function loadSavedTheme() { const savedColor = localStorage.getItem('mintos_color') || 'padrao'; setTheme(savedColor, null); const colors = ['padrao', 'roxo', 'azul', 'verde', 'vermelho']; const idx = colors.indexOf(savedColor); if(idx !== -1) document.querySelectorAll('.color-circle')[idx].classList.add('active'); }
+        function switchTab(tabId) { document.querySelectorAll('.config-tab').forEach(t => t.classList.remove('active')); document.querySelectorAll('.config-content').forEach(c => c.classList.remove('active')); document.getElementById('tab-btn-' + tabId).classList.add('active'); document.getElementById('tab-' + tabId).classList.add('active'); }
+        function toggleCC(type) { const ccBtn = document.getElementById('cc-' + type); ccBtn.classList.toggle('active'); const status = ccBtn.classList.contains('active') ? "Ativado" : "Desativado"; showNotification('Conexão', `${type.toUpperCase()} ${status}.`, type === 'bt' ? 'bluetooth' : type); }
+        function checkOrientation() { const preBoot = document.getElementById('preBootScreen'); if(preBoot.style.display === 'none') return; let isPortrait = window.innerHeight > window.innerWidth; if(screen.orientation && screen.orientation.type) isPortrait = screen.orientation.type.includes('portrait'); if (isPortrait) { document.getElementById('msgPortrait').style.display = 'flex'; document.getElementById('msgLandscape').style.display = 'none'; } else { document.getElementById('msgPortrait').style.display = 'none'; document.getElementById('msgLandscape').style.display = 'flex'; } } window.addEventListener('resize', checkOrientation); window.addEventListener('orientationchange', () => { setTimeout(checkOrientation, 200); }); let systemInitiated = false; function initSystem(e) { if(e) e.preventDefault(); if(systemInitiated) return; systemInitiated = true; document.getElementById('preBootScreen').style.opacity = '0'; setTimeout(() => { document.getElementById('preBootScreen').style.display = 'none'; startBootSequence(); }, 500); }
+        function checkUser() { const savedName = localStorage.getItem('mintos_username'); if (savedName) { document.getElementById('smUserName').innerText = savedName; document.getElementById('smUserInitial').innerText = savedName.charAt(0).toUpperCase(); updateWidgetGreet(savedName); } else { document.getElementById('loginOverlay').classList.add('show'); } }
+        function saveUser() { let name = document.getElementById('usernameInput').value.trim(); if (!name) name = "Visitante"; localStorage.setItem('mintos_username', name); document.getElementById('smUserName').innerText = name; document.getElementById('smUserInitial').innerText = name.charAt(0).toUpperCase(); updateWidgetGreet(name); document.getElementById('loginOverlay').classList.remove('show'); showNotification('Login', `Bem-vindo, ${name}.`, 'person'); }
+        function skipLogin() { localStorage.setItem('mintos_username', 'Visitante'); document.getElementById('smUserName').innerText = 'Visitante'; document.getElementById('smUserInitial').innerText = 'V'; updateWidgetGreet('Visitante'); document.getElementById('loginOverlay').classList.remove('show'); }
+        function loadSavedWallpaper() { const savedWp = localStorage.getItem('mintos_wp'); if (savedWp) { document.getElementById('rings-container').style.display = 'none'; document.getElementById('desktop-wallpaper').style.backgroundImage = `url('${savedWp}')`; } } document.getElementById('wallpaper-picker').addEventListener('change', (e) => { if (e.target.files[0]) { const reader = new FileReader(); reader.onload = function(event) { const base64Wp = event.target.result; localStorage.setItem('mintos_wp', base64Wp); document.getElementById('rings-container').style.display = 'none'; document.getElementById('desktop-wallpaper').style.backgroundImage = `url('${base64Wp}')`; showNotification('Papel de Parede', 'Fundo alterado.', 'image'); }; reader.readAsDataURL(e.target.files[0]); } });
+        function startBootSequence() { const bootScreen = document.getElementById('bootScreen'); bootScreen.style.display = 'flex'; setTimeout(() => { document.getElementById('bootText').style.filter = 'blur(0px)'; document.getElementById('bootText').style.opacity = '1'; setTimeout(() => { document.getElementById('bootText').style.opacity = '0'; setTimeout(() => { document.getElementById('bootText').style.display = 'none'; document.getElementById('bootLogoContainer').style.opacity = '1'; setTimeout(() => { document.querySelector('.progress-bar-container').style.opacity = '1'; setTimeout(() => { document.getElementById('bootProgress').style.width = '100%'; setTimeout(() => { bootScreen.style.opacity = '0'; document.getElementById('lockScreen').style.display = 'flex'; checkUser(); setTimeout(() => bootScreen.style.display = 'none', 800); }, 3000); }, 500); }, 800); }, 1000); }, 2000); }, 100); } window.addEventListener('load', () => { loadSavedTheme(); loadSavedWallpaper(); checkOrientation(); });
+        function updateClock() { const now = new Date(); const h = String(now.getHours()).padStart(2, '0'); const m = String(now.getMinutes()).padStart(2, '0'); document.getElementById('clock').textContent = `${h}:${m}`; document.getElementById('lockClockText').textContent = `${h}:${m}`; document.getElementById('widgetClock').textContent = `${h}:${m}`; } setInterval(updateClock, 1000); updateClock(); function updateWidgetGreet(name) { const h = new Date().getHours(); let msg = 'Boa noite'; if(h >= 5 && h < 12) msg = 'Bom dia'; else if(h >= 12 && h < 18) msg = 'Boa tarde'; document.getElementById('widgetGreet').textContent = `${msg}, ${name}`; }
+        const appData = { 'config':{icon:'settings',color:'bg-gray'}, 'calculadora':{icon:'calculate',color:'bg-green'}, 'notas':{icon:'edit_note',color:'bg-yellow'}, 'paint':{icon:'palette',color:'bg-red'}, 'navegador':{icon:'public',color:'bg-ocean'}, 'arquivos':{icon:'folder',color:'bg-yellow'}, 'musica':{icon:'headphones',color:'bg-orange'}, 'galeria':{icon:'image',color:'bg-blue'}, 'atualizacoes':{icon:'update',color:'bg-purple'}, 'store':{icon:'shopping_bag',color:'bg-mint'}, 'terminal':{icon:'terminal',color:'bg-dark'} }; let zIndexCount = 50;
+        function openApp(appId) { const win = document.getElementById(`win-${appId}`); if(!win) return; zIndexCount++; win.style.zIndex = zIndexCount; win.classList.remove('minimized'); win.classList.add('active'); const tbContainer = document.getElementById('taskbarApps'); if(!document.getElementById(`tb-${appId}`)) { const iconDiv = document.createElement('div'); iconDiv.className = `tb-app-icon ${appData[appId].color}`; iconDiv.id = `tb-${appId}`; iconDiv.onclick = () => toggleMinMax(appId); iconDiv.innerHTML = `<span class="material-symbols-outlined">${appData[appId].icon}</span>`; tbContainer.appendChild(iconDiv); } document.getElementById('startMenu').classList.remove('show'); if(appId === 'paint') setTimeout(initPaint, 300); if(appId==='terminal') document.getElementById('termInput').focus(); }
+        function closeApp(appId) { document.getElementById(`win-${appId}`).classList.remove('active'); document.getElementById(`win-${appId}`).classList.remove('maximized'); setTimeout(() => { const tbIcon = document.getElementById(`tb-${appId}`); if(tbIcon) tbIcon.remove(); }, 300); } function toggleMinMax(appId) { const win = document.getElementById(`win-${appId}`); if(win.classList.contains('minimized')) { win.classList.remove('minimized'); zIndexCount++; win.style.zIndex = zIndexCount; } else { win.classList.add('minimized'); } } function minApp(appId) { document.getElementById(`win-${appId}`).classList.add('minimized'); } function maxApp(appId) { const win = document.getElementById(`win-${appId}`); win.classList.toggle('maximized'); if(appId === 'paint') setTimeout(initPaint, 300); }
+        document.querySelectorAll('.window').forEach(win => { win.addEventListener('mousedown', () => { zIndexCount++; win.style.zIndex = zIndexCount; }); win.addEventListener('touchstart', () => { zIndexCount++; win.style.zIndex = zIndexCount; }, {passive:true}); }); function makeDraggable(winId, headerId) { const win = document.getElementById(winId); const header = document.getElementById(headerId); if(!win || !header) return; let isDragging = false, startX, startY, initialX = 0, initialY = 0; function dragStart(e) { if (e.target.closest('.window-controls')) return; if(win.classList.contains('maximized')) return; let clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX; let clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY; const style = window.getComputedStyle(win); const matrix = new WebKitCSSMatrix(style.transform); initialX = matrix.m41; initialY = matrix.m42; startX = clientX - initialX; startY = clientY - initialY; isDragging = true; } function drag(e) { if (!isDragging) return; e.preventDefault(); let clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX; let clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY; win.style.transform = `translate(${clientX - startX}px, ${clientY - startY}px) scale(1)`; } function dragEnd() { isDragging = false; } header.addEventListener('mousedown', dragStart); document.addEventListener('mousemove', drag); document.addEventListener('mouseup', dragEnd); header.addEventListener('touchstart', dragStart, {passive: false}); document.addEventListener('touchmove', drag, {passive: false}); document.addEventListener('touchend', dragEnd); }
+        makeDraggable('win-config', 'header-config'); makeDraggable('win-calculadora', 'header-calculadora'); makeDraggable('win-notas', 'header-notas'); makeDraggable('win-paint', 'header-paint'); makeDraggable('win-navegador', 'header-navegador'); makeDraggable('win-arquivos', 'header-arquivos'); makeDraggable('win-musica', 'header-musica'); makeDraggable('win-galeria', 'header-galeria'); makeDraggable('win-atualizacoes', 'header-atualizacoes'); makeDraggable('win-store', 'header-store'); makeDraggable('win-terminal', 'header-terminal');
+        document.getElementById('startBtn').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('startMenu').classList.toggle('show'); document.getElementById('controlPanel').classList.remove('show'); }); document.getElementById('systemTrayBtn').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('controlPanel').classList.toggle('show'); document.getElementById('startMenu').classList.remove('show'); }); document.addEventListener('click', (e) => { if (!document.getElementById('startMenu').contains(e.target) && e.target.id !== 'startBtn') document.getElementById('startMenu').classList.remove('show'); if (!document.getElementById('controlPanel').contains(e.target) && e.target.id !== 'systemTrayBtn') document.getElementById('controlPanel').classList.remove('show'); });
+        const lockScreen = document.getElementById('lockScreen'); const slideThumb = document.getElementById('slideThumb'); let isSliding = false, startX = 0, maxW = 0; function finishSlide() { lockScreen.classList.add('hidden'); document.getElementById('desktopArea').classList.add('show'); setTimeout(() => document.getElementById('taskbar').classList.remove('taskbar-hidden'), 150); showNotification('MintOS', 'Sistema desbloqueado.', 'lock_open'); } slideThumb.addEventListener('touchstart', (e) => { isSliding=true; startX=e.touches[0].clientX; maxW = document.getElementById('slideContainer').clientWidth - 50; }, {passive:true}); document.addEventListener('touchmove', (e) => { if(!isSliding) return; let move = e.touches[0].clientX - startX; if(move<0) move=0; if(move>maxW) move=maxW; slideThumb.style.transform=`translateX(${move}px)`; }, {passive:false}); document.addEventListener('touchend', () => { if(!isSliding) return; isSliding = false; let m = new WebKitCSSMatrix(window.getComputedStyle(slideThumb).transform).m41; if(m > maxW * 0.8) { slideThumb.style.transform = `translateX(${maxW}px)`; setTimeout(finishSlide, 200); } else { slideThumb.style.transition='transform 0.3s'; slideThumb.style.transform='translateX(0)'; setTimeout(()=>slideThumb.style.transition='none', 300); } }); slideThumb.addEventListener('mousedown', (e) => { isSliding=true; startX=e.clientX; maxW = document.getElementById('slideContainer').clientWidth - 50; }); document.addEventListener('mousemove', (e) => { if(!isSliding) return; let move = e.clientX - startX; if(move<0) move=0; if(move>maxW) move=maxW; slideThumb.style.transform=`translateX(${move}px)`; }); document.addEventListener('mouseup', () => { if(!isSliding) return; isSliding = false; let m = new WebKitCSSMatrix(window.getComputedStyle(slideThumb).transform).m41; if(m > maxW * 0.8) { slideThumb.style.transform = `translateX(${maxW}px)`; setTimeout(finishSlide, 200); } else { slideThumb.style.transition='transform 0.3s'; slideThumb.style.transform='translateX(0)'; setTimeout(()=>slideThumb.style.transition='none', 300); } });
+        const darkModeBtn = document.getElementById('darkModeBtn'); darkModeBtn.addEventListener('click', () => { document.body.classList.toggle('dark-theme'); darkModeBtn.classList.toggle('active'); const label = darkModeBtn.querySelector('.cc-label'); if(document.body.classList.contains('dark-theme')) { label.innerText = "Tema Escuro"; darkModeBtn.querySelector('.material-symbols-outlined').innerText = "dark_mode"; showNotification('Aparência', 'Tema Escuro ativado.', 'dark_mode');} else { label.innerText = "Tema Claro"; darkModeBtn.querySelector('.material-symbols-outlined').innerText = "light_mode"; showNotification('Aparência', 'Tema Claro ativado.', 'light_mode');}});
         let calcVal = '0'; function calcPress(v) { const display = document.getElementById('calcDisplay'); if(v === 'C') calcVal = '0'; else if(v === '=') { try { calcVal = String(eval(calcVal)); } catch { calcVal = 'Erro'; } } else { if(calcVal === '0' || calcVal === 'Erro') calcVal = v; else calcVal += v; } display.innerText = calcVal; }
-        const notesArea = document.getElementById('notesArea'); notesArea.value = localStorage.getItem('mintos_notes') || ''; notesArea.addEventListener('input', (e) => localStorage.setItem('mintos_notes', e.target.value));
-
-        let paintColor = 'black'; let isDrawing = false; let ctx;
-        function initPaint() { const canvas = document.getElementById('paintCanvas'); const winBody = canvas.parentElement; canvas.width = winBody.clientWidth - 30; canvas.height = winBody.clientHeight - 80; ctx = canvas.getContext('2d'); ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.fillStyle = "rgba(255,255,255,0.9)"; ctx.fillRect(0, 0, canvas.width, canvas.height); }
-        function clearCanvas() { if(ctx) { ctx.fillStyle="rgba(255,255,255,0.9)"; ctx.fillRect(0,0,document.getElementById('paintCanvas').width, document.getElementById('paintCanvas').height); } }
-        const canvas = document.getElementById('paintCanvas');
-        function startPosition(e) { isDrawing = true; draw(e); } function endPosition() { isDrawing = false; ctx.beginPath(); }
-        function draw(e) { if(!isDrawing || !ctx) return; e.preventDefault(); let x = e.type.includes('touch') ? e.touches[0].clientX : e.clientX; let y = e.type.includes('touch') ? e.touches[0].clientY : e.clientY; const rect = canvas.getBoundingClientRect(); ctx.lineWidth = 4; ctx.strokeStyle = paintColor; ctx.lineTo(x - rect.left, y - rect.top); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x - rect.left, y - rect.top); }
-        canvas.addEventListener('mousedown', startPosition); canvas.addEventListener('mouseup', endPosition); canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('touchstart', startPosition, {passive:false}); canvas.addEventListener('touchend', endPosition); canvas.addEventListener('touchmove', draw, {passive:false});
-
-        document.getElementById('startBtn').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('startMenu').classList.toggle('show'); document.getElementById('controlPanel').classList.remove('show'); });
-        document.getElementById('systemTrayBtn').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('controlPanel').classList.toggle('show'); document.getElementById('startMenu').classList.remove('show'); });
-        document.addEventListener('click', (e) => { if (!document.getElementById('startMenu').contains(e.target) && e.target.id !== 'startBtn') document.getElementById('startMenu').classList.remove('show'); if (!document.getElementById('controlPanel').contains(e.target) && e.target.id !== 'systemTrayBtn') document.getElementById('controlPanel').classList.remove('show'); });
-
-        const lockScreen = document.getElementById('lockScreen'); const slideThumb = document.getElementById('slideThumb'); let isSliding = false, startX = 0, maxW = 0;
-        slideThumb.addEventListener('touchstart', (e) => { isSliding=true; startX=e.touches[0].clientX; maxW = document.getElementById('slideContainer').clientWidth - 50; }, {passive:true}); document.addEventListener('touchmove', (e) => { if(!isSliding) return; let move = e.touches[0].clientX - startX; if(move<0) move=0; if(move>maxW) move=maxW; slideThumb.style.transform=`translateX(${move}px)`; }, {passive:false});
-        document.addEventListener('touchend', () => { if(!isSliding) return; isSliding = false; let m = new WebKitCSSMatrix(window.getComputedStyle(slideThumb).transform).m41; if(m > maxW * 0.8) { slideThumb.style.transform = `translateX(${maxW}px)`; setTimeout(() => { lockScreen.classList.add('hidden'); document.getElementById('desktopArea').classList.add('show'); setTimeout(() => document.getElementById('taskbar').classList.remove('taskbar-hidden'), 150); }, 200); } else { slideThumb.style.transition='transform 0.3s'; slideThumb.style.transform='translateX(0)'; setTimeout(()=>slideThumb.style.transition='none', 300); } });
-        slideThumb.addEventListener('mousedown', (e) => { isSliding=true; startX=e.clientX; maxW = document.getElementById('slideContainer').clientWidth - 50; }); document.addEventListener('mousemove', (e) => { if(!isSliding) return; let move = e.clientX - startX; if(move<0) move=0; if(move>maxW) move=maxW; slideThumb.style.transform=`translateX(${move}px)`; });
-        document.addEventListener('mouseup', () => { if(!isSliding) return; isSliding = false; let m = new WebKitCSSMatrix(window.getComputedStyle(slideThumb).transform).m41; if(m > maxW * 0.8) { slideThumb.style.transform = `translateX(${maxW}px)`; setTimeout(() => { lockScreen.classList.add('hidden'); document.getElementById('desktopArea').classList.add('show'); setTimeout(() => document.getElementById('taskbar').classList.remove('taskbar-hidden'), 150); }, 200); } else { slideThumb.style.transition='transform 0.3s'; slideThumb.style.transform='translateX(0)'; setTimeout(()=>slideThumb.style.transition='none', 300); } });
+        const notesArea = document.getElementById('notesArea'); notesArea.value = localStorage.getItem('mintos_notes') || ''; notesArea.addEventListener('input', (e) => { localStorage.setItem('mintos_notes', e.target.value); });
+        function doInternalSearch() { let query = document.getElementById('homeSearchInput').value.trim(); if(!query) query = document.getElementById('topUrlBar').value.trim(); if(query) { document.getElementById('browserHome').style.display = 'none'; const iframe = document.getElementById('browserIframe'); iframe.style.display = 'block'; if (query.includes('.') && !query.includes(' ')) { let url = query.startsWith('http') ? query : 'https://' + query; iframe.src = url; document.getElementById('topUrlBar').value = url; } else { let searchUrl = 'https://www.bing.com/search?q=' + encodeURIComponent(query); iframe.src = searchUrl; document.getElementById('topUrlBar').value = searchUrl; } } } function resetBrowser() { document.getElementById('browserIframe').style.display = 'none'; document.getElementById('browserIframe').src = ''; document.getElementById('browserHome').style.display = 'flex'; document.getElementById('topUrlBar').value = 'google.com'; document.getElementById('homeSearchInput').value = ''; } function reloadBrowser() { const iframe = document.getElementById('browserIframe'); if(iframe.style.display === 'block') iframe.src = iframe.src; }
+        let paintColor = 'black'; let isDrawing = false; let ctx; function initPaint() { const canvas = document.getElementById('paintCanvas'); const winBody = canvas.parentElement; canvas.width = winBody.clientWidth - 30; canvas.height = winBody.clientHeight - 80; ctx = canvas.getContext('2d'); ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.fillStyle = "rgba(255,255,255,0.9)"; ctx.fillRect(0, 0, canvas.width, canvas.height); } function clearCanvas() { if(ctx) { ctx.fillStyle="rgba(255,255,255,0.9)"; ctx.fillRect(0,0,document.getElementById('paintCanvas').width, document.getElementById('paintCanvas').height); showNotification('Paint', 'A tela foi limpa.', 'ink_eraser');} } const canvas = document.getElementById('paintCanvas'); function startPosition(e) { isDrawing = true; draw(e); } function endPosition() { isDrawing = false; ctx.beginPath(); } function draw(e) { if(!isDrawing || !ctx) return; e.preventDefault(); let x = e.type.includes('touch') ? e.touches[0].clientX : e.clientX; let y = e.type.includes('touch') ? e.touches[0].clientY : e.clientY; const rect = canvas.getBoundingClientRect(); ctx.lineWidth = 4; ctx.strokeStyle = paintColor; ctx.lineTo(x - rect.left, y - rect.top); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x - rect.left, y - rect.top); } canvas.addEventListener('mousedown', startPosition); canvas.addEventListener('mouseup', endPosition); canvas.addEventListener('mousemove', draw); canvas.addEventListener('touchstart', startPosition, {passive:false}); canvas.addEventListener('touchend', endPosition); canvas.addEventListener('touchmove', draw, {passive:false});
+        
+        // STORE LOGIC
+        function installApp(btn, name) { btn.innerText = "Instalando..."; btn.style.opacity = "0.5"; setTimeout(() => { btn.innerText = "Instalado"; btn.style.background = "var(--glass-border)"; btn.style.opacity = "1"; btn.disabled = true; showNotification('Mint Store', `${name} instalado com sucesso.`, 'check_circle'); }, 2000); }
+        
+        // TERMINAL LOGIC
+        const termInput = document.getElementById('termInput'); const termOut = document.getElementById('termOutput');
+        termInput.addEventListener('keydown', (e) => { if(e.key==='Enter') { let val = termInput.value.trim().toLowerCase(); termOut.innerHTML += `<div><span style="color:#ff5f56;">root@luiz:~$</span> ${termInput.value}</div>`; if(val==='help') termOut.innerHTML += `<div style="color:var(--ui-accent);">Comandos: help, clear, theme [roxo/azul/verde/vermelho/padrao], open [app_name]</div>`; else if(val==='clear') termOut.innerHTML = ''; else if(val.startsWith('theme ')) { let t = val.split(' ')[1]; if(colorThemes[t]) setTheme(t); else termOut.innerHTML+=`<div>Tema não encontrado.</div>`; } else if(val.startsWith('open ')) { let a = val.split(' ')[1]; if(appData[a]) openApp(a); else termOut.innerHTML+=`<div>App não encontrado.</div>`;} else if(val!=='') termOut.innerHTML += `<div>Comando não reconhecido. Digite 'help'.</div>`; termInput.value=''; termOut.scrollTop = termOut.scrollHeight; } });
     </script>
 </body>
 </html>
