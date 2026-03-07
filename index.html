@@ -166,10 +166,8 @@
         /* --- LAYOUT DE CONFIGURAÇÃO VERTICAL (ESTILO WINDOWS) --- */
         .config-layout { display: flex; height: 100%; width: 100%; overflow: hidden; }
         
-        .config-sidebar { 
-            width: 140px; flex-shrink: 0; display: flex; flex-direction: column; gap: 5px; 
-            border-right: 1px solid var(--glass-border); padding-right: 10px; padding-top: 5px; overflow-y: auto; 
-        }
+        /* LINHA CORRIGIDA COM PADDING-LEFT: 15PX E LARGURA DE 155PX */
+        .config-sidebar { width: 155px; flex-shrink: 0; display: flex; flex-direction: column; gap: 5px; border-right: 1px solid var(--glass-border); padding-left: 15px; padding-right: 10px; padding-top: 5px; overflow-y: auto; }
         
         .config-tab { 
             padding: 10px 12px; font-size: 13px; font-weight: 500; cursor: pointer; 
