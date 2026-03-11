@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MintOS 1.0 - Smooth Edition</title>
+    <title>FanOS 1.3 - Premium Edition</title>
     
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -38,10 +38,16 @@
             --tray-text: #ffffff;
         }
 
+        body.no-blur { --glass-bg-light: rgba(255, 255, 255, 0.95); --win-bg-light: rgba(240, 245, 250, 0.98); }
+        body.dark-theme.no-blur { --glass-bg: rgba(15, 20, 30, 0.95); --win-bg: rgba(20, 25, 35, 0.98); --start-bg: rgba(0, 0, 0, 0.6); --tray-bg: rgba(0, 0, 0, 0.6); }
+
         body { 
             --glass-bg: var(--glass-bg-light); --glass-border: var(--glass-border-light); --win-bg: var(--win-bg-light); --text-main: var(--text-main-light); --text-muted: var(--text-muted-light); --cc-btn-bg: var(--cc-btn-bg-light); --calc-btn: var(--calc-btn-light); --tray-bg: var(--tray-bg-light); --tray-text: var(--tray-text-light); --start-bg: var(--tray-bg-light); --start-logo: var(--tray-text-light);
             margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #051d38; font-family: 'Poppins', sans-serif; touch-action: none; -webkit-user-select: none; user-select: none; transition: background-color 0.5s ease; letter-spacing: 0.2px; 
         }
+
+        body.no-blur .glass-panel, body.no-blur .window, body.no-blur .notif-card, body.no-blur .lock-screen, body.no-blur #loginOverlay, body.no-blur .mini-player { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+        body.no-blur .window-body { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: var(--win-bg) !important; }
 
         #notif-container { position: fixed; bottom: 85px; right: 20px; display: flex; flex-direction: column-reverse; gap: 10px; z-index: 100000; pointer-events: none; }
         .notif-card { background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--glass-border); padding: 12px 15px; border-radius: 16px; display: flex; gap: 12px; align-items: center; color: var(--text-main); width: 240px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transform: translateX(120%) scale(0.9); opacity: 0; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
@@ -57,7 +63,7 @@
         .np-empty { text-align: center; padding: 30px 10px; font-size: 12px; color: var(--text-muted); }
 
         /* =========================================
-           TELAS DE SISTEMA
+           TELAS DE SISTEMA E INICIALIZAÇÃO
            ========================================= */
         #preBootScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999999; background: #08020d; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: opacity 0.5s ease; }
         .preboot-content { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 30px 25px; gap: 15px; width: 85%; max-width: 400px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
@@ -95,7 +101,7 @@
         .outer-ring-4 { width: 250vh; height: 250vh; background-color: var(--ring-4); } .outer-ring-3 { width: 180vh; height: 180vh; background-color: var(--ring-3); } .outer-ring-2 { width: 120vh; height: 120vh; background-color: var(--ring-2); } .outer-ring-1 { width: 70vh; height: 70vh; background-color: var(--ring-1); }
         .inner-circle { width: 30vh; height: 30vh; background-image: radial-gradient(circle at center, var(--ring-center) 0%, var(--ring-1) 100%); border-radius: 50%; }
 
-        .bg-blue { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); } .bg-red { background: linear-gradient(135deg, #f77062 0%, #fe5196 100%); } .bg-green { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); } .bg-yellow { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); } .bg-purple { background: linear-gradient(135deg, #c471ed 0%, #f64f59 100%); } .bg-gray { background: linear-gradient(135deg, #606c88 0%, #3f4c6b 100%); } .bg-ocean { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); } .bg-mint { background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%); } 
+        .bg-blue { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); } .bg-red { background: linear-gradient(135deg, #f77062 0%, #fe5196 100%); } .bg-green { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); } .bg-yellow { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); } .bg-purple { background: linear-gradient(135deg, #c471ed 0%, #f64f59 100%); } .bg-gray { background: linear-gradient(135deg, #606c88 0%, #3f4c6b 100%); } .bg-ocean { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); } .bg-mint { background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%); } .bg-orange { background: linear-gradient(135deg, #f12711 0%, #f5af19 100%); }
 
         .squircle { width: 50px; height: 50px; border-radius: 12px; display: flex; justify-content: center; align-items: center; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.2s; }
         .desktop-area { position: absolute; top: 0; left: 0; right: 0; bottom: 0; padding: 20px; display: flex; flex-direction: column; align-content: flex-start; flex-wrap: wrap; gap: 20px; z-index: 10; opacity: 0; pointer-events: none; transition: opacity 0.8s ease; }
@@ -106,6 +112,81 @@
 
         .glass-panel { background: var(--glass-bg); backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px); border: 1px solid var(--glass-border); border-radius: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25); color: var(--text-main); transition: background 0.3s, border 0.3s, color 0.3s; }
         
+        /* =========================================
+           SISTEMA DE JANELAS (NOVO MÉTODO ANIMATION)
+           ========================================= */
+        .window { position: absolute; top: 10%; left: 5%; width: 90%; max-width: 500px; height: 65vh; max-height: 550px; background: var(--win-bg); backdrop-filter: blur(40px) brightness(1.1); -webkit-backdrop-filter: blur(40px) brightness(1.1); border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); display: flex; flex-direction: column; z-index: 50; overflow: hidden; color: var(--text-main); 
+            transform-origin: var(--origin-x, 50%) var(--origin-y, 50%);
+            translate: 0px 0px; 
+            scale: 0.2; 
+            opacity: 0; visibility: hidden; filter: blur(15px);
+            transition: visibility 0.4s, opacity 0.4s ease, filter 0.4s ease, scale 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), border-radius 0.4s ease; 
+        }
+        
+        .window.active { visibility: visible; opacity: 1; filter: blur(0px); scale: 1; pointer-events: all; }
+        .window.minimized { visibility: hidden; opacity: 0; filter: blur(5px); scale: 0.4; pointer-events: none; }
+        
+        .window.maximized { top: 0 !important; left: 0 !important; width: 100vw !important; max-width: 100vw !important; height: 100vh !important; max-height: 100vh !important; border-radius: 0; translate: 0px 0px !important; scale: 1 !important; transform-origin: center;}
+        .window.snapped-left { top: 0 !important; left: 0 !important; width: 50vw !important; max-width: 50vw !important; height: 100vh !important; max-height: 100vh !important; border-radius: 0; translate: 0px 0px !important; scale: 1 !important; transform-origin: center;}
+        .window.snapped-right { top: 0 !important; left: 50vw !important; width: 50vw !important; max-width: 50vw !important; height: 100vh !important; max-height: 100vh !important; border-radius: 0; translate: 0px 0px !important; scale: 1 !important; transform-origin: center;}
+
+        .snap-overlay { position: fixed; background: rgba(255,255,255,0.1); border: 2px solid var(--ui-accent); z-index: 49; opacity: 0; pointer-events: none; transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1); border-radius: 12px; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        .snap-overlay.show-top { top: 5px; left: 5px; right: 5px; bottom: 5px; opacity: 1; border-width: 3px; }
+        .snap-overlay.show-left { top: 5px; left: 5px; right: 50vw; bottom: 5px; opacity: 1; border-width: 3px; }
+        .snap-overlay.show-right { top: 5px; left: 50vw; right: 5px; bottom: 5px; opacity: 1; border-width: 3px; }
+
+        .window-header { height: 45px; background: transparent; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; cursor: grab; flex-shrink: 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .window-title { font-size: 13px; font-weight: 500; pointer-events: none; }
+        .window-controls { display: flex; gap: 8px; align-items: center; }
+        .win-btn { width: 14px; height: 14px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; background: rgba(150, 150, 150, 0.3); color: var(--text-main); }
+        .win-btn .material-symbols-outlined { font-size: 10px; font-weight: 700; opacity: 0.8; }
+        .win-btn:hover { background: rgba(150, 150, 150, 0.6); } .win-close:hover { background: #ff5f56; color: white; }
+        .window-body { flex-grow: 1; display: flex; flex-direction: column; padding: 15px; overflow-y: auto; }
+
+        /* =========================================
+           COMPONENTES DE INTERFACE E APPS
+           ========================================= */
+        .config-layout { display: flex; height: 100%; width: 100%; overflow: hidden; margin: -15px; padding: 15px; gap: 10px;}
+        .config-sidebar { width: 130px; flex-shrink: 0; display: flex; flex-direction: column; gap: 4px; border-right: 1px solid var(--glass-border); padding-right: 10px; padding-left: 5px; }
+        .config-tab { padding: 8px 10px 8px 15px; font-size: 12px; font-weight: 400; cursor: pointer; color: var(--text-muted); border-radius: 8px; transition: all 0.2s; position: relative; }
+        .config-tab.active { background: rgba(255,255,255,0.1); color: var(--text-main); font-weight: 500; }
+        .config-tab.active::before { content: ''; position: absolute; left: 5px; top: 20%; height: 60%; width: 3px; background: var(--ui-accent); border-radius: 3px; transition: background 0.3s; }
+        .config-main-area { flex-grow: 1; overflow-y: auto; padding-right: 5px; }
+        .config-content { display: none; animation: fadeIn 0.3s ease; } .config-content.active { display: flex; flex-direction: column; gap: 15px; }
+        .config-section { background: var(--cc-btn-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--glass-border); }
+        .config-section h4 { margin: 0 0 10px 0; font-size: 13px; font-weight: 500; }
+        
+        .color-picker { display: flex; gap: 10px; flex-wrap: wrap;} .color-circle { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; } .color-circle.active { border-color: var(--text-main); transform: scale(1.15); }
+        .wp-presets { display: flex; gap: 10px; margin-bottom: 12px; } .wp-thumb { width: 50px; height: 50px; border-radius: 8px; cursor: pointer; object-fit: cover; border: 2px solid transparent; transition: transform 0.2s; } .wp-thumb:hover { transform: scale(1.05); border-color: var(--ui-accent); }
+        .switch { position: relative; display: inline-block; width: 40px; height: 22px; } .switch input { opacity: 0; width: 0; height: 0; } .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--glass-border); transition: .3s; border-radius: 22px; } .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; } input:checked + .slider { background-color: var(--ui-accent); } input:checked + .slider:before { transform: translateX(18px); background-color: var(--ui-accent-text); }
+
+        .tb-style-picker { display: flex; gap: 10px; margin-top: 5px; } .tb-style-card { flex: 1; background: var(--cc-btn-bg); border: 2px solid var(--glass-border); border-radius: 12px; padding: 10px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 8px; } .tb-style-card.active { border-color: var(--ui-accent); background: rgba(255,255,255,0.05); } .tb-style-card span { font-size: 11px; font-weight: 500; } .tb-mockup { width: 100%; height: 45px; background: rgba(0,0,0,0.15); border-radius: 8px; position: relative; overflow: hidden; display:flex; align-items:flex-end; justify-content:center; padding-bottom: 4px; box-sizing: border-box;} .tb-mock-float { width: 85%; height: 10px; background: var(--ui-accent); border-radius: 5px; } .tb-mock-win { width: 100%; height: 10px; background: var(--ui-accent); margin-bottom: -4px; }
+
+        .calc-wrapper { display: flex; flex-direction: column; height: 100%; margin:-15px; padding:15px; } .calc-display { padding: 10px; text-align: right; font-size: 40px; min-height: 60px; display:flex; align-items:flex-end; justify-content:flex-end; font-weight: 300; } .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; flex-grow: 1; } .calc-btn { background: var(--calc-btn); border: none; border-radius: 12px; color: var(--text-main); font-size: 20px; cursor: pointer; font-family: 'Poppins'; } .calc-btn:active { background: var(--calc-btn-active); transform: scale(0.95); } .calc-op { color: var(--ui-accent); font-weight: 500; }
+        .notes-area { width: 100%; height: 100%; background: transparent; border: none; color: var(--text-main); font-family: 'Poppins'; font-size: 13px; resize: none; outline: none; line-height: 1.5; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin:-5px; } .gallery-img { width: 100%; aspect-ratio: 1; border-radius: 12px; object-fit: cover; }
+        #paintCanvas { background: rgba(255,255,255,0.9); border-radius: 12px; cursor: crosshair; touch-action: none; width: 100%; flex-grow: 1; margin-top:10px; }
+        .browser-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; } .browser-btn { width: 28px; height: 28px; border-radius: 8px; display: flex; justify-content: center; align-items: center; cursor: pointer; background: var(--cc-btn-bg); } .browser-url-bar { flex-grow: 1; height: 32px; border-radius: 16px; background: var(--cc-btn-bg); border: 1px solid var(--glass-border); display: flex; align-items: center; padding: 0 12px; gap: 6px; } .browser-url-bar input { flex-grow: 1; background: transparent; border: none; color: var(--text-main); outline: none; font-size:12px; } .browser-content { flex-grow: 1; border-radius: 12px; background: white; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; margin:-15px; margin-top:0; } #browserIframe { width: 100%; height: 100%; border: none; display: none; background: white; } #browserHome { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; } .google-search-box { width: 85%; max-width: 350px; border: 1px solid #dfe1e5; border-radius: 20px; padding: 10px 15px; display: flex; align-items: center; gap: 8px; background: white; } .google-search-box input { flex-grow: 1; border: none; outline: none; font-size: 14px; color: black; }
+        
+        .updates-container { display: flex; flex-direction: column; gap: 12px; }
+        .update-card { background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 16px; display: flex; gap: 15px; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.15); animation: cardUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; opacity: 0; transform: translateY(20px); }
+        .update-card:nth-child(1) { animation-delay: 0.1s; } .update-card:nth-child(2) { animation-delay: 0.2s; } .update-card:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes cardUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* Estilos do App de Música */
+        .music-list { display: flex; flex-direction: column; gap: 10px; }
+        .music-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--cc-btn-bg); border-radius: 12px; cursor: pointer; border: 1px solid var(--glass-border); transition: transform 0.2s, background 0.2s; }
+        .music-item:hover { background: rgba(255,255,255,0.1); }
+        .music-item:active { transform: scale(0.98); }
+        .music-cover { width: 45px; height: 45px; border-radius: 8px; object-fit: cover; }
+        .music-info { flex-grow: 1; }
+        .music-title { margin: 0; font-size: 13px; font-weight: 500; color: var(--text-main); }
+        .music-artist { margin: 0; font-size: 11px; color: var(--text-muted); }
+        .music-play-icon { font-size: 24px; color: var(--ui-accent); opacity: 0.7; }
+
+        /* =========================================
+           BARRA DE TAREFAS E MENUS
+           ========================================= */
         .start-menu { position: fixed; left: 50%; bottom: 85px; width: 90%; max-width: 300px; padding: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 100; visibility: hidden; opacity: 0; transform: translateX(-50%) translateY(15px); transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-sizing: border-box; }
         .start-menu.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: all; }
         .sm-header { display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px; }
@@ -129,68 +210,40 @@
         .slider-input { flex-grow: 1; -webkit-appearance: none; height: 5px; background: var(--glass-border); border-radius: 3px; outline: none; }
         .slider-input::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--text-main); cursor: pointer; }
 
-        .window { position: absolute; top: 10%; left: 5%; width: 90%; max-width: 500px; height: 65vh; max-height: 550px; background: var(--win-bg); backdrop-filter: blur(40px) brightness(1.1); -webkit-backdrop-filter: blur(40px) brightness(1.1); border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); display: flex; flex-direction: column; z-index: 50; overflow: hidden; color: var(--text-main); transform-origin: center; visibility: hidden; opacity: 0; transform: scale(0.95) translateY(20px); filter: blur(10px); transition: visibility 0.4s, opacity 0.4s ease, filter 0.4s ease, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), top 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), left 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), border-radius 0.4s ease; }
-        .window.active { visibility: visible; opacity: 1; filter: blur(0px); transform: scale(1) translateY(0); pointer-events: all; }
-        .window.minimized { visibility: hidden; opacity: 0; filter: blur(5px); transform: scale(0.85) translateY(60px); pointer-events: none; }
-        .window.maximized { top: 0 !important; left: 0 !important; width: 100vw !important; max-width: 100vw !important; height: 100vh !important; max-height: 100vh !important; border-radius: 0; transform: translate(0, 0) scale(1) !important; }
-        
-        .window-header { height: 45px; background: transparent; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; cursor: grab; flex-shrink: 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .window-title { font-size: 13px; font-weight: 500; pointer-events: none; }
-        
-        .window-controls { display: flex; gap: 8px; align-items: center; }
-        .win-btn { width: 14px; height: 14px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; background: rgba(150, 150, 150, 0.3); color: var(--text-main); }
-        .win-btn .material-symbols-outlined { font-size: 10px; font-weight: 700; opacity: 0.8; }
-        .win-btn:hover { background: rgba(150, 150, 150, 0.6); }
-        .win-close:hover { background: #ff5f56; color: white; }
-        
-        .window-body { flex-grow: 1; display: flex; flex-direction: column; padding: 15px; overflow-y: auto; }
-
-        .config-layout { display: flex; height: 100%; width: 100%; overflow: hidden; margin: -15px; padding: 15px; gap: 10px;}
-        .config-sidebar { width: 130px; flex-shrink: 0; display: flex; flex-direction: column; gap: 4px; border-right: 1px solid var(--glass-border); padding-right: 10px; padding-left: 5px; }
-        .config-tab { padding: 8px 10px 8px 15px; font-size: 12px; font-weight: 400; cursor: pointer; color: var(--text-muted); border-radius: 8px; transition: all 0.2s; position: relative; }
-        .config-tab.active { background: rgba(255,255,255,0.1); color: var(--text-main); font-weight: 500; }
-        .config-tab.active::before { content: ''; position: absolute; left: 5px; top: 20%; height: 60%; width: 3px; background: var(--ui-accent); border-radius: 3px; transition: background 0.3s; }
-        .config-main-area { flex-grow: 1; overflow-y: auto; padding-right: 5px; }
-        .config-content { display: none; animation: fadeIn 0.3s ease; } .config-content.active { display: flex; flex-direction: column; gap: 15px; }
-        .config-section { background: var(--cc-btn-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--glass-border); }
-        .config-section h4 { margin: 0 0 10px 0; font-size: 13px; font-weight: 500; }
-        
-        .color-picker { display: flex; gap: 10px; flex-wrap: wrap;} 
-        .color-circle { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; } 
-        .color-circle.active { border-color: var(--text-main); transform: scale(1.15); }
-        .wp-presets { display: flex; gap: 10px; margin-bottom: 12px; }
-        .wp-thumb { width: 50px; height: 50px; border-radius: 8px; cursor: pointer; object-fit: cover; border: 2px solid transparent; transition: transform 0.2s; }
-        .wp-thumb:hover { transform: scale(1.05); border-color: var(--ui-accent); }
-        .radio-group { display: flex; gap: 15px; font-size: 12px; }
-        .radio-group label { display: flex; align-items: center; gap: 5px; cursor: pointer; }
-        .switch { position: relative; display: inline-block; width: 40px; height: 22px; } .switch input { opacity: 0; width: 0; height: 0; } .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--glass-border); transition: .3s; border-radius: 22px; } .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; } 
-        input:checked + .slider { background-color: var(--ui-accent); } input:checked + .slider:before { transform: translateX(18px); background-color: var(--ui-accent-text); }
-
-        .calc-wrapper { display: flex; flex-direction: column; height: 100%; margin:-15px; padding:15px; } .calc-display { padding: 10px; text-align: right; font-size: 40px; min-height: 60px; display:flex; align-items:flex-end; justify-content:flex-end; font-weight: 300; } .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; flex-grow: 1; } .calc-btn { background: var(--calc-btn); border: none; border-radius: 12px; color: var(--text-main); font-size: 20px; cursor: pointer; font-family: 'Poppins'; } .calc-btn:active { background: var(--calc-btn-active); transform: scale(0.95); } .calc-op { color: var(--ui-accent); font-weight: 500; }
-        .notes-area { width: 100%; height: 100%; background: transparent; border: none; color: var(--text-main); font-family: 'Poppins'; font-size: 13px; resize: none; outline: none; line-height: 1.5; }
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin:-5px; } .gallery-img { width: 100%; aspect-ratio: 1; border-radius: 12px; object-fit: cover; }
-        #paintCanvas { background: rgba(255,255,255,0.9); border-radius: 12px; cursor: crosshair; touch-action: none; width: 100%; flex-grow: 1; margin-top:10px; }
-        .browser-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; } .browser-btn { width: 28px; height: 28px; border-radius: 8px; display: flex; justify-content: center; align-items: center; cursor: pointer; background: var(--cc-btn-bg); } .browser-url-bar { flex-grow: 1; height: 32px; border-radius: 16px; background: var(--cc-btn-bg); border: 1px solid var(--glass-border); display: flex; align-items: center; padding: 0 12px; gap: 6px; } .browser-url-bar input { flex-grow: 1; background: transparent; border: none; color: var(--text-main); outline: none; font-size:12px; } .browser-content { flex-grow: 1; border-radius: 12px; background: white; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; margin:-15px; margin-top:0; } #browserIframe { width: 100%; height: 100%; border: none; display: none; background: white; } #browserHome { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; } .google-search-box { width: 85%; max-width: 350px; border: 1px solid #dfe1e5; border-radius: 20px; padding: 10px 15px; display: flex; align-items: center; gap: 8px; background: white; } .google-search-box input { flex-grow: 1; border: none; outline: none; font-size: 14px; color: black; }
-        
-        .updates-container { display: flex; flex-direction: column; gap: 12px; }
-        .update-card { background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 16px; display: flex; gap: 15px; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.15); animation: cardUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; opacity: 0; transform: translateY(20px); }
-        .update-card:nth-child(1) { animation-delay: 0.1s; } .update-card:nth-child(2) { animation-delay: 0.2s; } .update-card:nth-child(3) { animation-delay: 0.3s; }
-        @keyframes cardUp { to { opacity: 1; transform: translateY(0); } }
-
         .taskbar { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 800px; height: 50px; z-index: 90; border-radius: 25px; display: flex; align-items: center; justify-content: space-between; padding: 0 8px; transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .taskbar.taskbar-win { bottom: 0; width: 100%; max-width: 100%; border-radius: 0; padding: 0 15px; border-bottom: none; border-left: none; border-right: none; }
         .taskbar.taskbar-hidden { transform: translate(-50%, 150px); opacity: 0; pointer-events: none; }
         .taskbar-left { display: flex; align-items: center; gap: 8px; flex-grow: 1; overflow-x: auto; scrollbar-width: none; }
         .start-btn { width: 36px; height: 36px; background: var(--start-bg); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.2s; flex-shrink: 0; }
         .start-btn svg { width: 20px; height: 20px; color: var(--start-logo); } .start-btn:active { transform: scale(0.9); }
+        
         .taskbar-search { height: 32px; background: var(--cc-btn-bg); border: 1px solid var(--glass-border); border-radius: 16px; display: flex; align-items: center; padding: 0 10px; gap: 6px; flex-shrink: 0; width: 140px; transition: width 0.3s, background 0.3s; }
+        .taskbar-search.hide-search { display: none !important; }
         .taskbar-search:focus-within { width: 180px; background: rgba(255,255,255,0.1); border-color: var(--text-main); }
         .taskbar-search input { background: transparent; border: none; color: var(--text-main); outline: none; font-family: 'Poppins'; font-size: 12px; width: 100%; }
         .taskbar-search input::placeholder { color: var(--text-muted); }
+        
         .tb-divider { width: 1px; height: 20px; background: var(--glass-border); flex-shrink: 0; margin: 0 4px; }
-        .taskbar-apps { display: flex; gap: 6px; }
-        .tb-app-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.2s; box-shadow: 0 4px 8px rgba(0,0,0,0.15); flex-shrink: 0;} .tb-app-icon:active { transform: scale(0.9); } .tb-app-icon .material-symbols-outlined { font-size: 20px; color: white; }
-        .taskbar-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+        .taskbar-apps { display: flex; gap: 6px; align-items: center;}
+        
+        /* Animações dos ícones da Taskbar */
+        @keyframes tbAppIn { 0% { width: 0; opacity: 0; scale: 0.5; margin: 0; } 100% { width: 36px; opacity: 1; scale: 1; margin: 0; } }
+        @keyframes tbAppOut { 0% { width: 36px; opacity: 1; scale: 1; margin: 0; } 100% { width: 0; opacity: 0; scale: 0.5; margin-left: -6px; } }
+        
+        .tb-app-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.2s; box-shadow: 0 4px 8px rgba(0,0,0,0.15); flex-shrink: 0; animation: tbAppIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; overflow: hidden;} 
+        .tb-app-icon:active { transform: scale(0.9); } .tb-app-icon .material-symbols-outlined { font-size: 20px; color: white; }
+        .tb-app-icon.closing { animation: tbAppOut 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+
+        .taskbar-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        
+        /* Widget Música Barra (Movido para a direita) */
+        .tb-music-widget { display: flex; align-items: center; gap: 8px; background: var(--cc-btn-bg); border: 1px solid var(--glass-border); height: 36px; padding: 0 10px 0 4px; border-radius: 18px; cursor: pointer; transition: all 0.3s; display: none; flex-shrink: 0;}
+        .tb-music-widget:hover { background: rgba(255,255,255,0.1); }
+        .tb-music-cover { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; animation: spin 5s linear infinite; animation-play-state: paused; }
+        .tb-music-cover.playing { animation-play-state: running; }
+        .tb-music-title { font-size: 11px; font-weight: 500; color: var(--text-main); max-width: 80px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
         .system-tray { background: var(--tray-bg); height: 36px; border-radius: 18px; display: flex; align-items: center; padding: 0 12px 0 10px; gap: 8px; color: var(--tray-text); cursor: pointer; transition: background 0.3s; }
         .system-tray .material-symbols-outlined { font-size: 16px; }
         #clock { font-weight: 500; font-size: 12px; letter-spacing: 0.3px;}
@@ -198,9 +251,30 @@
         .notif-bell-btn:active { transform: scale(0.9); }
         .notif-bell-btn .material-symbols-outlined { font-size: 20px; }
         .notif-badge { position: absolute; top: 6px; right: 8px; width: 6px; height: 6px; background: #ff5f56; border-radius: 50%; display: none; box-shadow: 0 0 4px #ff5f56;}
+
+        /* =========================================
+           MINI PLAYER POPUP (ESTILO APPLE)
+           ========================================= */
+        .mini-player { position: fixed; bottom: 80px; right: 20px; transform: translateY(15px) scale(0.95); width: 300px; padding: 12px; border-radius: 20px; display: flex; flex-direction: row; align-items: center; gap: 15px; z-index: 99; visibility: hidden; opacity: 0; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-sizing: border-box; box-shadow: 0 10px 30px rgba(0,0,0,0.3);}
+        .mini-player.show { visibility: visible; opacity: 1; transform: translateY(0) scale(1); pointer-events: all; }
+        .mp-cover { width: 70px; height: 70px; border-radius: 14px; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.25); flex-shrink: 0; }
+        .mp-right { display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; gap: 4px; }
+        .mp-info { width: 100%; text-align: left; }
+        .mp-title { margin: 0; font-size: 14px; font-weight: 600; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mp-artist { margin: 0; font-size: 11px; color: var(--text-muted); }
+        .mp-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 2px; padding-right: 5px;}
+        .mp-ctrl-btn { font-size: 24px; color: var(--text-main); cursor: pointer; transition: transform 0.2s; }
+        .mp-ctrl-btn:active { transform: scale(0.8); }
+        .mp-play-btn { width: 36px; height: 36px; background: var(--ui-accent); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.2s; color: var(--ui-accent-text); }
+        .mp-play-btn:active { transform: scale(0.9); }
+        .mp-progress-container { width: 100%; height: 4px; background: var(--glass-border); border-radius: 2px; overflow: hidden; cursor: pointer; margin-top: 4px; }
+        .mp-progress { height: 100%; background: var(--ui-accent); width: 0%; transition: width 0.1s linear; }
+
     </style>
 </head>
 <body class="dark-theme">
+
+    <div id="snapOverlay" class="snap-overlay"></div>
 
     <div id="notif-container"></div>
     <div class="notif-panel glass-panel" id="notifPanel"><div class="np-header"><span style="font-weight: 500; font-size: 13px; display:flex; align-items:center; gap:5px;"><span class="material-symbols-outlined" style="font-size: 16px;">notifications</span>Notificações</span><span class="material-symbols-outlined np-clear" onclick="clearAllNotifications()" title="Limpar Tudo">delete_sweep</span></div><div class="np-body" id="npBody"><div class="np-empty" id="npEmpty">Não há novas notificações.</div></div></div>
@@ -209,18 +283,19 @@
         <div class="preboot-content" id="msgPortrait">
             <span class="material-symbols-outlined animate-rotate">screen_rotation</span>
             <h2 style="font-size:20px; margin:0;">Gire o Celular</h2>
-            <p style="font-size:12px; opacity:0.8; margin:0; line-height:1.6;">O MintOS foi projetado para funcionar como um computador real. <strong>Gire a tela</strong> para ter a experiência completa de janelas e multitarefa, ou pule para testar no modo vertical.</p>
+            <p style="font-size:12px; opacity:0.8; margin:0; line-height:1.6;">O FanOS foi projetado para funcionar como um computador real. <strong>Gire a tela</strong> para ter a experiência completa de janelas e multitarefa, ou pule para testar no modo vertical.</p>
             <button class="preboot-btn outline" onclick="initSystem()">Pular e Continuar</button>
         </div>
         <div class="preboot-content" id="msgLandscape" style="display: none;">
             <span class="material-symbols-outlined" style="font-size:45px; color:var(--ui-accent);">desktop_windows</span>
             <h2 style="font-size:20px; margin:0;">Modo Desktop Ativo</h2>
-            <p style="font-size:12px; opacity:0.8; margin:0; line-height:1.6;">Perfeito! O modo horizontal garante o melhor aproveitamento do espaço da tela, ideal para organizar suas janelas no MintOS.</p>
+            <p style="font-size:12px; opacity:0.8; margin:0; line-height:1.6;">Perfeito! O modo horizontal garante o melhor aproveitamento do espaço da tela, ideal para organizar suas janelas no FanOS.</p>
             <button class="preboot-btn" onclick="initSystem()">Iniciar Sistema</button>
         </div>
     </div>
     
-    <div id="bootScreen"><div id="bootLogoContainer"><svg width="70" height="70" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M 65 20 A 40 40 0 1 0 65 80" stroke="white" stroke-width="12" stroke-linecap="round"/><line x1="25" y1="50" x2="75" y2="50" stroke="white" stroke-width="12" stroke-linecap="round"/></svg><div class="progress-bar-container"><div id="bootProgress"></div></div></div></div>
+    <!-- NOVA LOGO CENTRALIZADA E PERFEITA -->
+    <div id="bootScreen"><div id="bootLogoContainer"><svg width="70" height="70" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M 65 15 A 35 35 0 1 0 65 85" stroke="white" stroke-width="12" stroke-linecap="round"/><line x1="30" y1="50" x2="80" y2="50" stroke="white" stroke-width="12" stroke-linecap="round"/></svg><div class="progress-bar-container"><div id="bootProgress"></div></div></div></div>
     
     <div id="loginOverlay"><div class="login-box"><h2>Bem-vindo</h2><input type="text" id="usernameInput" class="login-input" placeholder="Seu nome..."><div class="login-actions"><button class="login-btn skip" onclick="skipLogin()">Pular</button><button class="login-btn save" onclick="saveUser()">Salvar</button></div></div></div>
     
@@ -228,23 +303,52 @@
 
     <div class="wallpaper-container" id="desktop-wallpaper"><div id="rings-container"><div class="ring outer-ring-4"><div class="ring outer-ring-3"><div class="ring outer-ring-2"><div class="ring outer-ring-1"><div class="inner-circle"></div></div></div></div></div></div>
         <div class="desktop-area" id="desktopArea">
-            <div class="desktop-icon" onclick="openApp('config')"><div class="squircle bg-gray"><span class="material-symbols-outlined">settings</span></div><span class="icon-label">Ajustes</span></div>
-            <div class="desktop-icon" onclick="openApp('navegador')"><div class="squircle bg-ocean"><span class="material-symbols-outlined">public</span></div><span class="icon-label">Navegador</span></div>
-            <div class="desktop-icon" onclick="openApp('galeria')"><div class="squircle bg-purple"><span class="material-symbols-outlined">image</span></div><span class="icon-label">Galeria</span></div>
-            <div class="desktop-icon" onclick="openApp('paint')"><div class="squircle bg-red"><span class="material-symbols-outlined">palette</span></div><span class="icon-label">Paint</span></div>
-            <div class="desktop-icon" onclick="openApp('calculadora')"><div class="squircle bg-green"><span class="material-symbols-outlined">calculate</span></div><span class="icon-label">Calculadora</span></div>
+            <div class="desktop-icon" onclick="openApp('config', event)"><div class="squircle bg-gray"><span class="material-symbols-outlined">settings</span></div><span class="icon-label">Ajustes</span></div>
+            <div class="desktop-icon" onclick="openApp('navegador', event)"><div class="squircle bg-ocean"><span class="material-symbols-outlined">public</span></div><span class="icon-label">Navegador</span></div>
+            <div class="desktop-icon" onclick="openApp('musica', event)"><div class="squircle bg-orange"><span class="material-symbols-outlined">music_note</span></div><span class="icon-label">Música</span></div>
+            <div class="desktop-icon" onclick="openApp('galeria', event)"><div class="squircle bg-purple"><span class="material-symbols-outlined">image</span></div><span class="icon-label">Galeria</span></div>
+            <div class="desktop-icon" onclick="openApp('paint', event)"><div class="squircle bg-red"><span class="material-symbols-outlined">palette</span></div><span class="icon-label">Paint</span></div>
+            <div class="desktop-icon" onclick="openApp('calculadora', event)"><div class="squircle bg-green"><span class="material-symbols-outlined">calculate</span></div><span class="icon-label">Calculadora</span></div>
         </div>
     </div>
 
+    <!-- JANELA DE CONFIGURAÇÕES -->
     <div class="window" id="win-config"><div class="window-header" id="header-config"><span class="window-title">Configurações</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('config')"><span class="material-symbols-outlined">remove</span></div><div class="win-btn win-max" onclick="maxApp('config')"><span class="material-symbols-outlined">fullscreen</span></div><div class="win-btn win-close" onclick="closeApp('config')"><span class="material-symbols-outlined">close</span></div></div></div><div class="window-body"><div class="config-layout"><div class="config-sidebar"><div class="config-tab active" onclick="switchTab('personalizacao')" id="tab-btn-personalizacao">Personalização</div><div class="config-tab" onclick="switchTab('conexao')" id="tab-btn-conexao">Conexão</div><div class="config-tab" onclick="switchTab('sistema')" id="tab-btn-sistema">Sistema</div></div><div class="config-main-area">
-        <div class="config-content active" id="tab-personalizacao"><div class="config-section"><h4>Cor do Sistema</h4><div class="color-picker"><div class="color-circle" style="background:#e2e8f0; border:1px solid var(--glass-border);" onclick="setTheme('padrao', this)" title="Padrão (Branco Suave)"></div><div class="color-circle" style="background:#9d4edd;" onclick="setTheme('roxo', this)" title="Roxo"></div><div class="color-circle" style="background:#4facfe;" onclick="setTheme('azul', this)"></div><div class="color-circle" style="background:#38f9d7;" onclick="setTheme('verde', this)"></div><div class="color-circle" style="background:#ff5f56;" onclick="setTheme('vermelho', this)"></div></div></div><div class="config-section"><h4>Papel de Parede</h4><div class="wp-presets"><img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=150&auto=format&fit=crop" class="wp-thumb" onclick="setPresetWP(this.src)"><img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=150&auto=format&fit=crop" class="wp-thumb" onclick="setPresetWP(this.src)"><img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=150&auto=format&fit=crop" class="wp-thumb" onclick="setPresetWP(this.src)"></div><button onclick="document.getElementById('wallpaper-picker').click()" style="width:100%; padding:10px; border-radius:8px; border:none; background:var(--text-main); color:var(--glass-bg); font-family:'Poppins'; cursor:pointer; font-size:12px;">Escolher da Galeria...</button><input type="file" id="wallpaper-picker" accept="image/*" style="display: none;"></div><div class="config-section"><h4>Estilo da Barra de Tarefas</h4><div class="radio-group"><label><input type="radio" name="tbStyle" value="float" checked onchange="changeTaskbar('float')"> Flutuante</label><label><input type="radio" name="tbStyle" value="win" onchange="changeTaskbar('win')"> Fixa (Windows)</label></div></div></div>
+        
+        <div class="config-content active" id="tab-personalizacao">
+            <div class="config-section"><h4>Cor do Sistema</h4><div class="color-picker"><div class="color-circle" style="background:#e2e8f0; border:1px solid var(--glass-border);" onclick="setTheme('padrao', this)" title="Padrão (Branco Suave)"></div><div class="color-circle" style="background:#9d4edd;" onclick="setTheme('roxo', this)" title="Roxo"></div><div class="color-circle" style="background:#4facfe;" onclick="setTheme('azul', this)"></div><div class="color-circle" style="background:#38f9d7;" onclick="setTheme('verde', this)"></div><div class="color-circle" style="background:#ff5f56;" onclick="setTheme('vermelho', this)"></div></div></div>
+            
+            <div class="config-section"><h4>Papel de Parede</h4><div class="wp-presets"><img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=150&auto=format&fit=crop" class="wp-thumb" onclick="setPresetWP(this.src)"><img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=150&auto=format&fit=crop" class="wp-thumb" onclick="setPresetWP(this.src)"><img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=150&auto=format&fit=crop" class="wp-thumb" onclick="setPresetWP(this.src)"></div><button onclick="document.getElementById('wallpaper-picker').click()" style="width:100%; padding:10px; border-radius:8px; border:none; background:var(--text-main); color:var(--glass-bg); font-family:'Poppins'; cursor:pointer; font-size:12px;">Escolher da Galeria...</button><input type="file" id="wallpaper-picker" accept="image/*" style="display: none;"></div>
+            
+            <div class="config-section">
+                <h4>Interface e Efeitos</h4>
+                <div style="display:flex; justify-content:space-between; margin-bottom:12px; align-items:center; font-size:12px;"><span>Efeito de Vidro (Fosco)</span><label class="switch"><input type="checkbox" checked id="toggle-blur" onchange="toggleBlurSetting()"><span class="slider"></span></label></div>
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;"><span>Mostrar Barra de Pesquisa</span><label class="switch"><input type="checkbox" checked id="toggle-search" onchange="toggleSearchSetting()"><span class="slider"></span></label></div>
+            </div>
+
+            <div class="config-section">
+                <h4>Estilo da Barra de Tarefas</h4>
+                <div class="tb-style-picker">
+                    <div class="tb-style-card active" id="card-tb-float" onclick="changeTaskbar('float')"><div class="tb-mockup"><div class="tb-mock-float"></div></div><span>Flutuante</span></div>
+                    <div class="tb-style-card" id="card-tb-win" onclick="changeTaskbar('win')"><div class="tb-mockup"><div class="tb-mock-win"></div></div><span>Fixa (Windows)</span></div>
+                </div>
+            </div>
+        </div>
+        
         <div class="config-content" id="tab-conexao"><div class="config-section"><div style="display:flex; justify-content:space-between; margin-bottom:12px; align-items:center; font-size:13px;"><span>Wi-Fi</span><label class="switch"><input type="checkbox" checked id="toggle-wifi" onchange="syncToggle('wifi')"><span class="slider"></span></label></div><div style="display:flex; justify-content:space-between; align-items:center; font-size:13px;"><span>Bluetooth</span><label class="switch"><input type="checkbox" checked id="toggle-bt" onchange="syncToggle('bt')"><span class="slider"></span></label></div></div></div>
-        <div class="config-content" id="tab-sistema"><div class="config-section" style="text-align:center;"><svg width="60" height="60" viewBox="0 0 100 100" fill="none" style="margin:0 auto 10px auto; display:block;"><path d="M 65 20 A 40 40 0 1 0 65 80" stroke="var(--ui-accent)" stroke-width="12" stroke-linecap="round"/><line x1="25" y1="50" x2="75" y2="50" stroke="var(--ui-accent)" stroke-width="12" stroke-linecap="round"/></svg><h3 style="margin:0; font-size: 16px;">MintOS</h3><p style="margin:0; font-size:12px; color:var(--text-muted); font-weight:500;">Versão 1.0 (Oficial)</p></div><div class="config-section"><h4 style="margin-bottom:8px;">Informações do Hardware</h4><div style="font-size:11px; color:var(--text-muted); line-height:1.8;"><strong>Processador:</strong> Quantum Core i9 Pro<br><strong>Memória RAM:</strong> 16 GB LPDDR5<br><strong>Armazenamento:</strong> 512 GB NVMe Gen4 SSD<br><strong>Interface:</strong> MintOS UI Runtime</div></div><div class="config-section"><h4 style="margin-bottom:8px;">Sobre</h4><div style="font-size:11px; color:var(--text-muted); line-height:1.8;"><strong>Desenvolvedor:</strong> Comunidade MintOS<br><strong>Status:</strong> Estável, Atualizado</div></div></div>
+        
+        <div class="config-content" id="tab-sistema"><div class="config-section" style="text-align:center;"><svg width="60" height="60" viewBox="0 0 100 100" fill="none" style="margin:0 auto 10px auto; display:block;"><path d="M 65 15 A 35 35 0 1 0 65 85" stroke="var(--ui-accent)" stroke-width="12" stroke-linecap="round"/><line x1="30" y1="50" x2="80" y2="50" stroke="var(--ui-accent)" stroke-width="12" stroke-linecap="round"/></svg><h3 style="margin:0; font-size: 16px;">FanOS</h3><p style="margin:0; font-size:12px; color:var(--text-muted); font-weight:500;">Versão 1.3 (Premium)</p></div><div class="config-section"><h4 style="margin-bottom:8px;">Informações do Hardware</h4><div style="font-size:11px; color:var(--text-muted); line-height:1.8;"><strong>Processador:</strong> Quantum Core i9 Pro<br><strong>Memória RAM:</strong> 16 GB LPDDR5<br><strong>Armazenamento:</strong> 512 GB NVMe Gen4 SSD<br><strong>Interface:</strong> FanOS UI Runtime</div></div><div class="config-section"><h4 style="margin-bottom:8px;">Sobre</h4><div style="font-size:11px; color:var(--text-muted); line-height:1.8;"><strong>Desenvolvedor:</strong> Comunidade FanOS<br><strong>Status:</strong> Estável, Atualizado</div></div></div>
         </div></div></div></div>
     
-    <div class="window" id="win-atualizacoes"><div class="window-header" id="header-atualizacoes"><span class="window-title">Novidades</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('atualizacoes')"><span class="material-symbols-outlined">remove</span></div><div class="win-btn win-max" onclick="maxApp('atualizacoes')"><span class="material-symbols-outlined">fullscreen</span></div><div class="win-btn win-close" onclick="closeApp('atualizacoes')"><span class="material-symbols-outlined">close</span></div></div></div><div class="window-body" style="background: rgba(0,0,0,0.1); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); margin: -15px; padding: 25px 20px;"><div style="display:flex; flex-direction:column; align-items:center; gap:12px; margin-bottom: 25px;"><div style="width: 65px; height: 65px; border-radius: 20px; background: linear-gradient(135deg, var(--ui-accent), #000); display:flex; justify-content:center; align-items:center; box-shadow: 0 10px 20px rgba(0,0,0,0.3);"><svg width="40" height="40" viewBox="0 0 100 100" fill="none"><path d="M 65 20 A 40 40 0 1 0 65 80" stroke="white" stroke-width="12" stroke-linecap="round"/><line x1="25" y1="50" x2="75" y2="50" stroke="white" stroke-width="12" stroke-linecap="round"/></svg></div><div style="background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);"><h2 style="font-size:20px; margin:0; font-weight: 600; letter-spacing: 0.5px; color: var(--ui-accent);">MintOS <span style="color:white;">1.0</span></h2></div><p style="font-size:12px; margin:0; opacity:0.8;">Interface Limpa, Suave e Oficial</p></div><div class="updates-container"><div class="update-card"><span class="material-symbols-outlined" style="color:var(--ui-accent); font-size:28px;">blur_on</span><div><h4 style="margin:0; font-size:14px;">Animações de Vidro</h4><p style="margin:0; font-size:11px; color:var(--text-muted); margin-top:3px;">Janelas abrem desfocadas e focam suavemente. Extremamente premium.</p></div></div><div class="update-card"><span class="material-symbols-outlined" style="color:var(--ui-accent); font-size:28px;">tune</span><div><h4 style="margin:0; font-size:14px;">Espaçamentos Perfeitos</h4><p style="margin:0; font-size:11px; color:var(--text-muted); margin-top:3px;">Correção de margens e alinhamentos para nada ficar "colado" no canto.</p></div></div><div class="update-card"><span class="material-symbols-outlined" style="color:var(--ui-accent); font-size:28px;">desktop_windows</span><div><h4 style="margin:0; font-size:14px;">Controles Minimalistas</h4><p style="margin:0; font-size:11px; color:var(--text-muted); margin-top:3px;">Novos botões de janela cinzas e funcionais com ícones embutidos.</p></div></div></div></div></div>
+    <div class="window" id="win-atualizacoes"><div class="window-header" id="header-atualizacoes"><span class="window-title">Novidades</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('atualizacoes')"><span class="material-symbols-outlined">remove</span></div><div class="win-btn win-max" onclick="maxApp('atualizacoes')"><span class="material-symbols-outlined">fullscreen</span></div><div class="win-btn win-close" onclick="closeApp('atualizacoes')"><span class="material-symbols-outlined">close</span></div></div></div><div class="window-body" style="background: rgba(0,0,0,0.1); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); margin: -15px; padding: 25px 20px;"><div style="display:flex; flex-direction:column; align-items:center; gap:12px; margin-bottom: 25px;"><div style="width: 65px; height: 65px; border-radius: 20px; background: linear-gradient(135deg, var(--ui-accent), #000); display:flex; justify-content:center; align-items:center; box-shadow: 0 10px 20px rgba(0,0,0,0.3);"><svg width="40" height="40" viewBox="0 0 100 100" fill="none"><path d="M 65 15 A 35 35 0 1 0 65 85" stroke="white" stroke-width="12" stroke-linecap="round"/><line x1="30" y1="50" x2="80" y2="50" stroke="white" stroke-width="12" stroke-linecap="round"/></svg></div><div style="background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);"><h2 style="font-size:20px; margin:0; font-weight: 600; letter-spacing: 0.5px; color: var(--ui-accent);">FanOS <span style="color:white;">1.3</span></h2></div><p style="font-size:12px; margin:0; opacity:0.8;">Interface Premium e Fluída</p></div><div class="updates-container"><div class="update-card"><span class="material-symbols-outlined" style="color:var(--ui-accent); font-size:28px;">tune</span><div><h4 style="margin:0; font-size:14px;">Player Estilo Apple</h4><p style="margin:0; font-size:11px; color:var(--text-muted); margin-top:3px;">O pop-up de música agora é horizontal, grande e incrivelmente responsivo.</p></div></div><div class="update-card"><span class="material-symbols-outlined" style="color:var(--ui-accent); font-size:28px;">motion_photos_auto</span><div><h4 style="margin:0; font-size:14px;">Animações de Ícones</h4><p style="margin:0; font-size:11px; color:var(--text-muted); margin-top:3px;">Ícones na barra de tarefas têm transições suaves ao abrir e fechar apps.</p></div></div><div class="update-card"><span class="material-symbols-outlined" style="color:var(--ui-accent); font-size:28px;">filter_center_focus</span><div><h4 style="margin:0; font-size:14px;">Cálculo de Origem</h4><p style="margin:0; font-size:11px; color:var(--text-muted); margin-top:3px;">Janelas restauradas puxam do ícone da barra de tarefas de forma realista!</p></div></div></div></div></div>
 
     <div class="window" id="win-navegador"><div class="window-header" id="header-navegador"><span class="window-title">Browser</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('navegador')"><span class="material-symbols-outlined">remove</span></div><div class="win-btn win-max" onclick="maxApp('navegador')"><span class="material-symbols-outlined">fullscreen</span></div><div class="win-btn win-close" onclick="closeApp('navegador')"><span class="material-symbols-outlined">close</span></div></div></div><div class="window-body"><div class="browser-toolbar"><div class="browser-btn" onclick="resetBrowser()"><span class="material-symbols-outlined" style="font-size:16px;">home</span></div><div class="browser-btn" onclick="reloadBrowser()"><span class="material-symbols-outlined" style="font-size:16px;">refresh</span></div><div class="browser-url-bar"><span class="material-symbols-outlined" style="font-size: 14px; color: var(--text-muted);">lock</span><input type="text" id="topUrlBar" value="google.com" onkeydown="if(event.key === 'Enter') doInternalSearch()"></div></div><div class="browser-content"><iframe id="browserIframe" src=""></iframe><div id="browserHome"><div style="font-size: 32px; font-weight: 500; margin-bottom: 20px;"><span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC05">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span></div><div class="google-search-box"><span class="material-symbols-outlined" style="color: #9aa0a6; font-size:18px;">search</span><input type="text" id="homeSearchInput" placeholder="Pesquisar..." onkeydown="if(event.key === 'Enter') doInternalSearch()"></div></div></div></div></div>
+    
+    <div class="window" id="win-musica"><div class="window-header" id="header-musica"><span class="window-title">Música</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('musica')"><span class="material-symbols-outlined">remove</span></div><div class="win-btn win-max" onclick="maxApp('musica')"><span class="material-symbols-outlined">fullscreen</span></div><div class="win-btn win-close" onclick="closeApp('musica')"><span class="material-symbols-outlined">close</span></div></div></div><div class="window-body">
+        <h3 style="margin-top:0;">Suas Músicas</h3>
+        <div class="music-list" id="musicList"></div>
+    </div></div>
+
     <div class="window" id="win-calculadora"><div class="window-header" id="header-calculadora"><span class="window-title">Calculadora</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('calculadora')"><span class="material-symbols-outlined">remove</span></div><div class="win-btn win-close" onclick="closeApp('calculadora')"><span class="material-symbols-outlined">close</span></div></div></div><div class="window-body"><div class="calc-wrapper"><div class="calc-display" id="calcDisplay">0</div><div class="calc-grid"><button class="calc-btn" onclick="calcPress('7')">7</button><button class="calc-btn" onclick="calcPress('8')">8</button><button class="calc-btn" onclick="calcPress('9')">9</button><button class="calc-btn calc-op" onclick="calcPress('/')">÷</button><button class="calc-btn" onclick="calcPress('4')">4</button><button class="calc-btn" onclick="calcPress('5')">5</button><button class="calc-btn" onclick="calcPress('6')">6</button><button class="calc-btn calc-op" onclick="calcPress('*')">×</button><button class="calc-btn" onclick="calcPress('1')">1</button><button class="calc-btn" onclick="calcPress('2')">2</button><button class="calc-btn" onclick="calcPress('3')">3</button><button class="calc-btn calc-op" onclick="calcPress('-')">−</button><button class="calc-btn" onclick="calcPress('C')" style="color: #ff5f56;">C</button><button class="calc-btn" onclick="calcPress('0')">0</button><button class="calc-btn" onclick="calcPress('=')" style="background: var(--ui-accent); color: var(--ui-accent-text);">=</button><button class="calc-btn calc-op" onclick="calcPress('+')">+</button></div></div></div></div>
     <div class="window" id="win-notas"><div class="window-header" id="header-notas"><span class="window-title">Notas</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('notas')"><span class="material-symbols-outlined">remove</span></div><div class="win-btn win-close" onclick="closeApp('notas')"><span class="material-symbols-outlined">close</span></div></div></div><div class="window-body"><textarea id="notesArea" class="notes-area" placeholder="Digite sua nota..."></textarea></div></div>
     <div class="window" id="win-paint"><div class="window-header" id="header-paint"><span class="window-title">Paint</span><div class="window-controls"><div class="win-btn win-min" onclick="minApp('paint')"><span class="material-symbols-outlined">remove</span></div><div class="win-btn win-max" onclick="maxApp('paint')"><span class="material-symbols-outlined">fullscreen</span></div><div class="win-btn win-close" onclick="closeApp('paint')"><span class="material-symbols-outlined">close</span></div></div></div><div class="window-body"><div class="paint-toolbar"><div class="paint-color" onclick="paintColor='black'" style="background:black;"></div><div class="paint-color" onclick="paintColor='#ff5f56'" style="background:#ff5f56;"></div><div class="paint-color" onclick="paintColor='#4facfe'" style="background:#4facfe;"></div><div class="paint-color" onclick="paintColor='#43e97b'" style="background:#43e97b;"></div><button onclick="clearCanvas()" style="padding:0 12px; border-radius:8px; border:none; background:var(--calc-btn); color:var(--text-main); cursor:pointer; font-size:12px;">Limpar</button></div><canvas id="paintCanvas"></canvas></div></div>
@@ -254,92 +358,101 @@
         <div class="sm-header">
             <div style="display:flex; align-items:center; gap:12px; flex-grow:1;">
                 <div class="sm-user-icon" id="smUserInitial">U</div>
-                <div><h3 style="margin:0; font-size:14px; font-weight:500;" id="smUserName">Usuário</h3><p style="margin:0; font-size:10px; color:var(--text-muted);">Admin MintOS 1.0</p></div>
+                <div><h3 style="margin:0; font-size:14px; font-weight:500;" id="smUserName">Usuário</h3><p style="margin:0; font-size:10px; color:var(--text-muted);">Admin FanOS 1.3</p></div>
             </div>
             <div onclick="lockSystem()" style="cursor:pointer; padding:6px 10px; border-radius:10px; background:rgba(255, 95, 86, 0.15); color:#ff5f56; display:flex; justify-content:center; align-items:center;" title="Bloquear Sistema">
                 <span class="material-symbols-outlined" style="font-size: 18px;">lock</span>
             </div>
         </div>
         <p style="font-size:10px; margin:0; color:var(--text-muted);">Fixados</p>
-        <div class="sm-apps"><div class="sm-app" onclick="openApp('config')"><div class="squircle bg-gray"><span class="material-symbols-outlined" style="font-size:20px;">settings</span></div><span>Ajustes</span></div><div class="sm-app" onclick="openApp('atualizacoes')"><div class="squircle bg-mint"><span class="material-symbols-outlined" style="font-size:20px;">system_update_alt</span></div><span>Novidades</span></div><div class="sm-app" onclick="openApp('navegador')"><div class="squircle bg-ocean"><span class="material-symbols-outlined" style="font-size:20px;">public</span></div><span>Navegador</span></div><div class="sm-app" onclick="openApp('notas')"><div class="squircle bg-yellow"><span class="material-symbols-outlined" style="font-size:20px;">edit_note</span></div><span>Notas</span></div></div>
+        <div class="sm-apps">
+            <div class="sm-app" onclick="openApp('config', event)"><div class="squircle bg-gray"><span class="material-symbols-outlined" style="font-size:20px;">settings</span></div><span>Ajustes</span></div>
+            <div class="sm-app" onclick="openApp('atualizacoes', event)"><div class="squircle bg-mint"><span class="material-symbols-outlined" style="font-size:20px;">system_update_alt</span></div><span>Novidades</span></div>
+            <div class="sm-app" onclick="openApp('musica', event)"><div class="squircle bg-orange"><span class="material-symbols-outlined" style="font-size:20px;">music_note</span></div><span>Música</span></div>
+            <div class="sm-app" onclick="openApp('notas', event)"><div class="squircle bg-yellow"><span class="material-symbols-outlined" style="font-size:20px;">edit_note</span></div><span>Notas</span></div>
+        </div>
     </div>
     
     <div class="control-panel glass-panel" id="controlPanel"><div class="cc-grid"><div class="cc-module active" id="cc-wifi" onclick="toggleCC('wifi')"><span class="material-symbols-outlined">wifi</span><span class="cc-label">Wi-Fi</span></div><div class="cc-module active" id="cc-bt" onclick="toggleCC('bt')"><span class="material-symbols-outlined">bluetooth</span><span class="cc-label">Bluetooth</span></div><div class="cc-module" id="cc-plane" onclick="toggleCC('plane')"><span class="material-symbols-outlined">flight</span><span class="cc-label">Avião</span></div><div class="cc-module active" id="darkModeBtn"><span class="material-symbols-outlined">dark_mode</span><span class="cc-label">Tema Escuro</span></div></div><div class="cc-sliders"><div class="slider-row"><span class="material-symbols-outlined">light_mode</span><input type="range" class="slider-input" value="80"></div><div class="slider-row"><span class="material-symbols-outlined">volume_up</span><input type="range" class="slider-input" value="50"></div></div></div>
 
     <div class="taskbar glass-panel taskbar-hidden" id="taskbar">
-        <div class="taskbar-left"><div class="start-btn" id="startBtn"><svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M 65 20 A 40 40 0 1 0 65 80" stroke="currentColor" stroke-width="12" stroke-linecap="round"/><line x1="25" y1="50" x2="75" y2="50" stroke="currentColor" stroke-width="12" stroke-linecap="round"/></svg></div><div class="taskbar-search"><span class="material-symbols-outlined" style="font-size:16px; color:var(--text-muted)">search</span><input type="text" placeholder="Pesquisar..." onkeydown="if(event.key==='Enter' && this.value.trim()!=='') { openApp('navegador'); setTimeout(() => { document.getElementById('homeSearchInput').value = this.value; doInternalSearch(this.value); this.value=''; }, 400); }"></div><div class="tb-divider"></div><div class="taskbar-apps" id="taskbarApps"></div></div>
-        <div class="taskbar-right"><div class="system-tray" id="systemTrayBtn"><span class="material-symbols-outlined">wifi</span><span class="material-symbols-outlined" style="transform: rotate(90deg);">battery_5_bar</span><span id="clock">00:00</span></div><div class="notif-bell-btn" id="notifBellBtn"><span class="material-symbols-outlined">notifications</span><div class="notif-badge" id="notifBadge"></div></div></div>
+        <div class="taskbar-left">
+            <div class="start-btn" id="startBtn"><svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M 65 15 A 35 35 0 1 0 65 85" stroke="currentColor" stroke-width="12" stroke-linecap="round"/><line x1="30" y1="50" x2="80" y2="50" stroke="currentColor" stroke-width="12" stroke-linecap="round"/></svg></div>
+            <div class="taskbar-search" id="tbSearchContainer"><span class="material-symbols-outlined" style="font-size:16px; color:var(--text-muted)">search</span><input type="text" placeholder="Pesquisar..." onkeydown="if(event.key==='Enter' && this.value.trim()!=='') { openApp('navegador', event); setTimeout(() => { document.getElementById('homeSearchInput').value = this.value; doInternalSearch(this.value); this.value=''; }, 400); }"></div>
+            <div class="tb-divider"></div>
+            <div class="taskbar-apps" id="taskbarApps"></div>
+        </div>
+        
+        <div class="taskbar-right">
+            <!-- WIDGET DE MÚSICA NA BARRA DIREITA (Antes da bandeja) -->
+            <div id="tbMusicWidget" class="tb-music-widget" onclick="toggleMiniPlayer(event)">
+                <img id="tbMusicCover" class="tb-music-cover" src="">
+                <span id="tbMusicTitle" class="tb-music-title">Música</span>
+            </div>
+            
+            <div class="system-tray" id="systemTrayBtn"><span class="material-symbols-outlined">wifi</span><span class="material-symbols-outlined" style="transform: rotate(90deg);">battery_5_bar</span><span id="clock">00:00</span></div>
+            <div class="notif-bell-btn" id="notifBellBtn"><span class="material-symbols-outlined">notifications</span><div class="notif-badge" id="notifBadge"></div></div>
+        </div>
+    </div>
+
+    <!-- MINI PLAYER POPUP ESTILO APPLE HORIZONTAL -->
+    <div id="miniPlayer" class="mini-player glass-panel">
+        <img id="mpCover" class="mp-cover" src="">
+        <div class="mp-right">
+            <div class="mp-info">
+                <h4 id="mpTitle" class="mp-title">Música</h4>
+                <p id="mpArtist" class="mp-artist">Artista</p>
+            </div>
+            <div class="mp-progress-container" id="mpProgressContainer" onclick="seekSong(event)"><div class="mp-progress" id="mpProgress"></div></div>
+            <div class="mp-controls">
+                <span class="material-symbols-outlined mp-ctrl-btn" onclick="prevSong()">skip_previous</span>
+                <div class="mp-play-btn" onclick="togglePlay()"><span class="material-symbols-outlined" id="mpPlayIcon">pause</span></div>
+                <span class="material-symbols-outlined mp-ctrl-btn" onclick="nextSong()">skip_next</span>
+            </div>
+        </div>
     </div>
 
     <script>
-        // LÓGICA PRÉ-BOOT CORRIGIDA
         function checkOrientation() { 
             const preBoot = document.getElementById('preBootScreen'); 
             if(!preBoot || preBoot.style.display === 'none') return; 
-            const isPortrait = window.innerHeight > window.innerWidth; 
-            if (isPortrait) { 
-                document.getElementById('msgPortrait').style.display = 'flex'; 
-                document.getElementById('msgLandscape').style.display = 'none'; 
-            } else { 
-                document.getElementById('msgPortrait').style.display = 'none'; 
-                document.getElementById('msgLandscape').style.display = 'flex'; 
-            } 
+            const isPortrait = window.innerHeight > window.innerWidth;
+            if (isPortrait) { document.getElementById('msgPortrait').style.display = 'flex'; document.getElementById('msgLandscape').style.display = 'none'; } 
+            else { document.getElementById('msgPortrait').style.display = 'none'; document.getElementById('msgLandscape').style.display = 'flex'; } 
         }
 
         let systemInitiated = false; 
         function initSystem() { 
-            if(systemInitiated) return; 
-            systemInitiated = true; 
+            if(systemInitiated) return; systemInitiated = true; 
             document.getElementById('preBootScreen').style.opacity = '0'; 
-            setTimeout(() => { 
-                document.getElementById('preBootScreen').style.display = 'none'; 
-                startBootSequence(); 
-            }, 500); 
+            setTimeout(() => { document.getElementById('preBootScreen').style.display = 'none'; startBootSequence(); }, 500); 
         }
 
         checkOrientation();
         window.addEventListener('resize', checkOrientation); 
-        window.addEventListener('orientationchange', () => setTimeout(checkOrientation, 300));
+        window.addEventListener('orientationchange', () => setTimeout(checkOrientation, 200));
 
-        // SISTEMA DE NOTIFICAÇÕES
         let notifCount = 0;
         function showNotification(title, text, icon) {
             const container = document.getElementById('notif-container');
-            const card = document.createElement('div');
-            card.className = 'notif-card';
+            const card = document.createElement('div'); card.className = 'notif-card';
             card.innerHTML = `<span class="material-symbols-outlined" style="font-size:24px; color:var(--ui-accent);">${icon}</span><div><h4 style="margin:0 0 2px 0; font-size:13px; font-weight:500;">${title}</h4><p style="margin:0; font-size:11px; opacity:0.8;">${text}</p></div>`;
             container.prepend(card);
             setTimeout(() => card.classList.add('show'), 10);
             setTimeout(() => { card.classList.remove('show'); setTimeout(() => card.remove(), 400); }, 3500);
 
-            const panelBody = document.getElementById('npBody');
-            const emptyMsg = document.getElementById('npEmpty');
+            const panelBody = document.getElementById('npBody'); const emptyMsg = document.getElementById('npEmpty');
             if(emptyMsg) emptyMsg.style.display = 'none';
-            const npItem = document.createElement('div');
-            npItem.className = 'np-item';
+            const npItem = document.createElement('div'); npItem.className = 'np-item';
             npItem.innerHTML = `<span class="material-symbols-outlined">${icon}</span><div><h4 style="margin:0; font-size:12px; font-weight:500;">${title}</h4><p style="margin:0; font-size:10px; color:var(--text-muted);">${text}</p></div>`;
             panelBody.prepend(npItem);
-
-            notifCount++;
-            document.getElementById('notifBadge').style.display = 'block';
+            notifCount++; document.getElementById('notifBadge').style.display = 'block';
         }
 
-        function clearAllNotifications() {
-            const panelBody = document.getElementById('npBody');
-            panelBody.innerHTML = '<div class="np-empty" id="npEmpty">Não há novas notificações.</div>';
-            notifCount = 0;
-            document.getElementById('notifBadge').style.display = 'none';
-        }
+        function clearAllNotifications() { document.getElementById('npBody').innerHTML = '<div class="np-empty" id="npEmpty">Não há novas notificações.</div>'; notifCount = 0; document.getElementById('notifBadge').style.display = 'none'; }
 
-        document.getElementById('notifBellBtn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            document.getElementById('notifPanel').classList.toggle('show');
-            document.getElementById('startMenu').classList.remove('show');
-            document.getElementById('controlPanel').classList.remove('show');
-            document.getElementById('notifBadge').style.display = 'none'; 
-        });
+        document.getElementById('notifBellBtn').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('notifPanel').classList.toggle('show'); document.getElementById('startMenu').classList.remove('show'); document.getElementById('controlPanel').classList.remove('show'); document.getElementById('miniPlayer').classList.remove('show'); document.getElementById('notifBadge').style.display = 'none'; });
 
-        // GERENCIAMENTO DE TEMA E CORES
         const colorThemes = { 
             'padrao': { ui: '#e2e8f0', text: '#051d38', center: '#9d4edd', r1: '#4b1a8c', r2: '#31105e', r3: '#1e093b', r4: '#120424' },
             'roxo': { ui: '#9d4edd', text: '#ffffff', center: '#9d4edd', r1: '#4b1a8c', r2: '#31105e', r3: '#1e093b', r4: '#120424' },
@@ -350,59 +463,38 @@
         
         function setTheme(colorKey, element) { 
             const t = colorThemes[colorKey]; 
-            document.documentElement.style.setProperty('--ui-accent', t.ui);
-            document.documentElement.style.setProperty('--ui-accent-text', t.text);
-            document.documentElement.style.setProperty('--ring-center', t.center); 
-            document.documentElement.style.setProperty('--ring-1', t.r1); 
-            document.documentElement.style.setProperty('--ring-2', t.r2); 
-            document.documentElement.style.setProperty('--ring-3', t.r3); 
-            document.documentElement.style.setProperty('--ring-4', t.r4); 
-            document.querySelectorAll('.color-circle').forEach(c => c.classList.remove('active')); 
-            if(element) element.classList.add('active'); 
-            document.getElementById('desktop-wallpaper').style.backgroundImage = 'none'; 
-            document.getElementById('rings-container').style.display = 'flex'; 
-            localStorage.setItem('mintos_color', colorKey); 
-            localStorage.removeItem('mintos_wp'); 
+            document.documentElement.style.setProperty('--ui-accent', t.ui); document.documentElement.style.setProperty('--ui-accent-text', t.text); document.documentElement.style.setProperty('--ring-center', t.center); document.documentElement.style.setProperty('--ring-1', t.r1); document.documentElement.style.setProperty('--ring-2', t.r2); document.documentElement.style.setProperty('--ring-3', t.r3); document.documentElement.style.setProperty('--ring-4', t.r4); 
+            document.querySelectorAll('.color-circle').forEach(c => c.classList.remove('active')); if(element) element.classList.add('active'); 
+            document.getElementById('desktop-wallpaper').style.backgroundImage = 'none'; document.getElementById('rings-container').style.display = 'flex'; localStorage.setItem('fanos_color', colorKey); localStorage.removeItem('fanos_wp'); 
         }
         
-        function setPresetWP(url) {
-            document.getElementById('rings-container').style.display = 'none'; 
-            document.getElementById('desktop-wallpaper').style.backgroundImage = `url('${url}')`;
-            localStorage.setItem('mintos_wp', url);
-            showNotification('Personalização', 'Papel de parede atualizado!', 'wallpaper');
-        }
+        function setPresetWP(url) { document.getElementById('rings-container').style.display = 'none'; document.getElementById('desktop-wallpaper').style.backgroundImage = `url('${url}')`; localStorage.setItem('fanos_wp', url); showNotification('Personalização', 'Papel de parede atualizado!', 'wallpaper'); }
 
-        function loadSavedTheme() { 
-            const savedColor = localStorage.getItem('mintos_color') || 'padrao'; 
-            setTheme(savedColor, null); 
-            const colors = ['padrao', 'roxo', 'azul', 'verde', 'vermelho']; 
-            const idx = colors.indexOf(savedColor); 
-            if(idx !== -1) document.querySelectorAll('.color-circle')[idx].classList.add('active'); 
-            const savedTb = localStorage.getItem('mintos_tb') || 'float';
-            changeTaskbar(savedTb);
-            document.querySelector(`input[name="tbStyle"][value="${savedTb}"]`).checked = true;
-        }
+        function toggleBlurSetting() { const isBlurEnabled = document.getElementById('toggle-blur').checked; if (!isBlurEnabled) { document.body.classList.add('no-blur'); localStorage.setItem('fanos_no_blur', 'true'); } else { document.body.classList.remove('no-blur'); localStorage.removeItem('fanos_no_blur'); } }
+        function toggleSearchSetting() { const isSearchEnabled = document.getElementById('toggle-search').checked; const searchBar = document.getElementById('tbSearchContainer'); if (!isSearchEnabled) { searchBar.classList.add('hide-search'); localStorage.setItem('fanos_hide_search', 'true'); } else { searchBar.classList.remove('hide-search'); localStorage.removeItem('fanos_hide_search'); } }
+        function changeTaskbar(style) { const tb = document.getElementById('taskbar'); if(style === 'win') { tb.classList.add('taskbar-win'); } else { tb.classList.remove('taskbar-win'); } document.getElementById('card-tb-float').classList.remove('active'); document.getElementById('card-tb-win').classList.remove('active'); document.getElementById('card-tb-' + style).classList.add('active'); localStorage.setItem('fanos_tb', style); }
 
-        function changeTaskbar(style) {
-            const tb = document.getElementById('taskbar');
-            if(style === 'win') { tb.classList.add('taskbar-win'); } else { tb.classList.remove('taskbar-win'); }
-            localStorage.setItem('mintos_tb', style);
+        function loadSavedSettings() { 
+            const savedColor = localStorage.getItem('fanos_color') || 'padrao'; setTheme(savedColor, null); const colors = ['padrao', 'roxo', 'azul', 'verde', 'vermelho']; const idx = colors.indexOf(savedColor); if(idx !== -1) document.querySelectorAll('.color-circle')[idx].classList.add('active'); 
+            const savedWp = localStorage.getItem('fanos_wp'); if (savedWp) { document.getElementById('rings-container').style.display = 'none'; document.getElementById('desktop-wallpaper').style.backgroundImage = `url('${savedWp}')`; }
+            const savedTb = localStorage.getItem('fanos_tb') || 'float'; changeTaskbar(savedTb);
+            if (localStorage.getItem('fanos_no_blur') === 'true') { document.body.classList.add('no-blur'); document.getElementById('toggle-blur').checked = false; }
+            if (localStorage.getItem('fanos_hide_search') === 'true') { document.getElementById('tbSearchContainer').classList.add('hide-search'); document.getElementById('toggle-search').checked = false; }
         }
 
         function switchTab(tabId) { document.querySelectorAll('.config-tab').forEach(t => t.classList.remove('active')); document.querySelectorAll('.config-content').forEach(c => c.classList.remove('active')); document.getElementById('tab-btn-' + tabId).classList.add('active'); document.getElementById('tab-' + tabId).classList.add('active'); }
         function syncToggle(type) { const toggle = document.getElementById('toggle-' + type).checked; const ccBtn = document.getElementById('cc-' + type); if(toggle) ccBtn.classList.add('active'); else ccBtn.classList.remove('active'); showNotification('Sistema', `${type.toUpperCase()} alterado nas configurações.`, 'settings_suggest'); }
         function toggleCC(type) { const ccBtn = document.getElementById('cc-' + type); ccBtn.classList.toggle('active'); document.getElementById('toggle-' + type).checked = ccBtn.classList.contains('active'); const status = ccBtn.classList.contains('active') ? "Ativado" : "Desativado"; showNotification('Conexão', `${type.toUpperCase()} ${status}.`, type === 'bt' ? 'bluetooth' : type); }
         
-        function checkUser() { const savedName = localStorage.getItem('mintos_username'); if (savedName) { document.getElementById('smUserName').innerText = savedName; document.getElementById('smUserInitial').innerText = savedName.charAt(0).toUpperCase(); } else { document.getElementById('loginOverlay').classList.add('show'); } }
-        function saveUser() { let name = document.getElementById('usernameInput').value.trim(); if (!name) name = "Visitante"; localStorage.setItem('mintos_username', name); document.getElementById('smUserName').innerText = name; document.getElementById('smUserInitial').innerText = name.charAt(0).toUpperCase(); document.getElementById('loginOverlay').classList.remove('show'); showNotification('MintOS', `Bem-vindo, ${name}!`, 'person'); }
-        function skipLogin() { localStorage.setItem('mintos_username', 'Visitante'); document.getElementById('smUserName').innerText = 'Visitante'; document.getElementById('smUserInitial').innerText = 'V'; document.getElementById('loginOverlay').classList.remove('show'); }
-        function loadSavedWallpaper() { const savedWp = localStorage.getItem('mintos_wp'); if (savedWp) { document.getElementById('rings-container').style.display = 'none'; document.getElementById('desktop-wallpaper').style.backgroundImage = `url('${savedWp}')`; } }
-        document.getElementById('wallpaper-picker').addEventListener('change', (e) => { if (e.target.files[0]) { const reader = new FileReader(); reader.onload = function(event) { const base64Wp = event.target.result; localStorage.setItem('mintos_wp', base64Wp); document.getElementById('rings-container').style.display = 'none'; document.getElementById('desktop-wallpaper').style.backgroundImage = `url('${base64Wp}')`; showNotification('Personalização', 'Papel de parede galeria definido.', 'wallpaper'); }; reader.readAsDataURL(e.target.files[0]); } });
+        function checkUser() { const savedName = localStorage.getItem('fanos_username'); if (savedName) { document.getElementById('smUserName').innerText = savedName; document.getElementById('smUserInitial').innerText = savedName.charAt(0).toUpperCase(); } else { document.getElementById('loginOverlay').classList.add('show'); } }
+        function saveUser() { let name = document.getElementById('usernameInput').value.trim(); if (!name) name = "Visitante"; localStorage.setItem('fanos_username', name); document.getElementById('smUserName').innerText = name; document.getElementById('smUserInitial').innerText = name.charAt(0).toUpperCase(); document.getElementById('loginOverlay').classList.remove('show'); showNotification('FanOS', `Bem-vindo, ${name}!`, 'person'); }
+        function skipLogin() { localStorage.setItem('fanos_username', 'Visitante'); document.getElementById('smUserName').innerText = 'Visitante'; document.getElementById('smUserInitial').innerText = 'V'; document.getElementById('loginOverlay').classList.remove('show'); }
+        
+        document.getElementById('wallpaper-picker').addEventListener('change', (e) => { if (e.target.files[0]) { const reader = new FileReader(); reader.onload = function(event) { const base64Wp = event.target.result; localStorage.setItem('fanos_wp', base64Wp); document.getElementById('rings-container').style.display = 'none'; document.getElementById('desktop-wallpaper').style.backgroundImage = `url('${base64Wp}')`; showNotification('Personalização', 'Papel de parede definido.', 'wallpaper'); }; reader.readAsDataURL(e.target.files[0]); } });
 
         function startBootSequence() { const bootScreen = document.getElementById('bootScreen'); bootScreen.style.display = 'flex'; setTimeout(() => { document.getElementById('bootLogoContainer').style.opacity = '1'; setTimeout(() => { document.querySelector('.progress-bar-container').style.opacity = '1'; setTimeout(() => { document.getElementById('bootProgress').style.width = '100%'; setTimeout(() => { bootScreen.style.opacity = '0'; document.getElementById('lockScreen').style.display = 'flex'; checkUser(); setTimeout(() => bootScreen.style.display = 'none', 800); }, 3000); }, 500); }, 800); }, 100); }
-        window.addEventListener('load', () => { loadSavedTheme(); loadSavedWallpaper(); });
+        window.addEventListener('load', loadSavedSettings);
 
-        // NAVEGADOR
         function doInternalSearch(forcedUrl) { let query = forcedUrl || document.getElementById('homeSearchInput').value.trim() || document.getElementById('topUrlBar').value.trim(); if(query) { document.getElementById('browserHome').style.display = 'none'; const iframe = document.getElementById('browserIframe'); iframe.style.display = 'block'; if (query.includes('.') && !query.includes(' ')) { let url = query.startsWith('http') ? query : 'https://' + query; iframe.src = url; document.getElementById('topUrlBar').value = url; } else { let searchUrl = 'https://www.bing.com/search?q=' + encodeURIComponent(query); iframe.src = searchUrl; document.getElementById('topUrlBar').value = searchUrl; } } }
         function resetBrowser() { document.getElementById('browserIframe').style.display = 'none'; document.getElementById('browserIframe').src = ''; document.getElementById('browserHome').style.display = 'flex'; document.getElementById('topUrlBar').value = 'google.com'; document.getElementById('homeSearchInput').value = ''; }
         function reloadBrowser() { const iframe = document.getElementById('browserIframe'); if(iframe.style.display === 'block') iframe.src = iframe.src; }
@@ -412,127 +504,234 @@
 
         function updateClock() { const now = new Date(); const h = String(now.getHours()).padStart(2, '0'); const m = String(now.getMinutes()).padStart(2, '0'); document.getElementById('clock').textContent = `${h}:${m}`; document.getElementById('lockClockText').textContent = `${h}:${m}`; } setInterval(updateClock, 1000); updateClock();
 
-        const appData = { 'config': { icon: 'settings', color: 'bg-gray' }, 'calculadora': { icon: 'calculate', color: 'bg-green' }, 'notas': { icon: 'edit_note', color: 'bg-yellow' }, 'paint': { icon: 'palette', color: 'bg-red' }, 'galeria': { icon: 'image', color: 'bg-purple' }, 'navegador': { icon: 'public', color: 'bg-ocean' }, 'atualizacoes': { icon: 'system_update_alt', color: 'bg-mint' } }; let zIndexCount = 50;
-        function openApp(appId) { const win = document.getElementById(`win-${appId}`); if(!win) return; zIndexCount++; win.style.zIndex = zIndexCount; win.classList.remove('minimized'); win.classList.add('active'); const tbContainer = document.getElementById('taskbarApps'); if(!document.getElementById(`tb-${appId}`)) { const iconDiv = document.createElement('div'); iconDiv.className = `tb-app-icon ${appData[appId].color}`; iconDiv.id = `tb-${appId}`; iconDiv.onclick = () => toggleMinMax(appId); iconDiv.innerHTML = `<span class="material-symbols-outlined">${appData[appId].icon}</span>`; tbContainer.appendChild(iconDiv); } document.getElementById('startMenu').classList.remove('show'); if(appId === 'paint') setTimeout(initPaint, 300); }
-        function closeApp(appId) { document.getElementById(`win-${appId}`).classList.remove('active'); document.getElementById(`win-${appId}`).classList.remove('maximized'); setTimeout(() => { const tbIcon = document.getElementById(`tb-${appId}`); if(tbIcon) tbIcon.remove(); }, 300); }
-        function toggleMinMax(appId) { const win = document.getElementById(`win-${appId}`); if(win.classList.contains('minimized')) { win.classList.remove('minimized'); zIndexCount++; win.style.zIndex = zIndexCount; } else { win.classList.add('minimized'); } }
-        function minApp(appId) { document.getElementById(`win-${appId}`).classList.add('minimized'); }
-        function maxApp(appId) { const win = document.getElementById(`win-${appId}`); win.classList.toggle('maximized'); if(appId === 'paint') setTimeout(initPaint, 300); }
+        const appData = { 'config': { icon: 'settings', color: 'bg-gray' }, 'calculadora': { icon: 'calculate', color: 'bg-green' }, 'notas': { icon: 'edit_note', color: 'bg-yellow' }, 'paint': { icon: 'palette', color: 'bg-red' }, 'galeria': { icon: 'image', color: 'bg-purple' }, 'navegador': { icon: 'public', color: 'bg-ocean' }, 'atualizacoes': { icon: 'system_update_alt', color: 'bg-mint' }, 'musica': { icon: 'music_note', color: 'bg-orange' } }; 
+        let zIndexCount = 50;
+        
+        // FUNÇÃO MATEMÁTICA PARA ORIGEM INTELIGENTE
+        function setWindowOrigin(winId, triggerElement) {
+            const win = document.getElementById(winId);
+            if (!win || !triggerElement) return;
+            const rect = triggerElement.getBoundingClientRect();
+            // Calcula relativo ao espaço exato da janela na tela, mesmo ela estando com scale modificado.
+            const winLeft = win.offsetLeft;
+            const winTop = win.offsetTop;
+            const ox = (rect.left + rect.width / 2) - winLeft;
+            const oy = (rect.top + rect.height / 2) - winTop;
+            win.style.setProperty('--origin-x', `${ox}px`);
+            win.style.setProperty('--origin-y', `${oy}px`);
+        }
+        
+        function openApp(appId, event) { 
+            const win = document.getElementById(`win-${appId}`); 
+            if(!win) return; 
+            zIndexCount++; win.style.zIndex = zIndexCount; 
+
+            const tbContainer = document.getElementById('taskbarApps'); 
+            let tbIcon = document.getElementById(`tb-${appId}`);
+            
+            // Define de onde a janela nasce
+            if (!win.classList.contains('active')) {
+                if(tbIcon) {
+                    setWindowOrigin(`win-${appId}`, tbIcon);
+                } else if (event && event.currentTarget) {
+                    setWindowOrigin(`win-${appId}`, event.currentTarget);
+                } else {
+                    win.style.setProperty('--origin-x', `50%`);
+                    win.style.setProperty('--origin-y', `50%`);
+                }
+            }
+
+            win.classList.remove('minimized'); 
+            win.classList.add('active'); 
+            
+            // Cria icone na barra de tarefas se não existir
+            if(!tbIcon) { 
+                tbIcon = document.createElement('div'); tbIcon.className = `tb-app-icon ${appData[appId].color}`; tbIcon.id = `tb-${appId}`; tbIcon.onclick = (e) => toggleMinMax(appId, e); tbIcon.innerHTML = `<span class="material-symbols-outlined">${appData[appId].icon}</span>`; tbContainer.appendChild(tbIcon); 
+            } 
+            document.getElementById('startMenu').classList.remove('show'); 
+            if(appId === 'paint') setTimeout(initPaint, 300); 
+        }
+        
+        function closeApp(appId) { 
+            const win = document.getElementById(`win-${appId}`);
+            win.classList.remove('active', 'maximized', 'snapped-left', 'snapped-right'); 
+            const tbIcon = document.getElementById(`tb-${appId}`); 
+            if(tbIcon) { 
+                tbIcon.classList.add('closing');
+                setTimeout(() => tbIcon.remove(), 300); 
+            } 
+
+            // Se fechar o App Música, limpa e esconde o widget e player
+            if(appId === 'musica') {
+                audio.pause();
+                isPlaying = false;
+                document.getElementById('tbMusicWidget').style.display = 'none';
+                document.getElementById('miniPlayer').classList.remove('show');
+                document.getElementById('tbMusicCover').classList.remove('playing');
+                document.getElementById('mpPlayIcon').innerText = "play_arrow";
+            }
+        }
+        
+        function toggleMinMax(appId, event) { 
+            const win = document.getElementById(`win-${appId}`); 
+            const tbIcon = document.getElementById(`tb-${appId}`);
+            if(win.classList.contains('minimized')) { 
+                // Restaura puxando exatamente do ícone da barra de tarefas
+                setWindowOrigin(`win-${appId}`, tbIcon);
+                win.classList.remove('minimized'); zIndexCount++; win.style.zIndex = zIndexCount; 
+            } else { 
+                // Minimiza "sugando" exatamente para o ícone da barra de tarefas
+                setWindowOrigin(`win-${appId}`, tbIcon);
+                win.classList.add('minimized'); 
+            } 
+        }
+        
+        function minApp(appId) { 
+            const win = document.getElementById(`win-${appId}`);
+            const tbIcon = document.getElementById(`tb-${appId}`);
+            setWindowOrigin(`win-${appId}`, tbIcon);
+            win.classList.add('minimized'); 
+        }
+        
+        function maxApp(appId) { const win = document.getElementById(`win-${appId}`); win.classList.remove('snapped-left', 'snapped-right'); win.classList.toggle('maximized'); if(appId === 'paint') setTimeout(initPaint, 300); }
 
         document.querySelectorAll('.window').forEach(win => { win.addEventListener('mousedown', () => { zIndexCount++; win.style.zIndex = zIndexCount; }); win.addEventListener('touchstart', () => { zIndexCount++; win.style.zIndex = zIndexCount; }, {passive:true}); });
         
-        // CORREÇÃO: ARRASTAR JANELAS COM COMPATIBILIDADE UNIVERSAL
         function makeDraggable(winId, headerId) { 
-            const win = document.getElementById(winId); 
-            const header = document.getElementById(headerId); 
-            if(!win || !header) return; 
+            const win = document.getElementById(winId); const header = document.getElementById(headerId); if(!win || !header) return; 
             let isDragging = false, startX, startY, initialX = 0, initialY = 0; 
             
             function dragStart(e) { 
                 if (e.target.closest('.window-controls')) return; 
-                if(win.classList.contains('maximized')) return; 
+                if(win.classList.contains('maximized') || win.classList.contains('snapped-left') || win.classList.contains('snapped-right')) { 
+                    win.classList.remove('maximized', 'snapped-left', 'snapped-right'); 
+                    win.style.translate = `0px 0px`; 
+                    initialX = 0; initialY = 0; 
+                } else {
+                    const translates = win.style.translate.split('px');
+                    initialX = parseFloat(translates[0]) || 0; 
+                    initialY = parseFloat(translates[1]) || 0; 
+                }
+
                 let clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX; 
                 let clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY; 
-                
-                // Usando DOMMatrix (Padrão universal) em vez de WebKitCSSMatrix (Que causava erro no celular)
-                const style = window.getComputedStyle(win); 
-                const matrix = new DOMMatrix(style.transform); 
-                initialX = matrix.m41; 
-                initialY = matrix.m42; 
-                startX = clientX - initialX; 
-                startY = clientY - initialY; 
-                isDragging = true; 
+                startX = clientX - initialX; startY = clientY - initialY; isDragging = true; 
             } 
-            function drag(e) { 
-                if (!isDragging) return; 
-                e.preventDefault(); 
-                let clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX; 
-                let clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY; 
-                win.style.transform = `translate(${clientX - startX}px, ${clientY - startY}px) scale(1)`; 
-            } 
-            function dragEnd() { isDragging = false; } 
             
-            header.addEventListener('mousedown', dragStart); 
-            document.addEventListener('mousemove', drag); 
-            document.addEventListener('mouseup', dragEnd); 
-            header.addEventListener('touchstart', dragStart, {passive: false}); 
-            document.addEventListener('touchmove', drag, {passive: false}); 
-            document.addEventListener('touchend', dragEnd); 
+            function drag(e) { 
+                if (!isDragging) return; e.preventDefault(); 
+                let clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX; 
+                let clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY; 
+                win.style.translate = `${clientX - startX}px ${clientY - startY}px`; 
+                
+                const overlay = document.getElementById('snapOverlay'); if (!overlay) return;
+                if (clientY < 20) overlay.className = 'snap-overlay show-top';
+                else if (clientX < 20) overlay.className = 'snap-overlay show-left';
+                else if (clientX > window.innerWidth - 20) overlay.className = 'snap-overlay show-right';
+                else overlay.className = 'snap-overlay';
+            } 
+            
+            function dragEnd(e) { 
+                if (!isDragging) return; isDragging = false; 
+                const overlay = document.getElementById('snapOverlay'); if (!overlay) return;
+                let snapClass = overlay.className; overlay.className = 'snap-overlay'; 
+                if (snapClass.includes('show-top')) win.classList.add('maximized');
+                else if (snapClass.includes('show-left')) win.classList.add('snapped-left');
+                else if (snapClass.includes('show-right')) win.classList.add('snapped-right');
+            } 
+            
+            header.addEventListener('mousedown', dragStart); document.addEventListener('mousemove', drag); document.addEventListener('mouseup', dragEnd); 
+            header.addEventListener('touchstart', dragStart, {passive: false}); document.addEventListener('touchmove', drag, {passive: false}); document.addEventListener('touchend', dragEnd); 
         }
-        makeDraggable('win-config', 'header-config'); makeDraggable('win-calculadora', 'header-calculadora'); makeDraggable('win-notas', 'header-notas'); makeDraggable('win-paint', 'header-paint'); makeDraggable('win-galeria', 'header-galeria'); makeDraggable('win-navegador', 'header-navegador'); makeDraggable('win-atualizacoes', 'header-atualizacoes');
+        
+        makeDraggable('win-config', 'header-config'); makeDraggable('win-calculadora', 'header-calculadora'); makeDraggable('win-notas', 'header-notas'); makeDraggable('win-paint', 'header-paint'); makeDraggable('win-galeria', 'header-galeria'); makeDraggable('win-navegador', 'header-navegador'); makeDraggable('win-atualizacoes', 'header-atualizacoes'); makeDraggable('win-musica', 'header-musica');
 
         let calcVal = '0'; function calcPress(v) { const display = document.getElementById('calcDisplay'); if(v === 'C') calcVal = '0'; else if(v === '=') { try { calcVal = String(eval(calcVal)); } catch { calcVal = 'Erro'; } } else { if(calcVal === '0' || calcVal === 'Erro') calcVal = v; else calcVal += v; } display.innerText = calcVal; }
         let paintColor = 'black'; let isDrawing = false; let ctx; function initPaint() { const canvas = document.getElementById('paintCanvas'); const winBody = canvas.parentElement; canvas.width = winBody.clientWidth - 30; canvas.height = winBody.clientHeight - 80; ctx = canvas.getContext('2d'); ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.fillStyle = "rgba(255,255,255,0.9)"; ctx.fillRect(0, 0, canvas.width, canvas.height); } function clearCanvas() { if(ctx) { ctx.fillStyle="rgba(255,255,255,0.9)"; ctx.fillRect(0,0,document.getElementById('paintCanvas').width, document.getElementById('paintCanvas').height); } } const canvas = document.getElementById('paintCanvas'); function startPosition(e) { isDrawing = true; draw(e); } function endPosition() { isDrawing = false; ctx.beginPath(); } function draw(e) { if(!isDrawing || !ctx) return; e.preventDefault(); let x = e.type.includes('touch') ? e.touches[0].clientX : e.clientX; let y = e.type.includes('touch') ? e.touches[0].clientY : e.clientY; const rect = canvas.getBoundingClientRect(); ctx.lineWidth = 4; ctx.strokeStyle = paintColor; ctx.lineTo(x - rect.left, y - rect.top); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x - rect.left, y - rect.top); } canvas.addEventListener('mousedown', startPosition); canvas.addEventListener('mouseup', endPosition); canvas.addEventListener('mousemove', draw); canvas.addEventListener('touchstart', startPosition, {passive:false}); canvas.addEventListener('touchend', endPosition); canvas.addEventListener('touchmove', draw, {passive:false});
 
-        document.getElementById('startBtn').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('startMenu').classList.toggle('show'); document.getElementById('controlPanel').classList.remove('show'); document.getElementById('notifPanel').classList.remove('show'); });
-        document.getElementById('systemTrayBtn').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('controlPanel').classList.toggle('show'); document.getElementById('startMenu').classList.remove('show'); document.getElementById('notifPanel').classList.remove('show'); });
-        document.addEventListener('click', (e) => { if (!document.getElementById('startMenu').contains(e.target) && e.target.id !== 'startBtn') document.getElementById('startMenu').classList.remove('show'); if (!document.getElementById('controlPanel').contains(e.target) && e.target.id !== 'systemTrayBtn') document.getElementById('controlPanel').classList.remove('show'); if (!document.getElementById('notifPanel').contains(e.target) && e.target.id !== 'notifBellBtn' && !e.target.closest('#notifBellBtn')) document.getElementById('notifPanel').classList.remove('show');});
+        // ================== APP DE MÚSICA FUNCIONAL ==================
+        const songs = [
+            { id: 0, title: "Lofi Chill Vibes", artist: "FanOS Audio", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", cover: "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?q=80&w=150&auto=format&fit=crop" },
+            { id: 1, title: "Electronic Dream", artist: "Synth Creator", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", cover: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=150&auto=format&fit=crop" },
+            { id: 2, title: "Acoustic Sunset", artist: "Nature Sounds", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", cover: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=150&auto=format&fit=crop" }
+        ];
 
-        // ================== SISTEMA DE DESBLOQUEIO (100% CORRIGIDO) ==================
+        let audio = new Audio();
+        let currentSongIndex = -1;
+        let isPlaying = false;
+
+        const musicListEl = document.getElementById('musicList');
+        songs.forEach((song, index) => {
+            const el = document.createElement('div');
+            el.className = 'music-item';
+            el.innerHTML = `<img src="${song.cover}" class="music-cover"><div class="music-info"><p class="music-title">${song.title}</p><p class="music-artist">${song.artist}</p></div><span class="material-symbols-outlined music-play-icon">play_circle</span>`;
+            el.onclick = () => loadAndPlaySong(index);
+            musicListEl.appendChild(el);
+        });
+
+        function loadAndPlaySong(index) {
+            currentSongIndex = index;
+            const song = songs[index];
+            audio.src = song.src;
+            audio.play();
+            isPlaying = true;
+            
+            document.getElementById('tbMusicWidget').style.display = 'flex';
+            document.getElementById('tbMusicCover').src = song.cover;
+            document.getElementById('tbMusicTitle').innerText = song.title;
+            document.getElementById('tbMusicCover').classList.add('playing');
+
+            document.getElementById('mpCover').src = song.cover;
+            document.getElementById('mpTitle').innerText = song.title;
+            document.getElementById('mpArtist').innerText = song.artist;
+            document.getElementById('mpPlayIcon').innerText = "pause";
+            
+            showNotification('Tocando Agora', song.title, 'music_note');
+        }
+
+        function togglePlay() {
+            if (currentSongIndex === -1) { loadAndPlaySong(0); return; }
+            if (isPlaying) { audio.pause(); isPlaying = false; document.getElementById('mpPlayIcon').innerText = "play_arrow"; document.getElementById('tbMusicCover').classList.remove('playing'); } 
+            else { audio.play(); isPlaying = true; document.getElementById('mpPlayIcon').innerText = "pause"; document.getElementById('tbMusicCover').classList.add('playing'); }
+        }
+
+        function nextSong() { let nextIndex = currentSongIndex + 1; if (nextIndex >= songs.length) nextIndex = 0; loadAndPlaySong(nextIndex); }
+        function prevSong() { let prevIndex = currentSongIndex - 1; if (prevIndex < 0) prevIndex = songs.length - 1; loadAndPlaySong(prevIndex); }
+
+        function toggleMiniPlayer(e) {
+            e.stopPropagation();
+            document.getElementById('miniPlayer').classList.toggle('show');
+            document.getElementById('startMenu').classList.remove('show');
+            document.getElementById('controlPanel').classList.remove('show');
+            document.getElementById('notifPanel').classList.remove('show');
+        }
+
+        audio.addEventListener('timeupdate', () => { if(audio.duration) { const percent = (audio.currentTime / audio.duration) * 100; document.getElementById('mpProgress').style.width = `${percent}%`; } });
+        audio.addEventListener('ended', nextSong);
+        function seekSong(e) { const container = document.getElementById('mpProgressContainer'); const rect = container.getBoundingClientRect(); const clickX = e.clientX - rect.left; const percent = clickX / rect.width; audio.currentTime = percent * audio.duration; }
+
+        document.getElementById('startBtn').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('startMenu').classList.toggle('show'); document.getElementById('controlPanel').classList.remove('show'); document.getElementById('notifPanel').classList.remove('show'); document.getElementById('miniPlayer').classList.remove('show');});
+        document.getElementById('systemTrayBtn').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('controlPanel').classList.toggle('show'); document.getElementById('startMenu').classList.remove('show'); document.getElementById('notifPanel').classList.remove('show'); document.getElementById('miniPlayer').classList.remove('show');});
+        document.addEventListener('click', (e) => { 
+            if (!document.getElementById('startMenu').contains(e.target) && e.target.id !== 'startBtn') document.getElementById('startMenu').classList.remove('show'); 
+            if (!document.getElementById('controlPanel').contains(e.target) && e.target.id !== 'systemTrayBtn') document.getElementById('controlPanel').classList.remove('show'); 
+            if (!document.getElementById('notifPanel').contains(e.target) && e.target.id !== 'notifBellBtn' && !e.target.closest('#notifBellBtn')) document.getElementById('notifPanel').classList.remove('show');
+            if (!document.getElementById('miniPlayer').contains(e.target) && e.target.id !== 'tbMusicWidget' && !e.target.closest('#tbMusicWidget')) document.getElementById('miniPlayer').classList.remove('show');
+        });
+
+        // DESBLOQUEIO
         const lockScreen = document.getElementById('lockScreen');
         const slideThumb = document.getElementById('slideThumb');
-        let isSliding = false, startX = 0, currentMove = 0, maxW = 0;
+        let isSliding = false, startXUnlock = 0, currentMove = 0, maxW = 0;
 
-        function startSlide(clientX) {
-            isSliding = true;
-            startX = clientX - currentMove;
-            maxW = document.getElementById('slideContainer').clientWidth - 45; 
-            slideThumb.style.transition = 'none';
-        }
+        function startSlide(clientX) { isSliding = true; startXUnlock = clientX - currentMove; maxW = document.getElementById('slideContainer').clientWidth - 45; slideThumb.style.transition = 'none'; }
+        function moveSlide(clientX) { if (!isSliding) return; currentMove = clientX - startXUnlock; if (currentMove < 0) currentMove = 0; if (currentMove > maxW) currentMove = maxW; slideThumb.style.transform = `translateX(${currentMove}px)`; }
+        function endSlide() { if (!isSliding) return; isSliding = false; if (currentMove > maxW * 0.8) { slideThumb.style.transform = `translateX(${maxW}px)`; setTimeout(() => { lockScreen.classList.add('hidden'); document.getElementById('desktopArea').classList.add('show'); setTimeout(() => document.getElementById('taskbar').classList.remove('taskbar-hidden'), 150); showNotification('FanOS 1.3', 'Sistema Desbloqueado.', 'lock_open'); setTimeout(() => { currentMove = 0; slideThumb.style.transition = 'none'; slideThumb.style.transform = 'translateX(0)'; }, 500); }, 200); } else { slideThumb.style.transition = 'transform 0.3s ease-out'; currentMove = 0; slideThumb.style.transform = 'translateX(0)'; } }
 
-        function moveSlide(clientX) {
-            if (!isSliding) return;
-            currentMove = clientX - startX;
-            if (currentMove < 0) currentMove = 0;
-            if (currentMove > maxW) currentMove = maxW;
-            slideThumb.style.transform = `translateX(${currentMove}px)`;
-        }
+        slideThumb.addEventListener('touchstart', (e) => startSlide(e.touches[0].clientX), { passive: true }); document.addEventListener('touchmove', (e) => { if (isSliding) moveSlide(e.touches[0].clientX); }, { passive: false }); document.addEventListener('touchend', endSlide);
+        slideThumb.addEventListener('mousedown', (e) => startSlide(e.clientX)); document.addEventListener('mousemove', (e) => { if (isSliding) moveSlide(e.clientX); }); document.addEventListener('mouseup', endSlide);
 
-        function endSlide() {
-            if (!isSliding) return;
-            isSliding = false;
-            if (currentMove > maxW * 0.8) {
-                slideThumb.style.transform = `translateX(${maxW}px)`;
-                setTimeout(() => {
-                    lockScreen.classList.add('hidden');
-                    document.getElementById('desktopArea').classList.add('show');
-                    setTimeout(() => document.getElementById('taskbar').classList.remove('taskbar-hidden'), 150);
-                    showNotification('MintOS 1.0', 'Sistema Desbloqueado.', 'lock_open');
-                    setTimeout(() => {
-                        currentMove = 0;
-                        slideThumb.style.transition = 'none';
-                        slideThumb.style.transform = 'translateX(0)';
-                    }, 500);
-                }, 200);
-            } else {
-                slideThumb.style.transition = 'transform 0.3s ease-out';
-                currentMove = 0;
-                slideThumb.style.transform = 'translateX(0)';
-            }
-        }
-
-        // Touch (Celular)
-        slideThumb.addEventListener('touchstart', (e) => startSlide(e.touches[0].clientX), { passive: true });
-        document.addEventListener('touchmove', (e) => { if (isSliding) moveSlide(e.touches[0].clientX); }, { passive: false });
-        document.addEventListener('touchend', endSlide);
-
-        // Mouse (PC)
-        slideThumb.addEventListener('mousedown', (e) => startSlide(e.clientX));
-        document.addEventListener('mousemove', (e) => { if (isSliding) moveSlide(e.clientX); });
-        document.addEventListener('mouseup', endSlide);
-
-        function lockSystem() {
-            document.getElementById('startMenu').classList.remove('show');
-            lockScreen.style.display = 'flex';
-            setTimeout(() => lockScreen.classList.remove('hidden'), 50);
-            document.getElementById('desktopArea').classList.remove('show');
-            document.getElementById('taskbar').classList.add('taskbar-hidden');
-            document.querySelectorAll('.window').forEach(w => { w.classList.remove('active'); w.classList.remove('maximized'); });
-            
-            currentMove = 0;
-            slideThumb.style.transition = 'none';
-            slideThumb.style.transform = 'translateX(0)';
-        }
+        function lockSystem() { document.getElementById('startMenu').classList.remove('show'); lockScreen.style.display = 'flex'; setTimeout(() => lockScreen.classList.remove('hidden'), 50); document.getElementById('desktopArea').classList.remove('show'); document.getElementById('taskbar').classList.add('taskbar-hidden'); document.querySelectorAll('.window').forEach(w => { w.classList.remove('active', 'maximized', 'snapped-left', 'snapped-right'); }); currentMove = 0; slideThumb.style.transition = 'none'; slideThumb.style.transform = 'translateX(0)'; }
 
     </script>
 </body>
